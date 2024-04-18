@@ -1,8 +1,5 @@
 import pygame
 
 class Tile:
-    def __init__(self) -> None:
-        pass
-
-    def interact(self, screen):# pygame.display):
+    def __init__(self, picture, x, y) -> None:
         pass
