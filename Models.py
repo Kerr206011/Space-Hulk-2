@@ -1,9 +1,9 @@
 import pygame
 
 class Model:
-    def __init__(self, AP, image):
+    def __init__(self, AP, picture):
         self.AP = AP
-        self.image = pygame.image.load(image)
+        self.picture = pygame.image.load(picture)
         self.face = (1,0)
 
 class SpaceMarine(Model):

@@ -31,9 +31,8 @@
                 0
             ],
             "tile",
-            "floor.png",
-            1,
-            false
+            "Floor_1.png",
+            1
         ]
     ]
 }
