@@ -1,23 +1,29 @@
 import json
 
 # Data to be written to the JSON file
+map = []
+map.append(((0,0),"tile","floor.png",1,False))
 a = []
 i = 0
 while i < 9:
     a.append(1)
-    a.append(3)
     i+=1
 i = 0
 while i<4:
     a.append(2)
     i+= 1
+i = 0
+while i < 9:
+    a.append(3)
+    i+=1
 data = {
     "level": 1,
-    "blipList" : a
+    "blipList" : a,
+    "map" : map
 }
 
 # File path to save the JSON file
-file_path = "level1.json"
+file_path = "Levels/level1.json"
 
 # Writing data to the JSON file
 with open(file_path, 'w') as json_file:

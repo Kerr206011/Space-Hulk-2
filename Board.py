@@ -1,5 +1,4 @@
-import pygame
-
+from UI import *
 class Tile:
     def __init__(self, picture, x, y, sector) -> None:
         self.picture = picture
