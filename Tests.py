@@ -15,26 +15,37 @@ a = 0
 picture = pygame.image.load("Floor_1.png")
 while x < 501:
     newButton = Button(x,y,picture,1)
+    buttonlist.append(newButton)
     x+=51
     y+=51
-def run_in_thread():
-    while True:
+class SharedData:
+    def __init__(self):
+        self.value = 0
+        self.run = True        
+
+    def increment(self):
+        self.value += 1
+
+share = SharedData() 
+
+def run_in_thread(share):
+    while share.run:
         for button in buttonlist:
             if(button.draw(screen)):
-                a += 1
+                share.increment()
+                share.run = False
 
 # Create and start the thread
-thread = threading.Thread(target=run_in_thread)
+thread = threading.Thread(target=run_in_thread,args=(share,))
 thread.start()
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-    if a == 5:
-        print(a)
+    if share.value == 1:
+        print(share.value)
         pygame.quit()
         sys.exit()
-    buttonlist[0].draw(screen)
     print(1)
     pygame.display.update()
