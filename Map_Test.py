@@ -6,6 +6,12 @@ from UI import *
 pygame.init()
 game = Game()
 game.load_level("level1")
+wall = Wall("Floor_1.png",1,1)
+game.map.append(wall)
+for tile in game.map:
+    if isinstance(tile, Tile):
+        tile.occupand = SpaceMarine("bolter", "sergant")
+        tile.isOccupied = True
 screen = pygame.display.set_mode((400,400))
 screen.fill("black")
 

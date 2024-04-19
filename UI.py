@@ -3,16 +3,20 @@ import sys
 
 class Button():
     def __init__(self, x, y, image, scale) -> None:
-        width = image.get_width()
-        height = image.get_height()
-        self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale)))
+        self.scale = scale
+        self.width = image.get_width()
+        self.height = image.get_height()
+        self.image = pygame.transform.scale(image, (int(self.width * scale), int(self.height * scale)))
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.clicked = False
         self.prev_mouse_state = False
 
-    def show(self, surface):
+    def show(self, surface, addImage = None):
         surface.blit(self.image, (self.rect.x, self.rect.y))
+        if addImage != None:
+            image = pygame.transform.scale(addImage, (int(self.width * self.scale), int(self.height * self.scale)))
+            surface.blit(image, (self.rect.x, self.rect.y))
 
     def draw(self, surface):
         action = False
