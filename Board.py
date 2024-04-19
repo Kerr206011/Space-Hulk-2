@@ -4,16 +4,20 @@ class Tile:
     def __init__(self, picture, x, y, sector) -> None:
         self.scale = 1
         self.picture = pygame.image.load(picture)
-        self.picture = pygame.transform.scale(self.picture,(self.scale, self.scale))
+        self.graphicOFS = self.picture.get_width()
+        # self.picture = pygame.transform.scale(self.picture,(self.scale, self.scale))
+        self.button = Button(x,y,self.picture,self.scale)
+        self.button.rect.topleft = ((x * self.graphicOFS),(y * self.graphicOFS))
         self.x = x
         self.y = y
         self.sector = sector
         self.isOccupied = False
         self.occupand = None
-        self.rect = self.picture.get_rect()
 
     def render(self, screen):
-        pass
+        self.button.show(screen)
+        if self.isOccupied:
+            
 
 class Wall(Tile):
     def __init__(self, picture, x, y) -> None:

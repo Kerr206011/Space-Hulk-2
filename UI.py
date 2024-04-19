@@ -1,4 +1,6 @@
 import pygame
+import sys
+
 class Button():
     def __init__(self, x, y, image, scale) -> None:
         width = image.get_width()
@@ -8,6 +10,9 @@ class Button():
         self.rect.topleft = (x, y)
         self.clicked = False
         self.prev_mouse_state = False
+
+    def show(self, surface):
+        surface.blit(self.image, (self.rect.x, self.rect.y))
 
     def draw(self, surface):
         action = False
