@@ -17,7 +17,7 @@ class Tile:
     def render(self, screen):
         self.button.show(screen)
         if self.isOccupied:
-            
+            image = pygame.transform.scale(self.occupand.picture,self.scale,)
 
 class Wall(Tile):
     def __init__(self, picture, x, y) -> None:
