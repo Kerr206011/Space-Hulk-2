@@ -15,6 +15,12 @@ for tile in game.map:
 screen = pygame.display.set_mode((400,400))
 screen.fill("black")
 
+sm = SpaceMarine("bolter", 'sargeant')
+
+for tile in game.map:
+    if isinstance(tile, Tile):
+        game.turn_model(tile.occupand, "left")
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
