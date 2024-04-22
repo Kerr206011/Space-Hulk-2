@@ -10,6 +10,8 @@ class Game():
         self.player1 = "";self.player2 = ""
         self.gsModelList = [];self.smModelList = [];self.blipSack = [];self.blModelList = []
         self.level = int
+        self.selectedTile = None
+        self.clickedTile = None
 
     def load_level(self,levelFile):
         file_path = "Levels/"+levelFile+".json"
@@ -55,6 +57,9 @@ class Game():
                 model.face = (0,-1)
             elif model.face == (0,1):
                 model.face = (-1,0)
+
+    def move_model(self, model, tile):
+        pass
 
 game = Game()
 game.load_level("level1")
