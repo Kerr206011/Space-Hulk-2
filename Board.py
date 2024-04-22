@@ -2,6 +2,7 @@ from UI import *
 
 class Tile:
     def __init__(self, picture, x, y, sector) -> None:
+        self.sector = sector
         self.scale = 1
         self.picture = pygame.image.load(picture)
         self.graphicOFS = self.picture.get_width()
@@ -37,3 +38,11 @@ class Door(Tile):
         super().__init__(picture, x, y, sector)
         self.isOpen = isOpen
         self.picture_closed = picture_cosed
+
+class controlledArea(Tile):
+    def __init__(self, picture, x, y, sector) -> None:
+        super().__init__(picture, x, y, sector)
+
+class entryPoint(Tile):
+    def __init__(self, picture, x, y) -> None:
+        super().__init__(picture, x, y)

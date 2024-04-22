@@ -33,6 +33,25 @@
             "tile",
             "Floor_1.png",
             1
+        ],
+        [
+            [
+                1,
+                1
+            ],
+            "wall",
+            "Floor_1.png"
+        ],
+        [
+            [
+                2,
+                2
+            ],
+            "door",
+            "Floor_1.png",
+            1,
+            "Pictures/Models/SM.png",
+            true
         ]
     ]
 }

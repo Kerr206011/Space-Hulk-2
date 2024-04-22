@@ -2,7 +2,9 @@ import json
 
 # Data to be written to the JSON file
 map = []
-map.append(((0,0),"tile","floor.png",1,False))
+map.append(((0,0),"tile","Floor_1.png",1))
+map.append(((1,1),"wall","Floor_1.png"))
+map.append(((2,2),"door","Floor_1.png",1,"Pictures/Models/SM.png",True))
 a = []
 i = 0
 while i < 9:
