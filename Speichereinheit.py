@@ -21,7 +21,8 @@ while i < 9:
 data = {
     "level": 1,
     "blipList" : a,
-    "map" : map
+    "map" : map,
+    "reinforcement" : 2
 }
 
 # File path to save the JSON file

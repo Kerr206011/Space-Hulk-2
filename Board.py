@@ -39,10 +39,11 @@ class Door(Tile):
         self.isOpen = isOpen
         self.picture_closed = picture_cosed
 
-class controlledArea(Tile):
+class ControlledArea(Tile):
     def __init__(self, picture, x, y, sector) -> None:
         super().__init__(picture, x, y, sector)
 
-class entryPoint(Tile):
+class EntryPoint(Tile):
     def __init__(self, picture, x, y) -> None:
-        super().__init__(picture, x, y)
+        super().__init__(picture, x, y, sector = -1)
+        self.blips = []

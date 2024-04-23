@@ -53,5 +53,6 @@
             "Pictures/Models/SM.png",
             true
         ]
-    ]
+    ],
+    "reinforcement": 2
 }

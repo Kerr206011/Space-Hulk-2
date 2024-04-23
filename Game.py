@@ -5,11 +5,13 @@ from Board import *
 class Game():
     def __init__(self) -> None:
         self.map = []
-        self.blipList = ()
+        self.blipSack = []
+        self.blipReserve = []
         self.cp = random.randint(1,6)
         self.player1 = "";self.player2 = ""
         self.gsModelList = [];self.smModelList = [];self.blipSack = [];self.blModelList = []
         self.level = int
+        self.reinforcement = int 
 
     def load_level(self,levelFile):
         file_path = "Levels/"+levelFile+".json"
@@ -17,6 +19,7 @@ class Game():
             data = json.load(json_file)
         self.level = data["level"]
         self.blipSack = data["blipList"]
+        self.reinforcement = data["reinforcement"]
 
         bluePrint = data["map"]
         for entry in bluePrint:
@@ -33,30 +36,40 @@ class Game():
                 newWall = Wall(entry[2],entry[0][0],entry[0][1])
                 self.map.append(newWall)
 
-    def turn_model(self, model, dir, AP):
-        if dir == "right":
-            model.picture = pygame.transform.rotate(model.picture, 90)
-            if model.face == (1,0):
-                model.face = (0,-1)
-            elif model.face == (0,-1):
-                model.face = (-1,0)
-            elif model.face == (-1,0):
-                model.face = (0,1)
-            elif model.face == (0,1):
-                model.face = (1,0)
+    def turn_model(self, model, dir):
+        match dir:
+            case "left":
+                model.picture = pygame.transform.rotate(model.picture, 90)
+                if model.face == (1,0):
+                    model.face = (0,-1)
+                elif model.face == (0,-1):
+                    model.face = (-1,0)
+                elif model.face == (-1,0):
+                    model.face = (0,1)
+                elif model.face == (0,1):
+                    model.face = (1,0)
 
-        else:
-            model.picture = pygame.transform.rotate(model.picture, -90)
-            if model.face == (1,0):
-                model.face = (0,1)
-            elif model.face == (0,-1):
-                model.face = (1,0)
-            elif model.face == (-1,0):
-                model.face = (0,-1)
-            elif model.face == (0,1):
-                model.face = (-1,0)
+            case "right":
+                model.picture = pygame.transform.rotate(model.picture, -90)
+                if model.face == (1,0):
+                    model.face = (0,1)
+                elif model.face == (0,-1):
+                    model.face = (1,0)
+                elif model.face == (-1,0):
+                    model.face = (0,-1)
+                elif model.face == (0,1):
+                    model.face = (-1,0)
 
-        model.AP -= AP
+            case _:
+                model.picture = pygame.transform.rotate(model.picture, 180)
+                if model.face == (1,0):
+                    model.face = (-1,0)
+                elif model.face == (0,-1):
+                    model.face = (0,1)
+                elif model.face == (-1,0):
+                    model.face = (1,0)
+                elif model.face == (0,1):
+                    model.face = (0,-1)
 
     def move_model(self, model, tile, target):
         tile.isOccupied = False
@@ -64,6 +77,14 @@ class Game():
         target.occupand = model
         target.isOccupied = True
 
+    def set_guard(self, model):
+        model.guard = True
+
+    def set_overwatch(self, model):
+        model.overwatch = True
+
+    def remove_blip(self, model):
+        self.blipReserve.append(model.count)
 game = Game()
 game.load_level("level1")
 print(game.map)

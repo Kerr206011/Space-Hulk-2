@@ -31,7 +31,6 @@ class SharedData:
     def loop(self):
         for tile in self.game.map:
             tile.render(screen)
-     
 
 share = SharedData(game, screen) 
 
