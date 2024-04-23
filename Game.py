@@ -33,7 +33,7 @@ class Game():
                 newWall = Wall(entry[2],entry[0][0],entry[0][1])
                 self.map.append(newWall)
 
-    def turn_model(self, model, dir):
+    def turn_model(self, model, dir, AP):
         if dir == "right":
             model.picture = pygame.transform.rotate(model.picture, 90)
             if model.face == (1,0):
@@ -55,6 +55,8 @@ class Game():
                 model.face = (0,-1)
             elif model.face == (0,1):
                 model.face = (-1,0)
+
+        model.AP -= AP
 
     def move_model(self, model, tile, target):
         tile.isOccupied = False
