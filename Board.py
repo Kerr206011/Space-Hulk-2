@@ -20,15 +20,6 @@ class Tile:
         else: 
             self.button.show(screen)
 
-    def interact(self, screen, game):
-        if self.button.draw(screen):
-            if self.isOccupied:
-                game.selectedTile = self
-                print(game.selectedTile)
-            else: 
-                game.clickedTile = self
-                print(game.clickedTile)
-
 class Wall:
     def __init__(self, picture, x, y) -> None:
         self.scale = 1

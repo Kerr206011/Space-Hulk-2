@@ -16,13 +16,10 @@ for tile in game.map:
 screen = pygame.display.set_mode((400,400))
 screen.fill("black")
 
-sm = SpaceMarine("bolter", 'sargeant')
 
 for tile in game.map:
     if isinstance(tile, Door):
         game.turn_model(tile.occupand, "left")
-
-currentTile = None
 
 class SharedData:
     def __init__(self, game, screen):
@@ -33,8 +30,7 @@ class SharedData:
 
     def loop(self):
         for tile in self.game.map:
-            if isinstance(tile, Tile):
-                tile.interact(self.screen, self.game)
+            tile.render(screen)
      
 
 share = SharedData(game, screen) 
