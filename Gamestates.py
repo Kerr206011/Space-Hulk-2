@@ -41,6 +41,8 @@ class PlaceBL:
         self.gameStateManager = gameStateManager
         self.BLAmount = gameStateManager.game.reinforcement
         self.blipList = []
+        self.genstealer = None
+        self.spacemarine = None
 
     def take_blips(self):
         x = 0
@@ -56,6 +58,13 @@ class PlaceBL:
             gameStateManager.run_map()
         
     def run(self):
+        if isinstance(self.gameStateManager.selectedModel, Genestealer):
+            self.genstealer = self.gameStateManager.selectedModel
+            self.spacemarine = self.gameStateManager.clickedModel
+        else:
+            self.genstealer = self.gameStateManager.clickedModel
+            self.spacemarine = self.gameStateManager.selectedModel
+
         self.take_blips()
         self.place_image = pygame.image.load('Floor_1.png')
         self.amount_image = pygame.image.load('Floor_1.png')
@@ -91,8 +100,10 @@ class MeleeDiceRoll():
     def __init__(self, gameStateManager) -> None:
         self.gameStateManager = gameStateManager
         self.dice_1 = Dice(10, 10)
-        self.dice_2 = Dice(10, 110)
-        self.dice_3 = Dice(10, 210)
+        self.dice_2 = Dice(110, 10)
+        self.dice_3 = Dice(210, 10)
+        self.dice_4 = Dice(10, 110)
+        self.dice_5 = Dice(110, 110)
         self.place_image = pygame.image.load('Floor_1.png')
         self.amount_image = pygame.image.load('Floor_1.png')
         self.place_button = Button(810, 500, self.place_image, 1)
@@ -106,6 +117,7 @@ class MeleeDiceRoll():
             gameStateManager.run_dice(dice)
             
     def run(self):
+        a = True
         self.gameStateManager.runThread = True
         thread_1 = threading.Thread(target=self.run_threat,args=(self.dice_1,))
         thread_1.start()
@@ -116,20 +128,21 @@ class MeleeDiceRoll():
         thread_3 = threading.Thread(target=self.run_threat,args=(self.dice_3,))
         thread_3.start()
 
-        while True:
+        thread_4 = threading.Thread(target=self.run_threat,args=(self.dice_4,))
+        thread_4.start()
+
+        thread_5 = threading.Thread(target=self.run_threat,args=(self.dice_5,))
+        thread_5.start()
+
+        while a:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
 
             if self.amount_button.draw(self.gameStateManager.screen):
-                if self.gameStateManager.runThread == True:
-                    self.gameStateManager.runThread = False
-            
-            if self.place_button.draw(self.gameStateManager.screen):
-                self.gameStateManager.runThread = True
-                thread = threading.Thread(target=self.run_threat,args=(self.dice_1,))
-                thread.start()
+                self.gameStateManager.runThread = False
+                a = False
 
 pygame.init()
 game = Game()
