@@ -95,29 +95,21 @@ class Button():
     
 class Dice:
     def __init__(self, x, y) -> None:
-        self.x
-        self.y
+        self.x = x
+        self.y = y
         self.roll = False
-        diceImage = [
-        self.dice_1 = pygame.image.load("Pictures/Dice_Pictures/1.png")
-        self.dice_2 = pygame.image.load("Pictures/Dice_Pictures/2.png")
-        self.dice_3 = pygame.image.load("Pictures/Dice_Pictures/3.png")
-        self.dice_4 = pygame.image.load("Pictures/Dice_Pictures/4.png")
-        self.dice_5 = pygame.image.load("Pictures/Dice_Pictures/5.png")
-        self.dice_6 = pygame.image.load("Pictures/Dice_Pictures/6.png")
+        self.face = 1
+        self.diceImage = [
+        pygame.image.load("Pictures/Dice_Pictures/1.png"),
+        pygame.image.load("Pictures/Dice_Pictures/2.png"),
+        pygame.image.load("Pictures/Dice_Pictures/3.png"),
+        pygame.image.load("Pictures/Dice_Pictures/4.png"),
+        pygame.image.load("Pictures/Dice_Pictures/5.png"),
+        pygame.image.load("Pictures/Dice_Pictures/6.png")
         ]
+        self.picture = self.diceImage[0]
 
-    def display_random_dice(self, screen):
-        random_side = random.randint(0, 5)
-        screen.blit(dice_images[random_side], (self.x, self.y))
-        pygame.display.update()
-
-    def roll_dice(self, screen, button)
-        while self.roll:
-            self.display_random_dice(screen)
-            time.sleep(0.2)  # Pause for a short duration between flashes
-            
-            if(button.draw(screen))
-                # If any key is pressed, stop flashing
-                self.roll = False
-                break
+    def roll_dice(self):
+        a = random.randint(0, 5)
+        self.roll = a
+        self.picture = self.diceImage[a]

@@ -16,6 +16,12 @@ class GameStateManager:
     def run_gamestate(self, gameState):
         self.gamestates[gameState].run()
 
+    def run_dice(self, dice):
+        time.sleep(0.15)
+        dice.roll_dice()
+        self.screen.blit(dice.picture, (dice.x, dice.y))
+        pygame.display.update()
+
     def run_map(self):
         for tile in game.map:
             if tile.button.draw(self.screen):
@@ -84,7 +90,9 @@ class PlaceBL:
 class MeleeDiceRoll():
     def __init__(self, gameStateManager) -> None:
         self.gameStateManager = gameStateManager
-        self.dice_1 = Dice(10,10)
+        self.dice_1 = Dice(10, 10)
+        self.dice_2 = Dice(10, 110)
+        self.dice_3 = Dice(10, 210)
         self.place_image = pygame.image.load('Floor_1.png')
         self.amount_image = pygame.image.load('Floor_1.png')
         self.place_button = Button(810, 500, self.place_image, 1)
@@ -93,16 +101,35 @@ class MeleeDiceRoll():
     def calculate_winner(gs_roll_1, gs_roll_2, gs_roll_3, sm_roll_1, sm_roll_2):
         pass
 
-
+    def run_threat(self, dice):
+        while self.gameStateManager.runThread == True:
+            gameStateManager.run_dice(dice)
+            
     def run(self):
+        self.gameStateManager.runThread = True
+        thread_1 = threading.Thread(target=self.run_threat,args=(self.dice_1,))
+        thread_1.start()
+
+        thread_2 = threading.Thread(target=self.run_threat,args=(self.dice_2,))
+        thread_2.start()
+
+        thread_3 = threading.Thread(target=self.run_threat,args=(self.dice_3,))
+        thread_3.start()
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-            self.dice_1.roll_dice(self.gameStateManager.screen, self.place_button)
+
+            if self.amount_button.draw(self.gameStateManager.screen):
+                if self.gameStateManager.runThread == True:
+                    self.gameStateManager.runThread = False
             
-            
+            if self.place_button.draw(self.gameStateManager.screen):
+                self.gameStateManager.runThread = True
+                thread = threading.Thread(target=self.run_threat,args=(self.dice_1,))
+                thread.start()
 
 pygame.init()
 game = Game()
@@ -120,7 +147,7 @@ game.map[0].isOccupied = True
 screen = pygame.display.set_mode((900,900))
 screen.fill("black")
 gameStateManager = GameStateManager(game, screen)
-gameStateManager.run_gamestate("placeBL")
+gameStateManager.run_gamestate("mlRoll")
 
 # for event in pygame.event.get():
 #                 if event.type == pygame.QUIT:
