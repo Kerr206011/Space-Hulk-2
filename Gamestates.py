@@ -6,21 +6,11 @@ class GameStateManager:
     def __init__(self, game, screen) -> None:
         self.game = game
         self.screen = screen
-        self.gamestates = {"placeBL": PlaceBL(self), "mlRoll": MeleeDiceRoll(self)}
-        self.selectedTile = None
-        self.clickedTile = None
-        self.selectedModel = None
-        self.clickedModel = None
+        self.gamestates = {"placeBL": PlaceBL(self, self.game), "mlRoll": MeleeDiceRoll(self, self.game)}
         self.runThread = True
 
     def run_gamestate(self, gameState):
         self.gamestates[gameState].run()
-
-    def run_dice(self, dice):
-        time.sleep(0.15)
-        dice.roll_dice()
-        self.screen.blit(dice.picture, (dice.x, dice.y))
-        pygame.display.update()
 
     def run_map(self):
         for tile in game.map:
@@ -37,12 +27,11 @@ class GameStateManager:
             pygame.display.update()
 
 class PlaceBL:
-    def __init__(self, gameStateManager) -> None:
+    def __init__(self, gameStateManager, game) -> None:
+        self.game = game
         self.gameStateManager = gameStateManager
         self.BLAmount = gameStateManager.game.reinforcement
         self.blipList = []
-        self.genstealer = None
-        self.spacemarine = None
 
     def take_blips(self):
         x = 0
@@ -58,13 +47,6 @@ class PlaceBL:
             gameStateManager.run_map()
         
     def run(self):
-        if isinstance(self.gameStateManager.selectedModel, Genestealer):
-            self.genstealer = self.gameStateManager.selectedModel
-            self.spacemarine = self.gameStateManager.clickedModel
-        else:
-            self.genstealer = self.gameStateManager.clickedModel
-            self.spacemarine = self.gameStateManager.selectedModel
-
         self.take_blips()
         self.place_image = pygame.image.load('Floor_1.png')
         self.amount_image = pygame.image.load('Floor_1.png')
@@ -87,63 +69,155 @@ class PlaceBL:
                 self.gameStateManager.run_gamestate("placeBL")
             if self.place_button.draw(self.gameStateManager.screen):
                 if isinstance(self.gameStateManager.clickedTile, EntryPoint):
-                    a = self.blipList.pop(0)
-                    self.gameStateManager.clickedTile.blips.append(Blip(a))
-                    print(self.blipList)
-                    print(gameStateManager.clickedTile.blips)
-                    print(gameStateManager.clickedTile.blips[0].count)
+                    if self.gameStateManager.clickedTile.blips.__len__() < 3:
+                        a = self.blipList.pop(0)
+                        self.gameStateManager.clickedTile.blips.append(Blip(a))
+                        print(self.blipList)
+                        print(gameStateManager.clickedTile.blips)
+                        print(gameStateManager.clickedTile.blips[0].count)
+                    else:
+                        print("Too many blips outside the area!")
                 else:
                     #normally trow error to display for player to see
                     print("Can't Place Model there, please select valid Entrypoint!")
 
 class MeleeDiceRoll():
-    def __init__(self, gameStateManager) -> None:
+    def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager = gameStateManager
-        self.dice_1 = Dice(10, 10)
-        self.dice_2 = Dice(110, 10)
-        self.dice_3 = Dice(210, 10)
-        self.dice_4 = Dice(10, 110)
-        self.dice_5 = Dice(110, 110)
+        self.game = game
+
+    def run(self):
+        sm = None
+        gs = None
+        facing = self.game.is_facing(self.game.selectedModel, self.game.clickedModel)
+
+        if self.game.selectedModel in self.game.smModelList:
+            sm = self.game.selectedModel
+            gs = self.game.clickedModel
+        else:
+            gs = self.game.selectedModel
+            sm = self.game.clickedModel
+
         self.place_image = pygame.image.load('Floor_1.png')
         self.amount_image = pygame.image.load('Floor_1.png')
+        self.accept_image = pygame.image.load('Floor_1.png')
         self.place_button = Button(810, 500, self.place_image, 1)
         self.amount_button = Button(810, 600, self.amount_image, 1)
-    
-    def calculate_winner(gs_roll_1, gs_roll_2, gs_roll_3, sm_roll_1, sm_roll_2):
-        pass
+        self.accept_button = Button(410, 700, self.accept_image, 1)
 
-    def run_threat(self, dice):
-        while self.gameStateManager.runThread == True:
-            gameStateManager.run_dice(dice)
-            
-    def run(self):
+        selectedDice = None
+        if facing:
+            parry = False
+        guard = self.game.selectedModel.guard
+        winner = None
+
+        dice_1 = Dice(10,10)
+        dice_2 = Dice(110, 10)
+        dice_4 = Dice(410, 10)
+        diceList = [dice_1, dice_2, dice_4]
+        dice_3 = None
+        dice_5 = None
+        if self.game.isPlaying == self.game.player1:
+            if sm.weapon != "Thunderhammer":
+                dice_3 = Dice(210, 10)
+            if sm.weapon == "Powersword":
+                parry = True
+            if self.game.selectedModel.weapon == "Lightningclaws":
+                dice_5 = Dice(510, 10)
+
+        elif self.game.isPlaying == self.game.player2:
+            if self.game.is_facing(gs, sm):
+                if sm.weapon != "Thunderhammer" or facing == False:
+                    dice_3 = Dice(210, 10)
+                if sm.weapon == "Powersword" and facing:
+                    parry = True
+                if sm.weapon == "Lightningclaws" and facing:
+                    dice_5 = Dice(510, 10)
+
+        if dice_3 != None:
+            diceList.append(dice_3)
+        if dice_5 != None:
+            diceList.append(dice_5)
+
         a = True
-        self.gameStateManager.runThread = True
-        thread_1 = threading.Thread(target=self.run_threat,args=(self.dice_1,))
-        thread_1.start()
-
-        thread_2 = threading.Thread(target=self.run_threat,args=(self.dice_2,))
-        thread_2.start()
-
-        thread_3 = threading.Thread(target=self.run_threat,args=(self.dice_3,))
-        thread_3.start()
-
-        thread_4 = threading.Thread(target=self.run_threat,args=(self.dice_4,))
-        thread_4.start()
-
-        thread_5 = threading.Thread(target=self.run_threat,args=(self.dice_5,))
-        thread_5.start()
-
-        while a:
+        while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+            self.gameStateManager.screen.fill("Black")
+            if(a):
+                dice_1.roll_dice(self.gameStateManager.screen)
+                dice_2.roll_dice(self.gameStateManager.screen)
+                if dice_3 != None:
+                    dice_3.roll_dice(self.gameStateManager.screen)
+                dice_4.roll_dice(self.gameStateManager.screen)
+                if dice_5 != None:
+                    dice_5.roll_dice(self.gameStateManager.screen)
 
-            if self.amount_button.draw(self.gameStateManager.screen):
-                self.gameStateManager.runThread = False
+                if dice_5 != None:
+                    winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, dice_1.face, dice_2.face, dice_3.face, dice_4.face, dice_5.face, 0)
+                elif dice_3 != None:
+                    winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, dice_1.face, dice_2.face, dice_3.face, dice_4.face, 0, 0)
+                else:
+                    winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, dice_1.face, dice_2.face, 0, dice_4.face, 0, 0)
+                if winner in self.game.smModelList:
+                    print("SM Wins!")
+                elif winner == None:
+                    print("Draw!")
+                else:
+                    print("GS Wins!")
                 a = False
 
+            for dice in diceList:
+                if dice.show_result(self.gameStateManager.screen):
+                    selectedDice = dice
+                    print(selectedDice)
+
+            if parry == True:
+                if self.place_button.draw(self.gameStateManager.screen):
+                    if selectedDice == dice_1 or selectedDice == dice_2 or selectedDice == dice_3:
+                            selectedDice.roll_dice(self.gameStateManager.screen)
+                            parry = False
+                            winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, dice_1.face, dice_2.face, dice_3.face, dice_4.face, 0, 0)
+                            if winner in self.game.smModelList:
+                                print("SM Wins!")
+                            elif winner == None:
+                                print("Draw!")
+                            else:
+                                print("GS Wins!")
+
+            if guard == True:
+                if self.amount_button.draw(self.gameStateManager.screen):
+                    if selectedDice == dice_4 or selectedDice == dice_5:
+                        selectedDice.roll_dice(self.gameStateManager.screen)
+                        guard = False
+                        if dice_5 != None:
+                            winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, dice_1.face, dice_2.face, dice_3.face, dice_4.face, dice_5.face, 0)
+                        elif dice_3 != None:
+                            winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, dice_1.face, dice_2.face, dice_3.face, dice_4.face, 0, 0)
+                        else:
+                            winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, dice_1.face, dice_2.face, 0, dice_4.face, 0, 0)
+                        if winner in self.game.smModelList:
+                            print("SM Wins!")
+                        elif winner == None:
+                            print("Draw!")
+                        else:
+                            print("GS Wins!")
+            if self.accept_button.draw(self.gameStateManager.screen):
+                if winner == None:
+                    pass
+                    #import option to turn, maby even in this menu?
+                elif winner == self.game.selectedModel:
+                    if facing:
+                        self.game.destroy_model(self.game.selectedModel, self.game.selectedTile)       
+                else: 
+                    if facing:
+                        self.game.destroy_model(self.game.clickedModel, self.game.clickedTile)     
+                self.gameStateManager.screen.fill("black")
+                self.gameStateManager.run_gamestate("placeBL")
+            pygame.display.update()
+            
 pygame.init()
 game = Game()
 game.load_level("level1")
@@ -155,11 +229,21 @@ game.map.append(wall)
 #     if isinstance(tile, Tile):
 #         tile.occupand = SpaceMarine("bolter", "sergant")
 #         tile.isOccupied = True
-game.map[0].occupand = SpaceMarine("Bolter", "sergeant")
+game.map[0].occupand = SpaceMarine("Lightningclaws", "sergeant")
+game.smModelList.append(game.map[0].occupand)
+game.smModelList[0].guard = True
 game.map[0].isOccupied = True
+game.selectedTile = game.map[0]
+game.gsModelList.append(Genestealer())
+game.map[2].occupand = game.gsModelList[0]
+game.map[2].isOccupied = True
 screen = pygame.display.set_mode((900,900))
 screen.fill("black")
 gameStateManager = GameStateManager(game, screen)
+game.selectedModel = game.smModelList[0]
+game.clickedModel = game.gsModelList[0]
+game.clickedModel.face = (-1,0)
+# game.clickedModel.isBroodlord = True
 gameStateManager.run_gamestate("mlRoll")
 
 # for event in pygame.event.get():

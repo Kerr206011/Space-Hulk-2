@@ -1,0 +1,7 @@
+"Thunderhammer"
+"Powersword"
+"Lightningclaws"
+"Bolter"
+"Assaultcannon"
+"Flamer"
+"Axe"

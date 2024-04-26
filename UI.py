@@ -97,7 +97,6 @@ class Dice:
     def __init__(self, x, y) -> None:
         self.x = x
         self.y = y
-        self.roll = False
         self.face = 1
         self.diceImage = [
         pygame.image.load("Pictures/Dice_Pictures/1.png"),
@@ -108,8 +107,46 @@ class Dice:
         pygame.image.load("Pictures/Dice_Pictures/6.png")
         ]
         self.picture = self.diceImage[0]
+        self.rect = self.picture.get_rect()
+        self.rect.topleft = (x, y)
+        self.clicked = False
+        self.prev_mouse_state = False
 
-    def roll_dice(self):
-        a = random.randint(0, 5)
-        self.roll = a
-        self.picture = self.diceImage[a]
+    def roll_dice(self, screen):
+        a = 0
+        while a < 15:
+            b = random.randint(0, 5)
+            self.face = b + 1
+            self.picture = self.diceImage[b]
+            a +=1
+            screen.blit(self.picture, (self.x, self.y))
+            pygame.display.update()
+            time.sleep(0.1)
+
+    def show_result(self, screen):
+        action = False
+
+        #get mouse position
+        pos = pygame.mouse.get_pos()
+        #get mouse state
+        mouse_state = pygame.mouse.get_pressed()[0] == 1
+
+        # Check if mouse is over the button
+        if self.rect.collidepoint(pos):
+            # Check if mouse button is pressed down
+            if mouse_state and not self.prev_mouse_state:
+                self.clicked = True
+
+         # Check if mouse button is released
+        if not mouse_state and self.prev_mouse_state:
+            if self.clicked:
+                action = True
+            self.clicked = False
+
+        #draw button on screen
+        screen.blit(self.picture, (self.rect.x, self.rect.y))
+
+         # Update previous mouse state
+        self.prev_mouse_state = mouse_state
+
+        return action

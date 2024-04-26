@@ -19,7 +19,7 @@ class SpaceMarine(Model):
 class Genestealer(Model):
     def __init__(self):
         super().__init__(6, 'Pictures/Models/Gs.png')
-        self.is_broodlord = False
+        self.isBroodlord = False
 
 class Blip(Model):
     def __init__(self, count):

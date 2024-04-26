@@ -9,9 +9,14 @@ class Game():
         self.blipReserve = []
         self.cp = random.randint(1,6)
         self.player1 = "";self.player2 = ""
+        self.isPlaying = self.player1
         self.gsModelList = [];self.smModelList = [];self.blipSack = [];self.blModelList = []
         self.level = int
         self.reinforcement = int 
+        self.selectedTile = None
+        self.clickedTile = None
+        self.selectedModel = None
+        self.clickedModel = None
 
     def load_level(self,levelFile):
         file_path = "Levels/"+levelFile+".json"
@@ -83,8 +88,232 @@ class Game():
     def set_overwatch(self, model):
         model.overwatch = True
 
-    def remove_blip(self, model):
-        self.blipReserve.append(model.count)
+    def destroy_model(self, model, tile):
+        if model == self.selectedModel:
+            self.selectedModel = None
+        elif model == self.clickedModel:
+            self.clickedModel = None
+        if model in self.smModelList:
+            self.smModelList.remove(model)
+            tile.isOccupied = False
+            tile.occupand = None
+        elif model in self.gsModelList:
+            self.gsModelList.remove(model) 
+            tile.isOccupied = False
+            tile.occupand = None
+        if model in self.blModelList:
+            self.blipReserve.append(model.count)
+            self.blModelList.remove(model)
+            tile.isOccupied = False
+            tile.occupand = None
+
+    def is_facing(self, attacker, defender):
+        facing = False
+        match attacker.face:
+            case (1,0):
+                if defender.face == (-1,0):
+                    facing = True
+            case (0,1):
+                if defender.face == (0,-1):
+                    facing = True
+            case (-1,0):
+                if defender.face == (1,0):
+                    facing = True
+            case (0,-1):
+                if defender.face == (0,1):
+                    facing = True
+        
+        return facing
+
+    def melee(self, attacker, defender, roll_1, roll_2, roll_3, roll_4, roll_5, pyscic):
+        facing = self.is_facing(attacker, defender)
+        winner = None
+        if attacker in self.gsModelList:
+            if attacker.isBroodlord:
+                if defender.weapon == "Thunderhammer":
+                    roll_1 = roll_1 + roll_2
+                else:
+                    if roll_1 >= roll_2 and roll_2 >= roll_3:
+                        roll_1 = roll_1 + roll_3
+                    elif roll_1 >= roll_3 and roll_3 >= roll_2:
+                        roll_1 = roll_1 + roll_2
+                    elif roll_2 >= roll_3 and roll_3 >= roll_1:
+                        roll_2 = roll_2 + roll_1
+                    elif roll_2 >= roll_1 and roll_1 >= roll_3:
+                        roll_2 = roll_2 + roll_3
+                    elif roll_3 >= roll_2 and roll_2 >= roll_1:
+                        roll_3 = roll_3 + roll_1
+                    else:
+                        roll_3 = roll_3 + roll_2
+
+            if defender.weapon == "Thunderhammer":
+                if facing:
+                    roll_4 +=2
+                    if roll_1 > roll_4 or roll_2 > roll_4:
+                        winner = attacker
+                    elif roll_1 == roll_4 or roll_2 == roll_4:
+                        winner = None
+                    else:
+                        winner = defender
+                else:
+                    if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                        winner = attacker
+                    elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                        winner = None
+                    else:
+                        winner = defender
+            
+            elif defender.weapon == "Powersword":
+                if facing:
+                    roll_4 +=1
+                    if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                        winner = attacker
+                    elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                        winner = None
+                    else:
+                        winner = defender
+                else:
+                    if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                        winner = attacker
+                    elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                        winner = None
+                    else:
+                        winner = defender
+
+            elif defender.weapon == "Lightningclaws":
+                if facing:
+                    if roll_4 > roll_5:
+                        roll_4 +=1
+                    else:
+                        roll_5 +=1
+
+                    if (roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4) and (roll_1 > roll_5 and roll_2 > roll_5 and roll_3 > roll_5):
+                        winner = attacker
+                    elif (roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4 and roll_4 > roll_5) or (roll_1 == roll_5 or roll_2 == roll_5 or roll_3 == roll_5 and roll_4 < roll_5):
+                        winner = None
+                    else:
+                        winner = defender
+                else:
+                    if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                        winner = attacker
+                    elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                        winner = None
+                    else:
+                        winner = defender
+
+            elif defender.weapon == "Axe":
+                if facing:
+                    roll_4 +=1
+                    roll_4 += pyscic
+                    if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                        winner = attacker
+                    elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                        winner = None
+                    else:
+                        winner = defender
+                else:
+                    if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                        winner = attacker
+                    elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                        winner = None
+                    else:
+                        winner = defender
+            
+            else:
+                if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                    winner = attacker
+                elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                    winner = None
+                else:
+                    winner = defender
+
+        else:
+            if defender.isBroodlord:
+                if attacker.weapon == "Thunderhammer":
+                    roll_1 = roll_1 + roll_2
+                else:
+                    if roll_1 >= roll_2 and roll_2 >= roll_3:
+                        roll_1 = roll_1 + roll_3
+                    elif roll_1 >= roll_3 and roll_3 >= roll_2:
+                        roll_1 = roll_1 + roll_2
+                    elif roll_2 >= roll_3 and roll_3 >= roll_1:
+                        roll_2 = roll_2 + roll_1
+                    elif roll_2 >= roll_1 and roll_1 >= roll_3:
+                        roll_2 = roll_2 + roll_3
+                    elif roll_3 >= roll_2 and roll_2 >= roll_1:
+                        roll_3 = roll_3 + roll_1
+                    else:
+                        roll_3 = roll_3 + roll_2
+
+            if attacker.weapon == "Thunderhammer":
+                roll_4 +=2
+                if roll_1 > roll_4 or roll_2 > roll_4:
+                    winner = defender
+                elif roll_1 == roll_4 or roll_2 == roll_4:
+                    winner = None
+                else:
+                    winner = attacker
+            
+            elif attacker.weapon == "Powersword":
+                roll_4 +=1
+                if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                    winner = defender
+                elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                    winner = None
+                else:
+                    winner = attacker
+
+            elif attacker.weapon == "Lightningclaws":
+                if roll_4 > roll_5:
+                    roll_4 +=1
+                else:
+                    roll_5 +=1
+
+                if (roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4) and (roll_1 > roll_5 or roll_2 > roll_5 or roll_3 > roll_5):
+                    winner = defender
+                elif (roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4 and roll_4 > roll_5) or (roll_1 == roll_5 or roll_2 == roll_5 or roll_3 == roll_5 and roll_4 < roll_5):
+                    winner = None
+                else:
+                    winner = attacker
+
+            elif attacker.weapon == "Axe":
+                roll_4 +=1
+                roll_4 += pyscic
+                if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                    winner = defender
+                elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                    winner = None
+                else:
+                    winner = attacker
+            
+            else:
+                if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                    winner = defender
+                elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                    winner = None
+                else:
+                    winner = attacker
+
+        return winner
+    
+    def shoot_bolter(self, shooter, targetTile, roll_1, roll_2):
+        if shooter.susf == True:
+            roll_1 += 1
+            roll_2 += 1
+
+        if targetTile.isOccupied:
+            if targetTile.occupand.isBroodlord == True:
+                if roll_1 > 5 and roll_2 > 5:
+                    self.destroy_model(targetTile.occupand, targetTile)
+            else:
+                if roll_1 > 5 or roll_2 > 5:
+                    self.destroy_model(targetTile.occupand, targetTile)
+        elif isinstance(targetTile, Door):
+            if targetTile.isOpen == False:
+                if roll_1 > 5 or roll_2 > 5:
+                    pass # make new tile???
+
+        
 game = Game()
 game.load_level("level1")
 print(game.map)
