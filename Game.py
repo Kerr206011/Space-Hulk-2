@@ -308,12 +308,38 @@ class Game():
             else:
                 if roll_1 > 5 or roll_2 > 5:
                     self.destroy_model(targetTile.occupand, targetTile)
+
         elif isinstance(targetTile, Door):
             if targetTile.isOpen == False:
-                if roll_1 > 5 or roll_2 > 5:
-                    pass # make new tile???
-
+                if roll_1 > 5 or roll_2 > 5:      
+                    self.map.remove(targetTile)
+                    self.map.append(targetTile.get_destroyed())
+        if roll_1 == roll_2:
+            return True
+        else:
+            return False
         
+    
+    def shoot_assaultCannon(self, shooter, targetTile, roll_1, roll_2, roll_3):
+        if shooter.susf == True:
+            roll_1 +=1
+            roll_2 +=1
+            roll_3 +=1
+
+        if targetTile.isBroodlord == False:
+            if roll_1 > 4 or roll_2 > 4 or roll_3 > 4:
+                self.destroy_model(targetTile.occupand, targetTile)
+
+        else:
+            if (roll_1 > 4 and roll_2 > 4) or (roll_2 > 4 and roll_3 > 4) or (roll_1 > 4 and roll_3 > 4):
+                self.destroy_model(targetTile.occupand, targetTile)
+
+    def shoot_flamer(self, targetTile):
+        x = targetTile.sector
+        for tile in self.map:
+            if isinstance(tile, Tile):
+                if self.isOpen == True:
+                    tile.isBurning = True
 game = Game()
 game.load_level("level1")
 print(game.map)

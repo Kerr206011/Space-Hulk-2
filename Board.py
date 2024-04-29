@@ -40,6 +40,10 @@ class Door(Tile):
         self.isOpen = isOpen
         self.picture_closed = picture_cosed
 
+    def get_destroyed(self):
+        newTile = Tile("Floor_1.png", self.x, self.y, self.sector)
+        return newTile
+
 class ControlledArea(Tile):
     def __init__(self, picture, x, y, sector) -> None:
         super().__init__(picture, x, y, sector)

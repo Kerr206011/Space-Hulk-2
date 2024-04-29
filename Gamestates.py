@@ -243,6 +243,10 @@ gameStateManager = GameStateManager(game, screen)
 game.selectedModel = game.smModelList[0]
 game.clickedModel = game.gsModelList[0]
 game.clickedModel.face = (-1,0)
+print("Jetzt")
+for tile in game.map:
+            if issubclass(Tile,tile.class):
+                print(tile)
 # game.clickedModel.isBroodlord = True
 gameStateManager.run_gamestate("mlRoll")
 
