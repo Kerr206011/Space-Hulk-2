@@ -1,5 +1,10 @@
 import pygame
 
+class Item:
+    def __init__(self, picture) -> None:
+        self.picture = pygame.image.load(picture)
+        self.carrier = None
+
 class Model:
     def __init__(self, AP, picture):
         self.AP = AP

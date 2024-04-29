@@ -2,6 +2,7 @@ from UI import *
 
 class Tile:
     def __init__(self, picture, x, y, sector) -> None:
+        self.picturePath = picture
         self.sector = sector
         self.scale = 1
         self.picture = pygame.image.load(picture)
@@ -23,6 +24,7 @@ class Tile:
 
 class Wall:
     def __init__(self, picture, x, y) -> None:
+        self.picturePath = picture
         self.scale = 1
         self.picture = pygame.image.load(picture)
         self.graphicOFS = self.picture.get_width()
@@ -38,18 +40,24 @@ class Door(Tile):
     def __init__(self, picture, picture_cosed, x, y, sector, isOpen) -> None:
         super().__init__(picture, x, y, sector)
         self.isOpen = isOpen
-        self.picture_closed = picture_cosed
+        self.pictureClosedPath = picture_cosed
+        self.picture_closed = pygame.image.load(picture_cosed)
 
     def get_destroyed(self):
-        newTile = Tile("Floor_1.png", self.x, self.y, self.sector)
+        newTile = Tile("Pictures/Tiles/Floor_1.png", self.x, self.y, self.sector)
         return newTile
 
 class ControlledArea(Tile):
     def __init__(self, picture, x, y, sector) -> None:
         super().__init__(picture, x, y, sector)
 
+    def convert_to_tile(self):
+        tile = Tile("Pictures/Tiles/Floor_1.png", self.x, self.y, self.sector)
+        return tile
+
 class EntryPoint:
     def __init__(self, picture, x, y) -> None:
+        self.picturePath = picture
         self.scale = 1
         self.picture = pygame.image.load(picture)
         self.graphicOFS = self.picture.get_width()

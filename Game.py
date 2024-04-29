@@ -17,6 +17,10 @@ class Game():
         self.clickedTile = None
         self.selectedModel = None
         self.clickedModel = None
+        self.assaultCannonAmmo = 10
+        self.assaultCannonReload = True
+        self.flamerAmmo = 6
+        self.psyPoints = 20
 
     def load_level(self,levelFile):
         file_path = "Levels/"+levelFile+".json"
@@ -40,6 +44,14 @@ class Game():
             elif entry[1] == "wall":
                 newWall = Wall(entry[2],entry[0][0],entry[0][1])
                 self.map.append(newWall)
+
+            elif entry[1] == "entry":
+                newEntry = EntryPoint(entry[2],entry[0][0],entry[0][1])
+                self.map.append(newEntry)
+
+            elif entry[1] == "control":
+                newControl = ControlledArea(entry[2],entry[0][0],entry[0][1],entry[3])
+                self.map.append(newControl)
 
     def turn_model(self, model, dir):
         match dir:
@@ -91,13 +103,14 @@ class Game():
     def destroy_model(self, model, tile):
         if model == self.selectedModel:
             self.selectedModel = None
+            self.selectedTile = None
         elif model == self.clickedModel:
             self.clickedModel = None
         if model in self.smModelList:
             self.smModelList.remove(model)
             tile.isOccupied = False
             tile.occupand = None
-        elif model in self.gsModelList:
+        if model in self.gsModelList:
             self.gsModelList.remove(model) 
             tile.isOccupied = False
             tile.occupand = None
@@ -297,6 +310,8 @@ class Game():
         return winner
     
     def shoot_bolter(self, shooter, targetTile, roll_1, roll_2):
+        hit = False
+
         if shooter.susf == True:
             roll_1 += 1
             roll_2 += 1
@@ -304,23 +319,49 @@ class Game():
         if targetTile.isOccupied:
             if targetTile.occupand.isBroodlord == True:
                 if roll_1 > 5 and roll_2 > 5:
-                    self.destroy_model(targetTile.occupand, targetTile)
+                    hit = True
             else:
                 if roll_1 > 5 or roll_2 > 5:
-                    self.destroy_model(targetTile.occupand, targetTile)
+                    hit = True
 
-        elif isinstance(targetTile, Door):
-            if targetTile.isOpen == False:
-                if roll_1 > 5 or roll_2 > 5:      
-                    self.map.remove(targetTile)
-                    self.map.append(targetTile.get_destroyed())
-        if roll_1 == roll_2:
-            return True
-        else:
-            return False
+        return hit
         
+        
+    def shoot_door(self, shooter, targetTile):
+        hit = False
+
+        if shooter.susf == True:
+            roll_1 += 1
+            roll_2 += 1
+
+        if roll_1 > 5 or roll_2 > 5:
+            hit = True
+
+        return hit
+
+    def overwatch_bolter(self, shooter, targetTile):
+        hit = False
+
+        if shooter.susf == True:
+            roll_1 += 1
+            roll_2 += 1
+
+        if targetTile.isOccupied:
+            if targetTile.occupand.isBroodlord == True:
+                if roll_1 > 5 and roll_2 > 5:
+                    hit = True
+            else:
+                if roll_1 > 5 or roll_2 > 5:
+                    hit = True
+
+        if roll_1 == roll_2:
+            shooter.jam = True
+
+        return hit
     
     def shoot_assaultCannon(self, shooter, targetTile, roll_1, roll_2, roll_3):
+        hit = False
+
         if shooter.susf == True:
             roll_1 +=1
             roll_2 +=1
@@ -328,11 +369,13 @@ class Game():
 
         if targetTile.isBroodlord == False:
             if roll_1 > 4 or roll_2 > 4 or roll_3 > 4:
-                self.destroy_model(targetTile.occupand, targetTile)
+                hit = True
 
         else:
             if (roll_1 > 4 and roll_2 > 4) or (roll_2 > 4 and roll_3 > 4) or (roll_1 > 4 and roll_3 > 4):
-                self.destroy_model(targetTile.occupand, targetTile)
+                hit = True
+
+        return hit
 
     def shoot_flamer(self, targetTile):
         x = targetTile.sector
@@ -341,5 +384,5 @@ class Game():
                 if self.isOpen == True:
                     tile.isBurning = True
 game = Game()
-game.load_level("level1")
+game.load_level("level_1")
 print(game.map)
