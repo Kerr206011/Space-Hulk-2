@@ -1,6 +1,7 @@
 import json
 import random
 from Board import *
+from Models import *
 
 class Game():
     def __init__(self) -> None:
@@ -29,8 +30,12 @@ class Game():
         self.level = data["level"]
         self.blipSack = data["blipList"]
         self.reinforcement = data["reinforcement"]
+        smList = data["smModelList"]
 
         bluePrint = data["map"]
+        for entry in smList:
+            self.smModelList.append(SpaceMarine(entry[0],entry[1]))
+            
         for entry in bluePrint:
 
             if entry[1] == "tile":
@@ -39,6 +44,8 @@ class Game():
 
             elif entry[1] == "door":
                 newDoor = Door(entry[2], entry[4], entry[0][0], entry[0][1], entry[3], entry[5])
+                if entry[5] == False:
+                    newDoor.change_picture(newDoor.pictureClosedPath)
                 self.map.append(newDoor)
 
             elif entry[1] == "wall":
@@ -324,10 +331,12 @@ class Game():
                 if roll_1 > 5 or roll_2 > 5:
                     hit = True
 
+        shooter.susf = True
+
         return hit
         
         
-    def shoot_door(self, shooter, targetTile):
+    def shoot_door(self, shooter):
         hit = False
 
         if shooter.susf == True:
@@ -336,6 +345,8 @@ class Game():
 
         if roll_1 > 5 or roll_2 > 5:
             hit = True
+
+        shooter.susf = True
 
         return hit
 
@@ -353,6 +364,8 @@ class Game():
             else:
                 if roll_1 > 5 or roll_2 > 5:
                     hit = True
+
+        shooter.susf = True
 
         if roll_1 == roll_2:
             shooter.jam = True
@@ -375,14 +388,21 @@ class Game():
             if (roll_1 > 4 and roll_2 > 4) or (roll_2 > 4 and roll_3 > 4) or (roll_1 > 4 and roll_3 > 4):
                 hit = True
 
+        shooter.susf = True
+
         return hit
 
     def shoot_flamer(self, targetTile):
-        x = targetTile.sector
-        for tile in self.map:
-            if isinstance(tile, Tile):
-                if self.isOpen == True:
-                    tile.isBurning = True
+        pass
+
+    def interact_door(self, door):
+        if door.isOpen:
+            door.isOpen = False
+            door.change_picture(door.pictureClosedPath)
+        else:
+            door.isOpen = True
+            door.change_picture(door.picturePath)
+
 game = Game()
 game.load_level("level_1")
 print(game.map)

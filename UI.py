@@ -15,6 +15,9 @@ class Button():
         self.clicked = False
         self.prev_mouse_state = False
 
+    def change_picture(self, image):
+        self.image = pygame.transform.scale(image, (int(self.width * self.scale), int(self.height * self.scale)))
+
     def show(self, surface, addImage = None):
         surface.blit(self.image, (self.rect.x, self.rect.y))
         if addImage != None:
