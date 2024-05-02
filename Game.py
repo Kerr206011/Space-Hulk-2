@@ -13,7 +13,7 @@ class Game():
         self.isPlaying = self.player1
         self.gsModelList = [];self.smModelList = [];self.blipSack = [];self.blModelList = []
         self.level = int
-        self.reinforcement = int 
+        self.reinforcement = int
         self.selectedTile = None
         self.clickedTile = None
         self.selectedModel = None
@@ -402,6 +402,14 @@ class Game():
         else:
             door.isOpen = True
             door.change_picture(door.picturePath)
+
+    def reduce_ap_sm(self, model, amount):
+        if amount > model.AP:
+            model.AP = 0
+            self.cp -= (amount - model.AP)
+
+        else:
+            model.AP -= amount
 
 game = Game()
 game.load_level("level_1")

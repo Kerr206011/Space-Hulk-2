@@ -115,6 +115,15 @@ map.append(EntryPoint("Pictures/Tiles/lurking.png", 12, 23))
 map.append(Wall("Pictures/Tiles/Wall.png", 13, 20))
 map.append(Wall("Pictures/Tiles/Wall.png", 13, 21))
 map.append(Wall("Pictures/Tiles/Wall.png", 13, 22))
+map.append(Wall("Pictures/Tiles/Wall.png", 11, 11))
+map.append(Tile("Pictures/Tiles/Floor_1.png", 11, 12, 5))
+map.append(Wall("Pictures/Tiles/Wall.png", 11, 13))
+map.append(Wall("Pictures/Tiles/Wall.png", 12, 11))
+map.append(Tile("Pictures/Tiles/Floor_1.png", 12, 12, 5))
+map.append(Wall("Pictures/Tiles/Wall.png", 12, 13))
+map.append(Wall("Pictures/Tiles/Wall.png", 13, 11))
+map.append(Tile("Pictures/Tiles/Floor_1.png", 13, 12, 5))
+map.append(Wall("Pictures/Tiles/Wall.png", 13, 13))
 
 for tile in map:
     if isinstance(tile, Door):
