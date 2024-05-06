@@ -153,7 +153,8 @@ data = {
     "blipList" : a,
     "map" : saveMap,
     "reinforcement" : 2,
-    "smModelList" : smModelSaveList
+    "smModelList" : smModelSaveList,
+    "broodLord": False
 }
 
 # File path to save the JSON file
