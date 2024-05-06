@@ -22,6 +22,8 @@ class Tile:
         self.isOccupied = False
         self.occupand = None
         self.isBurning = False
+        self.hasItem = False
+        self.item = None
 
     def scroll(self, input):
         self.graphicsX += input[0]

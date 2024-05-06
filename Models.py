@@ -10,7 +10,8 @@ class Model:
         self.AP = AP
         self.picture = pygame.image.load(picture)
         self.face = (1,0)
-        item = None
+        self.item = None
+        
 class SpaceMarine(Model):
     def __init__(self, weapon, rank):
         super().__init__(4,'Pictures/Models/SM.png')

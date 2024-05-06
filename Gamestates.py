@@ -9,6 +9,8 @@ class GameStateManager:     #class to manage interactions between gamestates and
         self.gamestates = {"smTurning": smTurning(self, self.game), "main":gamestateMain(self, self.game), "gsPlace": PlaceBL(self, self.game), "mlRoll": MeleeDiceRoll(self, self.game), "smPlace": PlaceSM(self, self.game)}
         self.runThread = True
 
+        self.freeShot = False   #if sm has free shoot Action
+
     def run_gamestate(self, gameState):     #method for executing the run methods of the individual gamestates
         self.gamestates[gameState].run()
 
@@ -35,6 +37,25 @@ class GameStateManager:     #class to manage interactions between gamestates and
                 if isinstance(tile, ControlledArea):
                     self.game.selectedTile = tile
                     print(self.game.selectedTile)
+            tile.render(self.screen)
+            pygame.display.update()
+
+    def run_map_smActivation(self):
+        for tile in self.game.map:
+            if tile.button.draw(self.screen):
+                if isinstance(tile, Wall):
+                    pass
+                elif isinstance(tile, EntryPoint):
+                    pass
+                elif tile.isOccupied:
+                    if isinstance(tile.occupand, SpaceMarine):
+                        pass
+                    else:
+                        self.game.clickedTile = tile
+                        self.game.clickedModel = tile.occupand
+                else:
+                    self.clickedTile = tile
+                    print(self.clickedTile)
             tile.render(self.screen)
             pygame.display.update()
 
@@ -323,7 +344,36 @@ class smAction:
 
     def run_thread(self):
         while self.gameStateManager.runThread:
-            self.gameStateManager.run_map_smTurn()
+            self.gameStateManager.run_map_smActivation()
+
+    def check_move(self, model, startTile, endTile):
+        direction = False
+        burning = False
+        doorOpen = False
+        occupied = False
+
+        if (((endTile.x == startTile.x + model.face[0]) or (endTile.x == startTile.x - model.face[0])) and model.face[0] != 0) or (((endTile.y == startTile.y + model.face[1]) or (endTile.y == startTile.y - model.face[1])) and model.face[1] != 0):
+            direction = True
+        if endTile.isBurning == False:
+            burning = True
+        if endTile.isOccupied == False:
+            occupied = True
+        if isinstance(endTile, Door):
+            if endTile.isOpen:
+                doorOpen = True
+        else:
+            doorOpen = True
+
+        if direction and burning and doorOpen and occupied:
+            return True
+        else:
+            return False 
+        
+    def calculate_movement_cost(self, model, startTile, endTile):
+        if (endTile.x == startTile.x + model.face[0]) and (endTile.y == startTile.y + model.face[1]):
+            return 1
+        elif (endTile.x == startTile.x - model.face[0]) and (endTile.y == startTile.y - model.face[1]):
+            return 2
             
     def run(self):
         self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
@@ -376,9 +426,15 @@ class smAction:
                     pygame.display.update()
 
             if self.move_button.draw(self.gameStateManager.screen):
-                pass
+                if self.game.selectedTile != None:
+                    if self.game.clickedTile != None:
+                        if self.check_move(self.game.selectedModel, self.game.selectedTile, self.game.clickedTile):
+                            if self.calculate_movement_cost(self.game.selectedModel, self.game.selectedTile, self.game.clickedTile) <= (self.game.selectedModel.AP + self.game.cp):
+                                self.game.reduce_ap_sm(self.game.selectedModel, self.calculate_movement_cost(self.game.selectedModel, self.game.selectedTile, self.game.clickedTile))
+                                game.move_model(self.game.selectedModel, self.game.selectedTile, self.game.clickedTile)
+                                self.gameStateManager.freeShoot = True
             
-
+            pygame.display.update()            
 
 class smTurning:
     def __init__(self, gameStateManager, game) -> None:
