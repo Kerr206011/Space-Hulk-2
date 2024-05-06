@@ -13,6 +13,7 @@ class Game():
         self.isPlaying = self.player1
         self.gsModelList = [];self.smModelList = [];self.blipSack = [];self.blModelList = []
         self.level = int
+        self.startBlip = int
         self.reinforcement = int
         self.selectedTile = None
         self.clickedTile = None
@@ -82,6 +83,8 @@ class Game():
         self.reinforcement = data["reinforcement"]
         smList = data["smModelList"]
         self.broodLord = data["broodLord"]
+
+        self.startBlip = data["startBlip"]
 
         bluePrint = data["map"]
         for entry in smList:

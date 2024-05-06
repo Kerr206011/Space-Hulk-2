@@ -152,6 +152,7 @@ data = {
     "level": 1,
     "blipList" : a,
     "map" : saveMap,
+    "startBlip": 2,
     "reinforcement" : 2,
     "smModelList" : smModelSaveList,
     "broodLord": False

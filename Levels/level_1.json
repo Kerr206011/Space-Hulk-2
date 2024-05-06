@@ -875,6 +875,7 @@
             "Pictures/Tiles/Wall.png"
         ]
     ],
+    "startBlip": 2,
     "reinforcement": 2,
     "smModelList": [
         [

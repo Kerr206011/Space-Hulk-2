@@ -6,7 +6,8 @@ class GameStateManager:     #class to manage interactions between gamestates and
     def __init__(self, game, screen) -> None:
         self.game = game
         self.screen = screen
-        self.gamestates = {"smTurning": smTurning(self, self.game), "main":gamestateMain(self, self.game), "gsPlace": PlaceBL(self, self.game), "mlRoll": MeleeDiceRoll(self, self.game), "smPlace": PlaceSM(self, self.game)}
+        self.gamestates = {"smTurn": smTurn(self, self.game), "smAction": smAction(self, self.game), "command": commandPhase(self, self.game), "smTurning": smTurning(self, self.game), "main":gamestateMain(self, self.game),
+                           "gsStart": BLstart(self, self.game),  "gsPlace": PlaceBL(self, self.game), "mlRoll": MeleeDiceRoll(self, self.game), "smPlace": PlaceSM(self, self.game)}
         self.runThread = True
 
         self.freeShot = False   #if sm has free shoot Action
@@ -16,7 +17,7 @@ class GameStateManager:     #class to manage interactions between gamestates and
 
     def run_map_command(self):      #method for showing the map in the commandphase
         for tile in self.game.map:
-            tile.render()
+            tile.render(self.screen)
 
     def run_map_blPlace(self):      #method for showing the map in the reinforcement phase
         for tile in self.game.map:
@@ -77,6 +78,91 @@ class GameStateManager:     #class to manage interactions between gamestates and
                     self.clickedTile = tile
                     print(self.clickedTile)
             tile.render(self.screen)
+            pygame.display.update()
+
+class BLstart:
+    def __init__(self, gameStateManager, game) -> None:
+        self.game = game
+        self.gameStateManager = gameStateManager
+        self.BLAmount = int
+        self.blipList = []
+
+    def take_blips(self):
+        x = 0
+        while x < self.BLAmount:
+            choice = random.randint(0, self.game.blipSack.__len__() - 1)
+            print(choice)
+            a = self.gameStateManager.game.blipSack.pop(choice)
+            self.blipList.append(a)
+            x += 1
+
+    def run_threat(self):
+        while self.gameStateManager.runThread == True:
+            self.gameStateManager.run_map_blPlace()
+        
+    def run(self):
+        self.BLAmount = self.game.startBlip
+        self.take_blips()
+        self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.place_button = Button(810, 500, self.place_image, 1)
+        self.amount_button = Button(810, 600, self.amount_image, 1)
+
+        self.gameStateManager.runThread = True
+        thread = threading.Thread(target=self.run_threat,args=())
+        thread.start()
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.gameStateManager.runThread = False
+                    thread.join()
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_s:
+                        for tile in self.game.map:
+                            tile.scroll((0, -1))
+                        print(self.game.map[0].y)
+                        print(self.game.map[0].graphicsY)
+                    if event.key == pygame.K_w:
+                        for tile in self.game.map:
+                            tile.scroll((0, 1))
+                        print(self.game.map[0].y)
+                        print(self.game.map[0].graphicsY)
+                    if event.key == pygame.K_a:
+                        for tile in self.game.map:
+                            tile.scroll((1, 0))
+                        print(self.game.map[0].x)
+                        print(self.game.map[0].graphicsX)
+                    if event.key == pygame.K_d:
+                        for tile in self.game.map:
+                            tile.scroll((-1, 0))
+                        print(self.game.map[0].x)
+                        print(self.game.map[0].graphicsX)
+
+                    self.gameStateManager.screen.fill("black")
+                    pygame.display.update()
+
+            if self.blipList.__len__() == 0:
+                self.gameStateManager.runThread = False
+                thread.join()
+                self.gameStateManager.run_gamestate("command")
+
+            if self.place_button.draw(self.gameStateManager.screen):
+                if isinstance(self.game.clickedTile, EntryPoint):
+                    if self.game.clickedTile.blips.__len__() < 3:
+                        a = self.blipList.pop(0)
+                        self.game.clickedTile.blips.append(Blip(a))
+                        print(self.blipList)
+                        print(game.clickedTile.blips)
+                        print(game.clickedTile.blips[0].count)
+                    else:
+                        print("Too many blips outside the area!")
+                else:
+                    #normally trow error to display for player to see
+                    print("Can't Place Model there, please select valid Entrypoint!")
+                
             pygame.display.update()
 
 class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
@@ -146,7 +232,7 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
             if self.blipList.__len__() == 0:
                 self.gameStateManager.runThread = False
                 thread.join()
-                self.gameStateManager.run_gamestate("smTurning")
+                self.gameStateManager.run_gamestate("command") ### rewrite to GS turn
 
             if self.place_button.draw(self.gameStateManager.screen):
                 if isinstance(self.game.clickedTile, EntryPoint):
@@ -174,7 +260,7 @@ class PlaceSM:
             self.gameStateManager.run_map_smPlace()
 
     def run(self):
-        self.smList = self.game.smModelList
+        self.smList = self.game.smModelList.copy()
         finished = False
         # self.gameStateManager.runThread = True
         # thread = threading.Thread(target=self.run_threat,args=())
@@ -241,7 +327,7 @@ class PlaceSM:
                         if isinstance(tile, ControlledArea):
                             tile.convert_to_tile()
                     self.gameStateManager.screen.fill("black")
-                    self.gameStateManager.run_gamestate('gsPlace')
+                    self.gameStateManager.run_gamestate('gsStart')
 
             if self.game.selectedModel != None:
                 if self.left_button.draw(self.gameStateManager.screen):
@@ -269,7 +355,7 @@ class commandPhase:
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager = gameStateManager
         self.game = game
-        self.dice = Dice(800, 600)
+        self.dice = Dice(800, 100)
         self.roll = int
 
     def run_thread(self):
@@ -277,10 +363,24 @@ class commandPhase:
             self.gameStateManager.run_map_command()
 
     def run(self):
+        print(self.game.smModelList)
+        for tile in self.game.map:
+            if isinstance(tile, Tile):
+                if tile.isBurning:
+                    tile.isBurning = False
+                    tile.change_picture(tile.picturePath)
+
         reroll = False
         for model in self.game.smModelList:
+            model.AP = 4
+            model.overwatch = False
+            model.guard = False
+
             if model.rank == "sergant":
                 reroll = True
+                print("sergant")
+                
+        self.gameStateManager.freeShot = False
 
         self.dice.roll_dice(self.gameStateManager.screen)
         self.roll = self.dice.face
@@ -290,7 +390,7 @@ class commandPhase:
         self.accept_button = Button(810, 600, self.amount_image, 1)
 
         self.gameStateManager.runThread = True
-        thread = threading.Thread(target=self.run_threat,args=())
+        thread = threading.Thread(target=self.run_thread,args=())
         thread.start()
 
         while True:
@@ -325,17 +425,26 @@ class commandPhase:
                     self.gameStateManager.screen.fill("black")
                     pygame.display.update()
 
-            if reroll:
+            if reroll == True:
                 if self.reroll_button.draw(self.gameStateManager.screen):
                     self.dice.roll_dice(self.gameStateManager.screen)
-                    roll = self.dice.face
+                    self.roll = self.dice.face
+                    reroll = False
 
             if self.accept_button.draw(self.gameStateManager.screen):
-                self.game.CP = roll
+                self.game.cp = self.roll
                 self.gameStateManager.runThread = False
                 thread.join()
                 self.gameStateManager.screen.fill("black")
-                self.gameStateManager.runstate("") #input the run State for SM
+                
+                self.game.selectedModel = None
+                self.game.selectedTile = None
+                self.game.clickedModel = None
+                self.game.clickedTile = None
+
+                self.gameStateManager.run_gamestate("smTurn") #input the run State for SM
+
+            pygame.display.update()
 
 class smAction:
     def __init__(self, gameStateManager, game) -> None:
@@ -351,18 +460,18 @@ class smAction:
         burning = False
         doorOpen = False
         occupied = False
-
-        if (((endTile.x == startTile.x + model.face[0]) or (endTile.x == startTile.x - model.face[0])) and model.face[0] != 0) or (((endTile.y == startTile.y + model.face[1]) or (endTile.y == startTile.y - model.face[1])) and model.face[1] != 0):
-            direction = True
-        if endTile.isBurning == False:
-            burning = True
-        if endTile.isOccupied == False:
-            occupied = True
-        if isinstance(endTile, Door):
-            if endTile.isOpen:
+        if isinstance(endTile, Tile):
+            if (((endTile.x == startTile.x + model.face[0]) or (endTile.x == startTile.x - model.face[0])) and model.face[0] != 0) or (((endTile.y == startTile.y + model.face[1]) or (endTile.y == startTile.y - model.face[1])) and model.face[1] != 0):
+                direction = True
+            if endTile.isBurning == False:
+                burning = True
+            if endTile.isOccupied == False:
+                occupied = True
+            if isinstance(endTile, Door):
+                if endTile.isOpen:
+                    doorOpen = True
+            else:
                 doorOpen = True
-        else:
-            doorOpen = True
 
         if direction and burning and doorOpen and occupied:
             return True
@@ -433,8 +542,86 @@ class smAction:
                                 self.game.reduce_ap_sm(self.game.selectedModel, self.calculate_movement_cost(self.game.selectedModel, self.game.selectedTile, self.game.clickedTile))
                                 game.move_model(self.game.selectedModel, self.game.selectedTile, self.game.clickedTile)
                                 self.gameStateManager.freeShoot = True
+
+            if self.turn_button.draw(self.gameStateManager.screen):
+                self.gameStateManager.runThread = False
+                thread.join()
+                self.gameStateManager.screen.fill('black')
+                self.gameStateManager.run_gamestate("smTurning")
+
+            if self.accept_button.draw(self.gameStateManager.screen):
+                self.game.selectedModel.AP = 0
+                self.game.selectedModel = None
+                self.game.selectedTile = None
+                self.game.clickedModel = None
+                self.game.clickedTile = None
+                self.gameStateManager.run_gamestate("smTurn")
             
             pygame.display.update()            
+
+class smTurn:
+    def __init__(self, gameStateManager, game) -> None:
+        self.gameStateManager = gameStateManager
+        self.game = game
+
+    def run_thread(self):
+        while self.gameStateManager.runThread:
+            self.gameStateManager.run_map_smTurn()
+
+    def run(self):
+        self.activate_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.end_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.activate_button = Button(810, 500, self.activate_image, 1)
+        self.end_button = Button(810, 600, self.end_image, 1)
+
+        self.gameStateManager.runThread = True
+        thread = threading.Thread(target=self.run_thread,args=())
+        thread.start()
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.gameStateManager.runThread = False
+                    thread.join()
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_s:
+                        for tile in self.game.map:
+                            tile.scroll((0, -1))
+                        print(self.game.map[0].y)
+                        print(self.game.map[0].graphicsY)
+                    if event.key == pygame.K_w:
+                        for tile in self.game.map:
+                            tile.scroll((0, 1))
+                        print(self.game.map[0].y)
+                        print(self.game.map[0].graphicsY)
+                    if event.key == pygame.K_a:
+                        for tile in self.game.map:
+                            tile.scroll((1, 0))
+                        print(self.game.map[0].x)
+                        print(self.game.map[0].graphicsX)
+                    if event.key == pygame.K_d:
+                        for tile in self.game.map:
+                            tile.scroll((-1, 0))
+                        print(self.game.map[0].x)
+                        print(self.game.map[0].graphicsX)
+
+                    self.gameStateManager.screen.fill("black")
+                    pygame.display.update()
+
+            if self.game.selectedModel != None:
+                if self.activate_button.draw(self.gameStateManager.screen):
+                    self.gameStateManager.runThread = False
+                    thread.join()
+                    self.gameStateManager.run_gamestate("smAction")
+
+            if self.end_button.draw(self.gameStateManager.screen):
+                pass
+                # implement gs place
+
+            pygame.display.update()
 
 class smTurning:
     def __init__(self, gameStateManager, game) -> None:
@@ -532,6 +719,9 @@ class smTurning:
                                 print("Not enough AP/CP!")
                                 self.game.selectedModel.face = startFace
 
+                    if cost != 0:
+                        self.gameStateManager.freeShot = True
+
                 elif turnAmount > 0:
                     cost = abs(turnAmount) % 4
                     match cost:
@@ -558,9 +748,13 @@ class smTurning:
                             else:
                                 print("Not enough AP/CP!")
                                 self.game.selectedModel.face = startFace
+
+                    if cost != 0:
+                        self.gameStateManager.freeShot = True
                     
                 self.gameStateManager.screen.fill("black")
                 print(self.game.selectedModel.AP)
+                self.gameStateManager.run_gamestate("smAction")
 
                 #implement switch to action menu!
             pygame.display.update()
