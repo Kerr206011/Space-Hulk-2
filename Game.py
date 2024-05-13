@@ -9,7 +9,7 @@ class Game():
         self.blipSack = []
         self.blipReserve = []
         self.cp = random.randint(1,6)
-        self.player1 = "";self.player2 = ""
+        self.player1 = "Player_1"; self.player2 = "Player_2"
         self.isPlaying = self.player1
         self.gsModelList = [];self.smModelList = [];self.blipSack = [];self.blModelList = []
         self.level = int
@@ -107,7 +107,7 @@ class Game():
                 self.map.append(newWall)
 
             elif entry[1] == "entry":
-                newEntry = EntryPoint(entry[2],entry[0][0],entry[0][1])
+                newEntry = EntryPoint(entry[2],entry[0][0],entry[0][1],entry[3])
                 self.map.append(newEntry)
 
             elif entry[1] == "control":
@@ -155,11 +155,22 @@ class Game():
         target.occupand = model
         target.isOccupied = True
 
+        self.selectedTile = target
+        self.clickedTile = None
+
     def set_guard(self, model):
         model.guard = True
 
     def set_overwatch(self, model):
         model.overwatch = True
+
+    def reset_select(self):
+        self.selectedModel = None
+        self.selectedTile = None
+
+    def reset_clicked(self):
+        self.clickedModel = None
+        self.clickedTile = None
 
     def destroy_model(self, model, tile):
         if model == self.selectedModel:
@@ -372,6 +383,40 @@ class Game():
 
         return winner
     
+    def melee_door(self, attacker, roll_1, roll_2, roll_3, psycic):
+        if roll_3 == 0:
+            if attacker.weapon == "Thunderhammer":
+                roll_1 += 2
+            if attacker.weapon == "Powersword":
+                roll_1 += 1
+            if attacker.weapon == "Chainfist":
+                roll_1 = 6
+            if attacker.weapon == "Lightningclaws":
+                if roll_1 > roll_2:
+                    roll_1 +=1
+                else:
+                    roll_2 +=1
+            if attacker.weapon == "Axe":
+                roll_1 +=1
+                roll_1 += psycic
+
+        elif attacker.isBroodlord:
+            if roll_1 >= roll_2 and roll_2 >= roll_3:
+                roll_1 = roll_1 + roll_3
+            elif roll_1 >= roll_3 and roll_3 >= roll_2:
+                roll_1 = roll_1 + roll_2
+            elif roll_2 >= roll_3 and roll_3 >= roll_1:
+                roll_2 = roll_2 + roll_1
+            elif roll_2 >= roll_1 and roll_1 >= roll_3:
+                roll_2 = roll_2 + roll_3
+            elif roll_3 >= roll_2 and roll_2 >= roll_1:
+                roll_3 = roll_3 + roll_1
+            else:
+                roll_3 = roll_3 + roll_2
+
+        if roll_1 > 5 or roll_2 > 5 or roll_3 > 5:
+            return True
+
     def shoot_bolter(self, shooter, targetTile, roll_1, roll_2):
         hit = False
 
@@ -451,6 +496,239 @@ class Game():
     def shoot_flamer(self, targetTile):
         pass
 
+    def get_tile(self, x, y):
+        for tile in self.map:
+            if tile.x == x and tile.y == y:
+                return tile
+            
+    def check_vision(self, model, tile):
+        checkedtile = None
+        isBlocked = False 
+        visionList = []
+        runMiddle = True
+        runLeft1 = True
+        runLeft2 = True
+        runRight1 = True
+        runRight2 = True
+
+        ofsX = int
+        ofsY = int
+        x = tile.x
+        y = tile.y
+        i = 0
+
+        match model.face:
+            case (1, 0):
+                ofsX = 0
+                ofsY = 1
+            case (-1, 0):
+                ofsX = 0
+                ofsY = 1
+            case (0, 1):
+                ofsX = 1
+                ofsY = 0
+            case (0, -1):
+                ofsX = 1
+                ofsY =0
+
+        while runMiddle:
+            x += model.face[0]
+            y += model.face[1]
+            checkedtile = self.get_tile(x, y)
+
+            if isinstance(checkedtile, Tile):
+                visionList.append(checkedtile)
+
+                if isinstance(checkedtile, Door):
+                    if checkedtile.isOpen == False:
+                        isBlocked = True
+
+                if checkedtile.isOccupied:
+                    isBlocked = True
+
+                if checkedtile.isBurning:
+                    isBlocked = True
+
+            if isinstance(checkedtile, Wall):
+                isBlocked = True
+
+            if isinstance(checkedtile, EntryPoint):
+                isBlocked = True
+
+            if isBlocked:
+                if i == 0:
+                    runMiddle = False
+                    runLeft1 = False
+                    runLeft2 = False
+                    runRight1 = False
+                    runRight2 = False
+    
+                else:
+                    runMiddle = False
+                    i = 0
+                    x = tile.x + ofsX + model.face[0]
+                    y = tile.y + ofsY + model.face[1]
+                    isBlocked = False
+            
+            else:
+                i +=1
+
+        while runLeft1:
+            checkedtile = self.get_tile(x, y)
+
+            if isinstance(checkedtile, Tile):
+                visionList.append(checkedtile)
+
+                if isinstance(checkedtile, Door):
+                    if checkedtile.isOpen == False:
+                        isBlocked = True
+
+                if checkedtile.isOccupied:
+                    isBlocked = True
+
+                if checkedtile.isBurning:
+                    isBlocked = True
+
+            if isinstance(checkedtile, Wall):
+                isBlocked = True
+
+            if isinstance(self.game.get_tile(checkedtile.x + ofsX, checkedtile.y + ofsY), Wall) and isinstance(self.game.get_tile(checkedtile.x - ofsX, checkedtile.y - ofsY), Wall):
+                isBlocked = True
+
+            if isinstance(checkedtile, EntryPoint):
+                isBlocked = True
+
+            if isBlocked:
+                if i == 0:
+                    runLeft1 = False
+                    runLeft2 = False
+    
+                else:
+                    runLeft1 = False
+                    i = 0
+                    x = tile.x + 2 * ofsX + 2 * model.face[0]
+                    y = tile.y + 2 * ofsY + 2 * model.face[1]
+                    isBlocked = False
+            
+            else:
+                i +=1   
+                x += model.face[0]
+                y += model.face[1]
+
+        while runLeft2:
+            checkedtile = self.get_tile(x, y)
+
+            if isinstance(checkedtile, Tile):
+                visionList.append(checkedtile)
+
+                if isinstance(checkedtile, Door):
+                    if checkedtile.isOpen == False:
+                        isBlocked = True
+
+                if checkedtile.isOccupied:
+                    isBlocked = True
+
+                if checkedtile.isBurning:
+                    isBlocked = True
+
+            if isinstance(self.game.get_tile(checkedtile.x + ofsX, checkedtile.y + ofsY), Wall) and isinstance(self.game.get_tile(checkedtile.x - ofsX, checkedtile.y - ofsY), Wall):
+                isBlocked = True
+
+            if isinstance(checkedtile, EntryPoint):
+                isBlocked = True
+
+            if isinstance(checkedtile, Wall):
+                isBlocked = True
+
+            if isBlocked:
+                runLeft2 = False
+                i = 0
+                x = tile.x - ofsX + model.face[0]
+                y = tile.y - ofsY + model.face[1]
+                isBlocked = False
+            
+            else:
+                i +=1   
+                x += model.face[0]
+                y += model.face[1]
+
+        while runRight1:
+            checkedtile = self.get_tile(x, y)
+
+            if isinstance(checkedtile, Tile):
+                visionList.append(checkedtile)
+
+                if isinstance(checkedtile, Door):
+                    if checkedtile.isOpen == False:
+                        isBlocked = True
+
+                if checkedtile.isOccupied:
+                    isBlocked = True
+
+                if checkedtile.isBurning:
+                    isBlocked = True
+
+            if isinstance(self.game.get_tile(checkedtile.x + ofsX, checkedtile.y + ofsY), Wall) and isinstance(self.game.get_tile(checkedtile.x - ofsX, checkedtile.y - ofsY), Wall):
+                isBlocked = True
+
+            if isinstance(checkedtile, EntryPoint):
+                isBlocked = True
+
+            if isinstance(checkedtile, Wall):
+                isBlocked = True
+
+            if isBlocked:
+                if i == 0:
+                    runRight1 = False
+                    runRight2 = False
+    
+                else:
+                    runRight1 = False
+                    i = 0
+                    x = tile.x - 2 * ofsX + 2 * model.face[0]
+                    y = tile.y - 2 * ofsY + 2 * model.face[1]
+                    isBlocked = False
+            
+            else:
+                i +=1   
+                x += model.face[0]
+                y += model.face[1]
+
+        while runRight2:
+            checkedtile = self.get_tile(x, y)
+
+            if isinstance(checkedtile, Tile):
+                visionList.append(checkedtile)
+
+                if isinstance(checkedtile, Door):
+                    if checkedtile.isOpen == False:
+                        isBlocked = True
+
+                if checkedtile.isOccupied:
+                    isBlocked = True
+
+                if checkedtile.isBurning:
+                    isBlocked = True
+
+            if isinstance(self.game.get_tile(checkedtile.x + ofsX, checkedtile.y + ofsY), Wall) and isinstance(self.game.get_tile(checkedtile.x - ofsX, checkedtile.y - ofsY), Wall):
+                isBlocked = True
+
+            if isinstance(checkedtile, EntryPoint):
+                isBlocked = True
+
+            if isinstance(checkedtile, Wall):
+                isBlocked = True
+
+            if isBlocked:
+                runRight2 = False
+            
+            else:
+                i +=1   
+                x += model.face[0]
+                y += model.face[1]
+
+        return visionList
+                    
     def interact_door(self, door):
         if door.isOpen:
             door.isOpen = False

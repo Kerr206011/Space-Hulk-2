@@ -738,7 +738,11 @@
                 19
             ],
             "entry",
-            "Pictures/Tiles/lurking.png"
+            "Pictures/Tiles/lurking.png",
+            [
+                0,
+                1
+            ]
         ],
         [
             [
@@ -773,7 +777,11 @@
                 23
             ],
             "entry",
-            "Pictures/Tiles/lurking.png"
+            "Pictures/Tiles/lurking.png",
+            [
+                0,
+                -1
+            ]
         ],
         [
             [

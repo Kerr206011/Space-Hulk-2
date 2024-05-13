@@ -107,11 +107,11 @@ map.append(Wall("Pictures/Tiles/Wall.png", 10, 23))
 map.append(Wall("Pictures/Tiles/Wall.png", 11, 20))
 map.append(Door("Pictures/Tiles/Door_open_V.png", "Pictures/Tiles/Door_V.png", 11, 21, 4, False))
 map.append(Wall("Pictures/Tiles/Wall.png", 11, 22))
-map.append(EntryPoint("Pictures/Tiles/lurking.png", 12, 19))
+map.append(EntryPoint("Pictures/Tiles/lurking.png", 12, 19, (0,1)))
 map.append(Tile("Pictures/Tiles/Floor_1.png", 12, 20, 4))
 map.append(Tile("Pictures/Tiles/Floor_1.png", 12, 21, 4))
 map.append(Tile("Pictures/Tiles/Floor_1.png", 12, 22, 4))
-map.append(EntryPoint("Pictures/Tiles/lurking.png", 12, 23))
+map.append(EntryPoint("Pictures/Tiles/lurking.png", 12, 23, (0, -1)))
 map.append(Wall("Pictures/Tiles/Wall.png", 13, 20))
 map.append(Wall("Pictures/Tiles/Wall.png", 13, 21))
 map.append(Wall("Pictures/Tiles/Wall.png", 13, 22))
@@ -131,7 +131,7 @@ for tile in map:
     elif isinstance(tile, Wall):
         saveMap.append(((tile.x, tile.y), "wall", tile.picturePath))
     elif isinstance(tile, EntryPoint):
-        saveMap.append(((tile.x, tile.y), "entry", tile.picturePath))
+        saveMap.append(((tile.x, tile.y), "entry", tile.picturePath, tile.face))
     elif isinstance(tile, ControlledArea):
         saveMap.append(((tile.x, tile.y), "control", tile.picturePath, tile.sector))
     elif isinstance(tile, Tile):

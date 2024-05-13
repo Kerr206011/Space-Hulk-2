@@ -81,10 +81,16 @@ class ControlledArea(Tile):
 
     def convert_to_tile(self):
         tile = Tile("Pictures/Tiles/Floor_1.png", self.x, self.y, self.sector)
+        if self.isOccupied:
+            tile.isOccupied = True
+            tile.occupand = self.occupand
+        tile.graphicsX = self.graphicsX
+        tile.graphicsY = self.graphicsY
+        tile.button.rect.topleft = ((self.graphicsX * self.graphicOFS),(self.graphicsY * self.graphicOFS))
         return tile
 
 class EntryPoint:
-    def __init__(self, picture, x, y) -> None:
+    def __init__(self, picture, x, y, face) -> None:
         self.picturePath = picture
         self.scale = 0.7
         self.picture = pygame.image.load(picture)
@@ -95,6 +101,8 @@ class EntryPoint:
         self.button = Button(self.graphicsX, self.graphicsY, self.picture, self.scale)
 
         self.button.rect.topleft = ((self.graphicsX * self.graphicOFS),(self.graphicsY * self.graphicOFS))
+
+        self.face = face
 
         self.x = x
         self.y = y

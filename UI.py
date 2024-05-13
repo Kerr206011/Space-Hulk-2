@@ -96,6 +96,12 @@ class Button():
 
         return action
     
+    def move_button(self, direction):
+        pos = self.rect.topleft
+        x = pos[0] + direction[0]
+        y = pos[1] + direction[1]
+        self.rect.topleft = (x, y)
+    
 class Dice:
     def __init__(self, x, y) -> None:
         self.x = x
