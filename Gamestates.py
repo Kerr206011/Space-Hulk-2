@@ -478,6 +478,7 @@ class smAction:
             else:
                 doorOpen = True
 
+
         if direction and burning and doorOpen and occupied:
             return True
         else:
@@ -494,9 +495,9 @@ class smAction:
                         return True
         
     def calculate_movement_cost(self, model, startTile, endTile):
-        if (endTile.x == startTile.x + model.face[0]) and (endTile.y == startTile.y + model.face[1]):
+        if (endTile.x == startTile.x + model.face[0]) or (endTile.y == startTile.y + model.face[1]):
             return 1
-        elif (endTile.x == startTile.x - model.face[0]) and (endTile.y == startTile.y - model.face[1]):
+        elif (endTile.x == startTile.x - model.face[0]) or (endTile.y == startTile.y - model.face[1]):
             return 2
             
     def run(self):
