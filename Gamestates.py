@@ -209,6 +209,7 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
         self.gameStateManager.runThread = True
         thread = threading.Thread(target=self.run_threat,args=())
         thread.start()
+        self.gameStateManager.screen.fill("black")
 
         while True:
             for event in pygame.event.get():
@@ -433,6 +434,9 @@ class commandPhase:
 
             if reroll == True:
                 if self.reroll_button.draw(self.gameStateManager.screen):
+                    self.gameStateManager.screen.fill("black")
+                    for tile in self.game.map:
+                        tile.render(self.gameStateManager.screen)
                     self.dice.roll_dice(self.gameStateManager.screen)
                     self.roll = self.dice.face
                     reroll = False
@@ -669,8 +673,7 @@ class smTurn:
                     self.gameStateManager.run_gamestate("smAction")
 
             if self.end_button.draw(self.gameStateManager.screen):
-                pass
-                # implement gs place
+                self.gameStateManager.run_gamestate("gsPlace")
 
             pygame.display.update()
 
