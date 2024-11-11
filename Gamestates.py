@@ -28,6 +28,11 @@ class GameStateManager:     #class to manage interactions between gamestates and
     def run_gamestate(self, gameState):     #method for executing the run methods of the individual gamestates
         self.gamestates[gameState].run()
 
+    def refresh(self):
+        for tile in self.game.map:
+            tile.render(self.screen)
+        pygame.display.flip()
+
     def run_map_command(self):      #method for showing the map in the commandphase
         for tile in self.game.map:
             tile.render(self.screen)
@@ -42,15 +47,6 @@ class GameStateManager:     #class to manage interactions between gamestates and
 
     def run_map_turning(self):
         for tile in self.game.map:
-            tile.render(self.screen)
-        pygame.display.update()
-
-    def run_map_smPlace(self):      #method for showing the map during the Space Marine placement
-        for tile in self.game.map:
-            if tile.button.draw(self.screen):
-                if isinstance(tile, ControlledArea):
-                    self.game.selectedTile = tile
-                    print(self.game.selectedTile)
             tile.render(self.screen)
         pygame.display.update()
 
@@ -268,24 +264,53 @@ class PlaceSM:
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager = gameStateManager
         self.game = game
-
-    def run_threat(self):
-        while self.gameStateManager.runThread == True:
-            self.gameStateManager.run_map_smPlace()
-
-    def run(self):
-        self.smList = self.game.smModelList.copy()
-        finished = False
-        # self.gameStateManager.runThread = True
-        # thread = threading.Thread(target=self.run_threat,args=())
-        # thread.start()
-
         self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.place_button = Button(810, 500, self.place_image, 1)
         self.right_button = Button(810, 600, self.amount_image, 1)
         self.left_button = Button(810, 700, self.amount_image, 1)
         self.accept_button = Button(810, 800, self.amount_image, 1)
+
+    def placeModel(self):
+        if isinstance(self.game.selectedTile, ControlledArea):
+            if self.game.selectedTile.isOccupied == False:
+                a = self.smList.pop(0)
+                self.game.selectedTile.occupand = a
+                self.game.selectedTile.isOccupied = True
+                self.game.selectedModel = a
+                self.game.selectedTile.render(self.gameStateManager.screen)
+                pygame.display.update(self.game.selectedTile.button.rect)
+            else:
+                print("Chose an unoccupied Tile!")
+        else:
+            print("Can't Place Model there, please select valid Entrypoint!")
+        
+        if self.smList.__len__() == 0:
+            self.accept_button.draw(self.gameStateManager.screen)
+            for tile in self.game.map:
+                tile.render(self.gameStateManager.screen)
+            self.right_button.draw(self.gameStateManager.screen)
+            self.left_button.draw(self.gameStateManager.screen)
+            pygame.display.flip()
+
+    def endState(self):
+        for tile in self.game.map:
+            if isinstance(tile, ControlledArea):
+                self.game.map.append(tile.convert_to_tile())
+                self.game.map.remove(tile)
+        self.gameStateManager.screen.fill("black")
+        self.gameStateManager.run_gamestate('gsStart')
+
+    def run(self):
+        self.smList = self.game.smModelList.copy()
+        finished = False
+
+        for tile in self.game.map:
+            tile.render(self.gameStateManager.screen)
+        self.place_button.draw(self.gameStateManager.screen)
+        self.right_button.draw(self.gameStateManager.screen)
+        self.left_button.draw(self.gameStateManager.screen)
+        pygame.display.flip()
 
         while True:
             for event in pygame.event.get():
@@ -320,51 +345,38 @@ class PlaceSM:
                     self.gameStateManager.screen.fill("black")
                     pygame.display.update()
 
-            if self.smList.__len__() > 0:
-                if self.place_button.draw(self.gameStateManager.screen):
-                    if isinstance(self.game.selectedTile, ControlledArea):
-                        if self.game.selectedTile.isOccupied == False:
-                            a = self.smList.pop(0)
-                            self.game.selectedTile.occupand = a
-                            self.game.selectedTile.isOccupied = True
-                            self.game.selectedModel = a
-                        else:
-                            print("Chose an unoccupied Tile!")
-                    else:
-                        print("Can't Place Model there, please select valid Entrypoint!")
-            
-            else:
-                if self.accept_button.draw(self.gameStateManager.screen):
-                    self.gameStateManager.runThread = False
-                    # thread.join()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+
                     for tile in self.game.map:
-                        if isinstance(tile, ControlledArea):
-                            self.game.map.append(tile.convert_to_tile())
-                            self.game.map.remove(tile)
-                    self.gameStateManager.screen.fill("black")
-                    self.gameStateManager.run_gamestate('gsStart')
+                        if isinstance(tile, Tile):
+                            if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
+                                self.game.selectedTile = tile  
+                                if tile.isOccupied:
+                                    self.game.selectedModel = tile.occupand
+                                print(tile.occupand)   
+                                print("It works!")
 
-            if self.game.selectedModel != None:
-                if self.left_button.draw(self.gameStateManager.screen):
-                    self.game.turn_model( self.game.selectedModel, "left")
-                    self.gameStateManager.screen.fill("black")
+                    if self.smList.__len__() > 0:   
+                        if self.place_button.rect.collidepoint(pygame.mouse.get_pos()):
+                            self.placeModel()
 
-                if self.right_button.draw(self.gameStateManager.screen):
-                    self.game.turn_model( self.game.selectedModel, "right")
-                    self.gameStateManager.screen.fill("black")
+                    else:
+                        if self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
+                            self.endState()
 
-            if self.smList.__len__() == 0 and finished == False:
-                finished = True
-                self.gameStateManager.screen.fill("black")
-            
-            for tile in self.game.map:
-                if tile.button.draw(self.gameStateManager.screen):
-                    if isinstance(tile, ControlledArea):
-                        self.game.selectedTile = tile
-                        print(self.game.selectedTile)
-                tile.render(self.gameStateManager.screen)
+                    if self.game.selectedModel != None:
+                        if self.right_button.rect.collidepoint(pygame.mouse.get_pos()):
+                            self.game.turn_model( self.game.selectedModel, "left")
+                            pygame.draw.rect(self.gameStateManager.screen, (0,0,0), self.game.selectedTile.button.rect)
+                            self.game.selectedTile.render(self.gameStateManager.screen)
+                            pygame.display.update(self.game.selectedTile.button.rect)
+                        
+                        if self.left_button.rect.collidepoint(pygame.mouse.get_pos()):
+                            self.game.turn_model( self.game.selectedModel, "right")
+                            pygame.draw.rect(self.gameStateManager.screen, (0,0,0), self.game.selectedTile.button.rect)
+                            self.game.selectedTile.render(self.gameStateManager.screen)
+                            pygame.display.update(self.game.selectedTile.button.rect)
 
-            pygame.display.update()
 
 class commandPhase:
     def __init__(self, gameStateManager, game) -> None:
@@ -1484,7 +1496,7 @@ game = Game()
 # game.map.append(entry)
 # game.map.append(wall)
 
-screen = pygame.display.set_mode((900,900))
+screen = screen = pygame.display.set_mode((900, 900), pygame.DOUBLEBUF)
 screen.fill("black")
 gameStateManager = GameStateManager(game, screen)
 # game.selectedModel = game.smModelList[0]
