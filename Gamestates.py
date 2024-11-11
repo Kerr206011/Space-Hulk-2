@@ -303,20 +303,20 @@ class PlaceSM:
 
     def run(self):
         self.smList = self.game.smModelList.copy()
-        finished = False
 
         for tile in self.game.map:
             tile.render(self.gameStateManager.screen)
+
         self.place_button.draw(self.gameStateManager.screen)
         self.right_button.draw(self.gameStateManager.screen)
         self.left_button.draw(self.gameStateManager.screen)
+
         pygame.display.flip()
 
         while True:
             for event in pygame.event.get():
+
                 if event.type == pygame.QUIT:
-                    self.gameStateManager.runThread = False
-                    # thread.join()
                     pygame.quit()
                     sys.exit()
 
@@ -326,16 +326,19 @@ class PlaceSM:
                             tile.scroll((0, -1))
                         print(self.game.map[0].y)
                         print(self.game.map[0].graphicsY)
+
                     if event.key == pygame.K_w:
                         for tile in self.game.map:
                             tile.scroll((0, 1))
                         print(self.game.map[0].y)
                         print(self.game.map[0].graphicsY)
+
                     if event.key == pygame.K_a:
                         for tile in self.game.map:
                             tile.scroll((1, 0))
                         print(self.game.map[0].x)
                         print(self.game.map[0].graphicsX)
+
                     if event.key == pygame.K_d:
                         for tile in self.game.map:
                             tile.scroll((-1, 0))
@@ -343,10 +346,13 @@ class PlaceSM:
                         print(self.game.map[0].graphicsX)
 
                     self.gameStateManager.screen.fill("black")
+
                     for tile in self.game.map:
                         tile.render(self.gameStateManager.screen)
+
                     self.right_button.draw(self.gameStateManager.screen)
                     self.left_button.draw(self.gameStateManager.screen)
+                    
                     if self.smList.__len__() > 0:   
                         self.place_button.draw(self.gameStateManager.screen)
                     else:
