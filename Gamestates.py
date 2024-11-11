@@ -343,7 +343,15 @@ class PlaceSM:
                         print(self.game.map[0].graphicsX)
 
                     self.gameStateManager.screen.fill("black")
-                    pygame.display.update()
+                    for tile in self.game.map:
+                        tile.render(self.gameStateManager.screen)
+                    self.right_button.draw(self.gameStateManager.screen)
+                    self.left_button.draw(self.gameStateManager.screen)
+                    if self.smList.__len__() > 0:   
+                        self.place_button.draw(self.gameStateManager.screen)
+                    else:
+                        self.accept_button.draw(self.gameStateManager.screen)
+                    pygame.display.flip()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
