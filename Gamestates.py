@@ -180,6 +180,10 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
         self.gameStateManager = gameStateManager
         self.BLAmount = int
         self.blipList = []
+        self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.place_button = Button(810, 500, self.place_image, 1)
+        self.amount_button = Button(810, 600, self.amount_image, 1)
 
     def take_blips(self):
         x = 0
@@ -190,46 +194,58 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
             self.blipList.append(a)
             x += 1
 
-    def run_threat(self):
-        while self.gameStateManager.runThread == True:
-            self.gameStateManager.run_map_blPlace()
-        
+    def place_blips(self):
+        if isinstance(self.game.clickedTile, EntryPoint):
+            if self.game.clickedTile.blips.__len__() < 3:
+                a = self.blipList.pop(0)
+                self.game.clickedTile.blips.append(Blip(a))
+                print(self.blipList)
+                print(game.clickedTile.blips)
+                print(game.clickedTile.blips[0].count)
+            else:
+                print("Too many blips outside the area!")
+        else:
+            #normally trow error to display for player to see
+            print("Can't Place Model there, please select valid Entrypoint!")
+
     def run(self):
         self.BLAmount = self.game.reinforcement
         self.take_blips()
-        self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
-        self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
-        self.place_button = Button(810, 500, self.place_image, 1)
-        self.amount_button = Button(810, 600, self.amount_image, 1)
 
-        self.gameStateManager.runThread = True
-        thread = threading.Thread(target=self.run_threat,args=())
-        thread.start()
         self.gameStateManager.screen.fill("black")
+        for tile in self.game.map:
+            tile.render(self.gameStateManager.screen)
+        
+        self.place_button.draw(self.gameStateManager.screen)
+        self.amount_button.draw(self.gameStateManager.screen)
+
+        pygame.display.flip()
 
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.gameStateManager.runThread = False
-                    thread.join()
                     pygame.quit()
                     sys.exit()
+
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_s:
                         for tile in self.game.map:
                             tile.scroll((0, -1))
                         print(self.game.map[0].y)
                         print(self.game.map[0].graphicsY)
+
                     if event.key == pygame.K_w:
                         for tile in self.game.map:
                             tile.scroll((0, 1))
                         print(self.game.map[0].y)
                         print(self.game.map[0].graphicsY)
+
                     if event.key == pygame.K_a:
                         for tile in self.game.map:
                             tile.scroll((1, 0))
                         print(self.game.map[0].x)
                         print(self.game.map[0].graphicsX)
+
                     if event.key == pygame.K_d:
                         for tile in self.game.map:
                             tile.scroll((-1, 0))
@@ -237,28 +253,21 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
                         print(self.game.map[0].graphicsX)
 
                     self.gameStateManager.screen.fill("black")
-                    pygame.display.update()
 
-            if self.blipList.__len__() == 0:
-                self.gameStateManager.runThread = False
-                thread.join()
-                self.gameStateManager.run_gamestate("command") ### rewrite to GS turn
+                    for tile in self.game.map:
+                        tile.render(self.gameStateManager.screen)
 
-            if self.place_button.draw(self.gameStateManager.screen):
-                if isinstance(self.game.clickedTile, EntryPoint):
-                    if self.game.clickedTile.blips.__len__() < 3:
-                        a = self.blipList.pop(0)
-                        self.game.clickedTile.blips.append(Blip(a))
-                        print(self.blipList)
-                        print(game.clickedTile.blips)
-                        print(game.clickedTile.blips[0].count)
-                    else:
-                        print("Too many blips outside the area!")
-                else:
-                    #normally trow error to display for player to see
-                    print("Can't Place Model there, please select valid Entrypoint!")
-                
-            pygame.display.update()
+                    self.place_button.draw(self.gameStateManager.screen)
+                    self.amount_button.draw(self.gameStateManager.screen)
+
+                    pygame.display.flip()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.place_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.place_blips()
+                        if self.blipList.__len__() == 0:
+                            self.gameStateManager.screen.fill('black')
+                            self.gameStateManager.run_gamestate("command") ### rewrite to GS turn
 
 class PlaceSM:
     def __init__(self, gameStateManager, game) -> None:
