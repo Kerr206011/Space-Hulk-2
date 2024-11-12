@@ -288,7 +288,7 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
                                 self.game.clickedTile = tile  
                                 print(tile.blips)  
                                 print("It works!")
-                                
+
                     if self.place_button.rect.collidepoint(pygame.mouse.get_pos()):
                         self.place_blip()
                         if self.blipList.__len__() == 0:
@@ -520,10 +520,6 @@ class smAction:
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager = gameStateManager
         self.game = game
-
-    def run_thread(self):
-        while self.gameStateManager.runThread:
-            self.gameStateManager.run_map_smActivation()
 
     def check_move(self, model, startTile, endTile):
         direction = False

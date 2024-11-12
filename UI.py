@@ -121,16 +121,16 @@ class Dice:
         self.clicked = False
         self.prev_mouse_state = False
 
-    def roll_dice(self, screen):
+    def roll_dice(self, screen, frames = 15, sleepTime = 0.1):
         a = 0
-        while a < 15:
+        while a < frames:
             b = random.randint(0, 5)
             self.face = b + 1
             self.picture = self.diceImage[b]
             a +=1
             screen.blit(self.picture, (self.x, self.y))
-            pygame.display.update()
-            time.sleep(0.1)
+            pygame.display.update(self.rect)
+            time.sleep(sleepTime)
 
     def show_result(self, screen):
         action = False
