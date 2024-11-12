@@ -1,0 +1,6 @@
+problem with buttons and tiles overlapping during MOUSEBUTTONDOWN check can be avoided with 
+a if - else statement with the buttons in the front
+
+model.face can be shown with colored corner/arrow
+
+terminator weapon/loadout can be displayed by classsystem (military badges)

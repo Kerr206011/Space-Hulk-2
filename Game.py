@@ -737,14 +737,6 @@ class Game():
             door.isOpen = True
             door.change_picture(door.picturePath)
 
-    def reduce_ap_sm(self, model, amount):
-        if amount > model.AP:
-            model.AP = 0
-            self.cp -= (amount - model.AP)
-
-        else:
-            model.AP -= amount
-
 game = Game()
 game.load_level("level_1")
 print(game.map)
