@@ -124,6 +124,10 @@ class Dice:
     def roll_dice(self, screen, frames = 15, sleepTime = 0.1):
         a = 0
         while a < frames:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        a = frames-1
             b = random.randint(0, 5)
             self.face = b + 1
             self.picture = self.diceImage[b]

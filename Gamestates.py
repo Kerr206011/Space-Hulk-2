@@ -627,7 +627,7 @@ class smAction:
             tile.render(self.gameStateManager.screen)
 
         self.move_button.draw(self.gameStateManager.screen)
-        # self.turn_button.draw(self.gameStateManager.screen)
+        self.turn_button.draw(self.gameStateManager.screen)
         # self.guard_button.draw(self.gameStateManager.screen)
         # self.melee_button.draw(self.gameStateManager.screen)
         # self.shoot_button.draw(self.gameStateManager.screen)
@@ -675,7 +675,7 @@ class smAction:
                         tile.render(self.gameStateManager.screen)
 
                     self.move_button.draw(self.gameStateManager.screen)
-                    # self.turn_button.draw(self.gameStateManager.screen)
+                    self.turn_button.draw(self.gameStateManager.screen)
                     # self.guard_button.draw(self.gameStateManager.screen)
                     # self.melee_button.draw(self.gameStateManager.screen)
                     # self.shoot_button.draw(self.gameStateManager.screen)
@@ -699,9 +699,10 @@ class smAction:
                             if (self.game.selectedTile.x + self.game.selectedModel.face[0] == self.game.clickedTile.x) or (self.game.selectedTile.y + self.game.selectedModel.face[1] == self.game.clickedTile.y):
                                 self.game.interact_door(self.game.clickedTile)
                                 pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.clickedTile.button.rect)
+                                self.game.clickedTile.render(self.gameStateManager.screen)
                                 pygame.display.update(self.game.clickedTile.button.rect)
 
-                    elif self.turnt_button.rect.collidepoint(pygame.mouse.get_pos()):
+                    elif self.turn_button.rect.collidepoint(pygame.mouse.get_pos()):
                         self.gameStateManager.screen.fill('black')
                         self.gameStateManager.run_gamestate("smTurning")
 
@@ -716,19 +717,6 @@ class smAction:
                                             if isinstance(tile.occupand, Genestealer):
                                                 self.game.clickedModel = tile.occupand
 
-            # if self.turn_button.draw(self.gameStateManager.screen):
-            #     self.gameStateManager.runThread = False
-            #     self.gameStateManager.screen.fill('black')
-            #     self.gameStateManager.run_gamestate("smTurning")
-
-            # if self.accept_button.draw(self.gameStateManager.screen):
-            #     self.game.selectedModel.AP = 0
-            #     self.game.selectedModel = None
-            #     self.game.selectedTile = None
-            #     self.game.clickedModel = None
-            #     self.game.clickedTile = None
-            #     self.gameStateManager.screen.fill("black")
-            #     self.gameStateManager.run_gamestate("smTurn")
 
             # if self.check_melee():
             #     if self.melee_button.draw(self.gameStateManager.screen):
@@ -740,6 +728,15 @@ class smAction:
             #                     self.gameStateManager.run_gamestate("mlRoll")
             #                 else:
             #                     self.gameStateManager.run_gamestate("mlRollDoor")
+
+            # if self.accept_button.draw(self.gameStateManager.screen):
+            #     self.game.selectedModel.AP = 0
+            #     self.game.selectedModel = None
+            #     self.game.selectedTile = None
+            #     self.game.clickedModel = None
+            #     self.game.clickedTile = None
+            #     self.gameStateManager.screen.fill("black")
+            #     self.gameStateManager.run_gamestate("smTurn")
                     
             # if isinstance(self.game.clickedTile, Door):
             #     print("Door")
@@ -998,8 +995,23 @@ class smTurning:
         self.left_button = Button(810, 600, self.amount_image, 1)
         self.accept_button = Button(810, 700, self.amount_image, 1)
 
+    def reduce_ap(self, amount):
+        if self.game.selectedModel.AP >= amount:
+            self.game.selectedModel.AP -= amount
+        else:
+            self.game.selectedModel.AP = 0
+            self.game.cp -= (amount - self.game.selectedModel.AP)
+
     def run(self):
         turnAmount = 0
+
+        for tile in self.game.map:
+            tile.render(self.gameStateManager.screen)
+        
+        self.right_button.draw(self.gameStateManager.screen)
+        self.left_button.draw(self.gameStateManager.screen)
+        self.accept_button.draw(self.gameStateManager.screen)
+        pygame.display.flip()
 
         while True:
             for event in pygame.event.get():
@@ -1014,16 +1026,19 @@ class smTurning:
                             tile.scroll((0, -1))
                         print(self.game.map[0].y)
                         print(self.game.map[0].graphicsY)
+
                     if event.key == pygame.K_w:
                         for tile in self.game.map:
                             tile.scroll((0, 1))
                         print(self.game.map[0].y)
                         print(self.game.map[0].graphicsY)
+
                     if event.key == pygame.K_a:
                         for tile in self.game.map:
                             tile.scroll((1, 0))
                         print(self.game.map[0].x)
                         print(self.game.map[0].graphicsX)
+
                     if event.key == pygame.K_d:
                         for tile in self.game.map:
                             tile.scroll((-1, 0))
@@ -1031,89 +1046,99 @@ class smTurning:
                         print(self.game.map[0].graphicsX)
 
                     self.gameStateManager.screen.fill("black")
-                    pygame.display.update()
 
-            if self.left_button.draw(self.gameStateManager.screen):
-                turnAmount += 1
-                self.game.turn_model(self.game.selectedModel, "left")
-                self.gameStateManager.screen.fill("black")
+                    for tile in self.game.map:
+                        tile.render(self.gameStateManager.screen)
 
-            if self.right_button.draw(self.gameStateManager.screen):
-                turnAmount -= 1
-                self.game.turn_model(self.game.selectedModel, "right")
-                self.gameStateManager.screen.fill("black")
+                    self.left_button.draw(self.gameStateManager.screen)
+                    self.right_button.draw(self.gameStateManager.screen)
+                    self.accept_button.draw(self.gameStateManager.screen)
+                    
+                    pygame.display.flip()
 
-            if self.accept_button.draw(self.gameStateManager.screen):
-                if turnAmount == 0:
-                    pass
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.left_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        turnAmount += 1
+                        self.game.turn_model(self.game.selectedModel, "left")
+                        pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
+                        self.game.selectedTile.render(self.gameStateManager.screen)
+                        pygame.display.update(self.game.selectedTile.button.rect)
 
-                elif turnAmount < 0:
-                    cost = abs(turnAmount) % 4
-                    match cost:
-                        case 0:
+                    elif self.right_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        turnAmount -= 1
+                        self.game.turn_model(self.game.selectedModel, "right")
+                        pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
+                        self.game.selectedTile.render(self.gameStateManager.screen)
+                        pygame.display.update(self.game.selectedTile.button.rect)
+
+                    elif self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if turnAmount == 0:
                             pass
 
-                        case 1:
-                            if self.game.cp + self.game.selectedModel.AP > 0:
-                                self.game.reduce_ap_sm(self.game.selectedModel, 1)
-                                self.gameStateManager.freeShot = True
-                            else:
-                                print("Not enough AP/CP!")
-                                self.game.turn_model(self.game.selectedModel, "left")
+                        elif turnAmount < 0:
+                            cost = abs(turnAmount) % 4
+                            match cost:
+                                case 0:
+                                    pass
 
-                        case 2:
-                            if self.game.cp + self.game.selectedModel.AP > 1:
-                                self.game.reduce_ap_sm(self.game.selectedModel, 2)
-                                self.gameStateManager.freeShot = True
-                            else:
-                                print("Not enough AP/CP!")
-                                self.game.turn_model(self.game.selectedModel, "full")
+                                case 1:
+                                    if self.game.cp + self.game.selectedModel.AP > 0:
+                                        self.reduce_ap(1)
+                                        self.gameStateManager.freeShot = True
+                                    else:
+                                        print("Not enough AP/CP!")
+                                        self.game.turn_model(self.game.selectedModel, "left")
 
-                        case 3:
-                            if self.game.cp + self.game.selectedModel.AP > 0:
-                                self.game.reduce_ap_sm(self.game.selectedModel, 1)
-                                self.gameStateManager.freeShot = True
-                            else:
-                                print("Not enough AP/CP!")
-                                self.game.turn_model(self.game.selectedModel, "right")
+                                case 2:
+                                    if self.game.cp + self.game.selectedModel.AP > 1:
+                                        self.reduce_ap(2)
+                                        self.gameStateManager.freeShot = True
+                                    else:
+                                        print("Not enough AP/CP!")
+                                        self.game.turn_model(self.game.selectedModel, "full")
 
-                elif turnAmount > 0:
-                    cost = abs(turnAmount) % 4
-                    match cost:
-                        case 0:
-                            pass
+                                case 3:
+                                    if self.game.cp + self.game.selectedModel.AP > 0:
+                                        self.reduce_ap(1)
+                                        self.gameStateManager.freeShot = True
+                                    else:
+                                        print("Not enough AP/CP!")
+                                        self.game.turn_model(self.game.selectedModel, "right")
 
-                        case 1:
-                            if self.game.cp + self.game.selectedModel.AP > 0:
-                                self.game.reduce_ap_sm(self.game.selectedModel, 1)
-                                self.gameStateManager.freeShot = True
-                            else:
-                                print("Not enough AP/CP!")
-                                self.game.turn_model(self.game.selectedModel, "right")
-                                
+                        elif turnAmount > 0:
+                            cost = abs(turnAmount) % 4
+                            match cost:
+                                case 0:
+                                    pass
 
-                        case 2:
-                            if self.game.cp + self.game.selectedModel.AP > 1:
-                                self.game.reduce_ap_sm(self.game.selectedModel, 2)
-                                self.gameStateManager.freeShot = True
-                            else:
-                                print("Not enough AP/CP!")
-                                self.game.turn_model(self.game.selectedModel, "full")
+                                case 1:
+                                    if self.game.cp + self.game.selectedModel.AP > 0:
+                                        self.reduce_ap(1)
+                                        self.gameStateManager.freeShot = True
+                                    else:
+                                        print("Not enough AP/CP!")
+                                        self.game.turn_model(self.game.selectedModel, "right")
+                                        
 
-                        case 3:
-                            if self.game.cp + self.game.selectedModel.AP > 0:
-                                self.game.reduce_ap_sm(self.game.selectedModel, 1)
-                                self.gameStateManager.freeShot = True
-                            else:
-                                print("Not enough AP/CP!")
-                                self.game.turn_model(self.game.selectedModel, "left")
+                                case 2:
+                                    if self.game.cp + self.game.selectedModel.AP > 1:
+                                        self.reduce_ap(2)
+                                        self.gameStateManager.freeShot = True
+                                    else:
+                                        print("Not enough AP/CP!")
+                                        self.game.turn_model(self.game.selectedModel, "full")
 
-                self.gameStateManager.screen.fill("black")
-                print(self.game.selectedModel.AP)
-                self.gameStateManager.run_gamestate("smAction")
+                                case 3:
+                                    if self.game.cp + self.game.selectedModel.AP > 0:
+                                        self.reduce_ap(1)
+                                        self.gameStateManager.freeShot = True
+                                    else:
+                                        print("Not enough AP/CP!")
+                                        self.game.turn_model(self.game.selectedModel, "left")
 
-                #implement switch to action menu!
-            pygame.display.update()
+                        self.gameStateManager.screen.fill("black")
+                        print(self.game.selectedModel.AP)
+                        self.gameStateManager.run_gamestate("smAction")
 
 class gsTurning:
     def __init__(self, gameStateManager, game) -> None:
