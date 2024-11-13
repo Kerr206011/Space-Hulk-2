@@ -619,6 +619,7 @@ class smAction:
         pygame.display.update(self.game.selectedTile.button.rect)
         self.game.selectedTile = self.game.clickedTile
         self.game.reset_clicked()
+
             
     def run(self):
 
@@ -689,19 +690,20 @@ class smAction:
                     if self.move_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if self.check_move():
                             if self.calculate_movement_cost() <= (self.game.selectedModel.AP + self.game.cp):
-                                print(self.game.cp)
                                 self.reduce_ap(self.calculate_movement_cost())
                                 self.move_model()
                                 self.gameStateManager.freeShoot = True
-                                print(self.game.selectedModel.AP)
-                                print(self.game.cp)
                     
                     elif self.interact_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if isinstance(self.game.clickedTile, Door):
-                            self.game.interact_door(self.game.clickedTile)
-                            pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.clickedTile.button.rect)
-                            pygame.display.update(self.game.clickedTile.button.rect)
+                            if (self.game.selectedTile.x + self.game.selectedModel.face[0] == self.game.clickedTile.x) or (self.game.selectedTile.y + self.game.selectedModel.face[1] == self.game.clickedTile.y):
+                                self.game.interact_door(self.game.clickedTile)
+                                pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.clickedTile.button.rect)
+                                pygame.display.update(self.game.clickedTile.button.rect)
 
+                    elif self.turnt_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.gameStateManager.screen.fill('black')
+                        self.gameStateManager.run_gamestate("smTurning")
 
                     else:
                         for tile in self.game.map:
@@ -990,29 +992,19 @@ class smTurning:
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager = gameStateManager
         self.game = game
-
-    def run_thread(self):
-        while self.gameStateManager.runThread:
-            self.gameStateManager.run_map_turning()
-
-    def run(self):
-        startFace = self.game.selectedModel.face
-        turnAmount = 0
-        self.gameStateManager.runThread = True
-        thread = threading.Thread(target=self.run_thread,args=())
-        thread.start()
-
         self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.right_button = Button(810, 500, self.place_image, 1)
         self.left_button = Button(810, 600, self.amount_image, 1)
         self.accept_button = Button(810, 700, self.amount_image, 1)
 
+    def run(self):
+        turnAmount = 0
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.gameStateManager.runThread = False
-                    thread.join()
                     pygame.quit()
                     sys.exit()
 
@@ -1116,7 +1108,6 @@ class smTurning:
                                 print("Not enough AP/CP!")
                                 self.game.turn_model(self.game.selectedModel, "left")
 
-                self.gameStateManager.runThread = False
                 self.gameStateManager.screen.fill("black")
                 print(self.game.selectedModel.AP)
                 self.gameStateManager.run_gamestate("smAction")
