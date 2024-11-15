@@ -4,3 +4,5 @@ a if - else statement with the buttons in the front
 model.face can be shown with colored corner/arrow
 
 terminator weapon/loadout can be displayed by classsystem (GW 8th symbols)
+
+interact button only shown when door to interact with
