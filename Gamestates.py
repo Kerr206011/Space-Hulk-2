@@ -9,6 +9,8 @@ class GameStateManager:     #class to manage interactions between gamestates and
         self.screen = screen
         self.gamestates = {"smTurn": smTurn(self, self.game), 
                            "smAction": smAction(self, self.game), 
+                           "gsAction": gsAction(self, self.game),
+                           "blAction": blAction(self, self.game),
                            "gsTurn": gsTurn(self, self.game),
                            "gsTruning": gsTurning(self, self.game),
                            "command": commandPhase(self, self.game), 
@@ -142,6 +144,8 @@ class BLstart:
 
         pygame.display.flip()
 
+        print('BL Start')
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -236,7 +240,7 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
         self.game.reset_select()
         self.game.reset_clicked()
         self.gameStateManager.screen.fill("black")
-        self.gameStateManager.run_gamestate("command")  ### rewrite to GS turn
+        self.gameStateManager.run_gamestate('gsTurn')  ### rewrite to GS turn
 
     def run(self):
         self.BLAmount = self.game.reinforcement
@@ -249,6 +253,8 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
         self.amount_button.draw(self.gameStateManager.screen)
 
         pygame.display.flip()
+
+        print('Place BL')
 
         while True:
             for event in pygame.event.get():
@@ -361,6 +367,8 @@ class PlaceSM:
         self.left_button.draw(self.gameStateManager.screen)
 
         pygame.display.flip()
+
+        print('Place SM')
 
         while True:
             for event in pygame.event.get():
@@ -475,6 +483,8 @@ class commandPhase:
 
         pygame.display.flip()
 
+        print('command')
+
         reroll = False
         for model in self.game.smModelList:
             model.AP = 4
@@ -535,7 +545,7 @@ class commandPhase:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if reroll == True:
-                        if self.reroll_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if self.reroll_button.rect.collidepoint(pygame.mouse.get_pos()):    #remove Button after reroll
                             self.dice.roll_dice(self.gameStateManager.screen)
                             self.roll = self.dice.face
                             reroll = False
@@ -639,6 +649,8 @@ class smAction:
         # self.overwatch_button.draw(self.gameStateManager.screen)
 
         pygame.display.flip()
+
+        print('SM Action')
 
         while True:
             for event in pygame.event.get():
@@ -793,6 +805,8 @@ class smTurn:
 
         pygame.display.flip()
 
+        print('SM Turn')
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -884,6 +898,8 @@ class smTurning:
         self.left_button.draw(self.gameStateManager.screen)
         self.accept_button.draw(self.gameStateManager.screen)
         pygame.display.flip()
+
+        print('SM Turning')
 
         while True:
             for event in pygame.event.get():
@@ -1087,6 +1103,8 @@ class MeleeDiceRollDoorSM:
             if self.dice_2 in diceList:
                 roll_2 = self.dice_2.face
 
+        print('Melee Diceroll Door')
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -1131,9 +1149,6 @@ class ChooseBlip:
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager = gameStateManager
         self.game = game
-
-    def run(self):
-        model = None
         self.activate_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.end_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.activate_button = Button(810, 500, self.activate_image, 1)
@@ -1141,6 +1156,8 @@ class ChooseBlip:
         self.model_1_button = Button(100,100, self.activate_image, 1)
         self.model_2_button = Button(200,100, self.activate_image, 1)
         self.model_3_button = Button(300,100, self.activate_image, 1)
+
+    def run(self):
 
         buttonlist = []
         if self.game.selectedTile.blips.__len__() > 0:
@@ -1150,7 +1167,17 @@ class ChooseBlip:
         if self.game.selectedTile.blips.__len__() > 2:
             buttonlist.append(self.model_3_button)
 
-        self.gameStateManager.screen.fill("black")
+        for tile in self.game.map:
+            tile.render(self.gameStateManager.screen)
+
+        for button in buttonlist:
+            button.draw(self.gameStateManager.screen)
+
+        self.end_button.draw(self.gameStateManager.screen)
+        self.activate_button.draw(self.gameStateManager.screen)
+        pygame.display.flip()
+
+        print('Choose Blip')
 
         while True:
             for event in pygame.event.get():
@@ -1158,44 +1185,29 @@ class ChooseBlip:
                     pygame.quit()
                     sys.exit()  
 
-            if self.model_1_button.hover(self.gameStateManager.screen):
-                print(self.game.selectedTile.blips[0].count)
+                if event.type == pygame.MOUSEBUTTONDOWN:
 
-            if self.model_1_button.draw(self.gameStateManager.screen):
-                model = self.game.selectedTile.blips[0]
+                    if self.activate_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if self.game.selectedModel != None:
+                            self.gameStateManager.screen.fill("black")
+                            self.gameStateManager.run_gamestate("blAction")
 
-            if self.model_2_button in buttonlist:
-                if self.model_2_button.hover(self.gameStateManager.screen):
-                    print(self.game.selectedTile.blips[1].count)
-                if self.model_2_button.draw(self.gameStateManager.screen):
-                    model = self.game.selectedTile.blips[1]
-
-            if self.model_3_button in buttonlist:
-                if self.model_3_button.hover(self.gameStateManager.screen):
-                    print(self.game.selectedTile.blips[2].count)
-                if self.model_3_button.draw(self.gameStateManager.screen):
-                    model = self.game.selectedTile.blips[2]
-
-            if self.activate_button.draw(self.gameStateManager.screen):
-                if model != None:
-                    if self.game.get_tile(self.game.selectedTile.x + self.game.selectedTile.face[0], self.game.selectedTile.y + self.game.selectedTile.face[1]).isOccupied == False:
-                        self.game.selectedModel = model
-                        self.game.selectedTile.blips.remove(model)
-                        self.game.selectedTile = self.game.get_tile(self.game.selectedTile.x + self.game.selectedTile.face[0], self.game.selectedTile.y + self.game.selectedTile.face[1])
-                        self.game.selectedTile.occupand = self.game.selectedModel
-                        self.game.selectedTile.isOccupied = True
-                        self.gameStateManager.run_gamestate()
-                    else:
-                        print("Cannot move onto the board, Tile is occupied!")
+                    elif self.end_button.rect.collidepoint(pygame.mouse.get_pos()):
                         self.game.reset_select()
-                        self.gameStateManager.run_gamestate(("gsTurn"))
-                else: 
-                    self.game.reset_select()
-                    self.gameStateManager.run_gamestate(("gsTurn"))
-            
-            if self.end_button.draw(self.gameStateManager.screen):
-                self.game.reset_select()
-                self.gameStateManager.run_gamestate("gsTurn")
+                        self.game.reset_clicked()
+                        self.gameStateManager.run_gamestate("gsTurn")
+
+                    for button in buttonlist:
+                        if button.rect.collidepoint(pygame.mouse.get_pos()):
+                            if button == self.model_1_button:
+                                self.game.selectedModel = self.game.selectedTile.blips[0]
+                                print(self.game.selectedModel.AP)
+                            if button == self.model_2_button:
+                                self.game.selectedModel = self.game.selectedTile.blips[1]
+                                print(self.game.selectedModel.AP)
+                            if button == self.model_3_button:
+                                self.game.selectedModel = self.game.selectedTile.blips[2]
+                                print(self.game.selectedModel.AP)
 
 
 class gsAction:
@@ -1205,6 +1217,162 @@ class gsAction:
 
     def run(self):
         pass
+
+
+class blAction:
+    def __init__(self, gameStateManager, game) -> None:
+        self.game = game
+        self.gameStateManager = gameStateManager
+        self.move_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.interact_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.reveal_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.end_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.move_button = Button(810, 500, self.move_image, 1)
+        self.interact_button = Button(810, 600, self.interact_image, 1)
+        self.reveal_button = Button(810, 700, self.reveal_image, 1)
+        self.end_button = Button(810, 800, self.end_image, 1)
+
+    def check_move(self):
+        inRange = False
+        burning = False
+        doorOpen = False
+        occupied = False
+        seen = True
+
+        if isinstance(self.game.clickedTile, Tile):
+            if ((self.game.selectedTile.x + 1 == self.game.clickedTile.x) or (self.game.selectedTile.x - 1 == self.game.clickedTile.x) or (self.game.selectedTile.x == self.game.clickedTile.x)) and ((self.game.selectedTile.y + 1 == self.game.clickedTile.y) or (self.game.selectedTile.y - 1 == self.game.clickedTile.y) or (self.game.selectedTile.y == self.game.clickedTile.y)):
+                inRange = True
+                print("inRange")
+            if (self.game.clickedTile.isBurning == False) or (self.game.selectedTile.isBurning == True):
+                burning = True
+                print("burning")
+            if (self.game.clickedTile.isOccupied == False) or (isinstance(self.game.clickedTile.occupand, Item)):
+                occupied = True
+                print("occupied")
+            if isinstance(self.game.clickedTile, Door):
+                if self.game.clickedTile.isOpen:
+                    doorOpen = True
+                    print("Door open")
+            else:
+                doorOpen = True
+                print("Door open")
+
+            for tile in self.game.map:
+                if isinstance(tile, Tile):
+                    if tile.isOccupied:
+                        if tile.occupand in self.game.smModelList:
+                            if self.game.clickedTile in self.game.check_vision(tile.occupand, tile):
+                                seen = False
+                                print("IS seen")
+
+            if inRange and burning and doorOpen and occupied and seen:
+                return True
+            else:
+                return False 
+            
+    def move_blip(self):
+        if isinstance(self.game.selectedTile, EntryPoint):
+            self.game.selectedTile.blips.remove(self.game.selectedModel)
+            print(self.game.selectedModel)
+            self.game.clickedTile.occupand = self.game.selectedModel
+            self.game.clickedTile.isOccupied = True
+            self.game.selectedTile = self.game.clickedTile
+            self.game.reset_clicked()
+            pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
+            self.game.selectedTile.render(self.gameStateManager.screen)
+            pygame.display.update(self.game.selectedTile.button.rect)
+
+        else:
+            self.game.clickedTile.occupand = self.game.selectedModel
+            self.game.clickedTile.isOccupied = True
+            self.game.selectedTile.isOccupied = False
+            self.game.selectedTile.occupand = None
+            pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
+            self.game.selectedTile.render(self.gameStateManager.screen)
+            pygame.display.update(self.game.selectedTile.button.rect)
+            self.game.selectedTile = self.game.clickedTile
+            pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
+            self.game.selectedTile.render(self.gameStateManager.screen)
+            pygame.display.update(self.game.selectedTile.button.rect)
+            
+            self.game.reset_clicked()
+
+    def run(self):
+        
+        for tile in self.game.map:
+            tile.render(self.gameStateManager.screen)
+
+        self.move_button.draw(self.gameStateManager.screen)
+        self.interact_button.draw(self.gameStateManager.screen)
+        self.reveal_button.draw(self.gameStateManager.screen)
+        self.end_button.draw(self.gameStateManager.screen)
+
+        pygame.display.flip()
+
+        print('BL Action')
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_s:
+                        for tile in self.game.map:
+                            tile.scroll((0, -1))
+                        print(self.game.map[0].y)
+                        print(self.game.map[0].graphicsY)
+
+                    if event.key == pygame.K_w:
+                        for tile in self.game.map:
+                            tile.scroll((0, 1))
+                        print(self.game.map[0].y)
+                        print(self.game.map[0].graphicsY)
+
+                    if event.key == pygame.K_a:
+                        for tile in self.game.map:
+                            tile.scroll((1, 0))
+                        print(self.game.map[0].x)
+                        print(self.game.map[0].graphicsX)
+
+                    if event.key == pygame.K_d:
+                        for tile in self.game.map:
+                            tile.scroll((-1, 0))
+                        print(self.game.map[0].x)
+                        print(self.game.map[0].graphicsX)
+
+                    self.gameStateManager.screen.fill("black")
+
+                    for tile in self.game.map:
+                        tile.render(self.gameStateManager.screen)
+
+                    self.move_button.draw(self.gameStateManager.screen)
+                    self.interact_button.draw(self.gameStateManager.screen)
+                    self.reveal_button.draw(self.gameStateManager.screen)
+                    self.end_button.draw(self.gameStateManager.screen)
+                    
+                    pygame.display.flip()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+
+                    if self.move_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if self.game.clickedTile != None:
+                            if self.check_move():
+                                self.move_blip()
+
+                    else:
+                        for tile in self.game.map:
+                            if isinstance(tile, Tile):
+                                if tile != self.game.selectedTile:
+                                    if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
+                                        if tile.isOccupied:
+                                            self.game.clickedTile = tile
+                                            self.game.clickedModel = tile.occupand
+                                        else:
+                                            self.game.clickedTile = tile
+                                        print(tile)
+                                        print(tile.occupand)
 
 
 class gsTurn:
@@ -1217,6 +1385,15 @@ class gsTurn:
         self.end_button = Button(810, 600, self.end_image, 1)
 
     def run(self):
+
+        for tile in self.game.map:
+            tile.render(self.gameStateManager.screen)
+
+        self.end_button.draw(self.gameStateManager.screen)
+        self.activate_button.draw(self.gameStateManager.screen)
+        pygame.display.flip()
+
+        print('GS Turn')
 
         while True:
             for event in pygame.event.get():
@@ -1261,41 +1438,32 @@ class gsTurn:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
 
-                    for tile in self.game.map:
-                        if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
-                            if isinstance(tile, EntryPoint) or isinstance(tile.occupand, Genestealer) or isinstance(tile.occupand, Blip):
-                                self.game.selectedTile = tile
-                                if not isinstance(tile, EntryPoint):
-                                    self.game.selectedModel = tile.occupand 
+                    if self.end_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.game.reset_select()
+                        self.game.reset_clicked()
+                        self.gameStateManager.screen.fill('black')
+                        self.gameStateManager.run_gamestate("command")
 
-            if self.game.selectedModel != None or isinstance(self.game.selectedTile, EntryPoint):
-                if self.activate_button.draw(self.gameStateManager.screen):
-                    self.gameStateManager.runThread = False
-                    if self.game.selectedModel != None:
-                        self.gameStateManager.run_gamestate()
-                    if isinstance(self.game.selectedTile, EntryPoint):
-                        self.gameStateManager.run_gamestate("blSelect")
-
-            if self.end_button.draw(self.gameStateManager.screen):
-                pass
-                # implement command
-
-            for tile in self.game.map:
-                if tile.button.draw(self.gameStateManager.screen):
-                    if isinstance(tile, EntryPoint):
-                        self.game.selectedTile = tile
-                        self.game.selectedModel = None
-                    elif isinstance(tile, Wall):
-                        pass
-                    elif tile.isOccupied:
-                        if tile.occupand in self.game.smModelList:
-                            pass
+                    elif self.activate_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if self.game.selectedModel != None:
+                            if self.game.selectedModel in self.game.blModelList:
+                                self.screen.fill('black')
+                                self.gameStateManager.run_gamestate("blAction")
+                            else:
+                                self.gameStateManager.screen.fill('black')
+                                self.gameStateManager.run_gamestate('gsAction')
                         else:
-                            self.game.selectedTile = tile
-                            self.game.selectedModel = tile.occupand
-                tile.render(self.gameStateManager.screen)
+                            self.gameStateManager.screen.fill('black')
+                            self.gameStateManager.run_gamestate('blSelect')
 
-            pygame.display.update()
+                    else:
+                        for tile in self.game.map:
+                            if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
+                                if isinstance(tile, EntryPoint) or isinstance(tile.occupand, Genestealer) or isinstance(tile.occupand, Blip):
+                                    self.game.selectedTile = tile
+                                    print(tile)
+                                    if not isinstance(tile, EntryPoint):
+                                        self.game.selectedModel = tile.occupand 
 
 
 class gsTurning:
@@ -1454,6 +1622,8 @@ class gamestateMain:
         self.startNew_button = Button(810, 600, self.amount_image, 1)
         self.load_button = Button(810, 700, self.amount_image, 1)
         self.exit_button = Button(810, 800, self.amount_image, 1)
+
+        print('Main')
 
         while True:
             for event in pygame.event.get():

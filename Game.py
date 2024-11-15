@@ -592,7 +592,7 @@ class Game():
             if isinstance(checkedtile, Wall):
                 isBlocked = True
 
-            if isinstance(self.game.get_tile(checkedtile.x + ofsX, checkedtile.y + ofsY), Wall) and isinstance(self.game.get_tile(checkedtile.x - ofsX, checkedtile.y - ofsY), Wall):
+            if isinstance(self.get_tile(checkedtile.x + ofsX, checkedtile.y + ofsY), Wall) and isinstance(self.get_tile(checkedtile.x - ofsX, checkedtile.y - ofsY), Wall):
                 isBlocked = True
 
             if isinstance(checkedtile, EntryPoint):
@@ -631,7 +631,7 @@ class Game():
                 if checkedtile.isBurning:
                     isBlocked = True
 
-            if isinstance(self.game.get_tile(checkedtile.x + ofsX, checkedtile.y + ofsY), Wall) and isinstance(self.game.get_tile(checkedtile.x - ofsX, checkedtile.y - ofsY), Wall):
+            if isinstance(self.get_tile(checkedtile.x + ofsX, checkedtile.y + ofsY), Wall) and isinstance(self.get_tile(checkedtile.x - ofsX, checkedtile.y - ofsY), Wall):
                 isBlocked = True
 
             if isinstance(checkedtile, EntryPoint):
@@ -668,7 +668,7 @@ class Game():
                 if checkedtile.isBurning:
                     isBlocked = True
 
-            if isinstance(self.game.get_tile(checkedtile.x + ofsX, checkedtile.y + ofsY), Wall) and isinstance(self.game.get_tile(checkedtile.x - ofsX, checkedtile.y - ofsY), Wall):
+            if isinstance(self.get_tile(checkedtile.x + ofsX, checkedtile.y + ofsY), Wall) and isinstance(self.get_tile(checkedtile.x - ofsX, checkedtile.y - ofsY), Wall):
                 isBlocked = True
 
             if isinstance(checkedtile, EntryPoint):
@@ -710,7 +710,7 @@ class Game():
                 if checkedtile.isBurning:
                     isBlocked = True
 
-            if isinstance(self.game.get_tile(checkedtile.x + ofsX, checkedtile.y + ofsY), Wall) and isinstance(self.game.get_tile(checkedtile.x - ofsX, checkedtile.y - ofsY), Wall):
+            if isinstance(self.get_tile(checkedtile.x + ofsX, checkedtile.y + ofsY), Wall) and isinstance(self.get_tile(checkedtile.x - ofsX, checkedtile.y - ofsY), Wall):
                 isBlocked = True
 
             if isinstance(checkedtile, EntryPoint):
