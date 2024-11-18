@@ -12,6 +12,7 @@ class GameStateManager:     #class to manage interactions between gamestates and
                            "gsAction": gsAction(self, self.game),
                            "blAction": blAction(self, self.game),
                            "gsTurn": gsTurn(self, self.game),
+                           "reveal": revealGS(self, self.game),
                            "gsTruning": gsTurning(self, self.game),
                            "command": commandPhase(self, self.game), 
                            "smTurning": smTurning(self, self.game), 
@@ -244,6 +245,7 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
 
     def run(self):
         self.BLAmount = self.game.reinforcement
+        #need to implement refilling of the game.blipsack
         self.take_blips()
 
         for tile in self.game.map:
@@ -1269,6 +1271,14 @@ class blAction:
                 return True
             else:
                 return False 
+
+    def check_door(self):
+        if isinstance(self.game.clickedTile, Door):
+            if ((self.game.selectedTile.x + 1 == self.game.clickedTile.x) or (self.game.selectedTile.x - 1 == self.game.clickedTile.x) or (self.game.selectedTile.x == self.game.clickedTile.x)) and ((self.game.selectedTile.y + 1 == self.game.clickedTile.y) or (self.game.selectedTile.y - 1 == self.game.clickedTile.y) or (self.game.selectedTile.y == self.game.clickedTile.y)):
+                print("Door")
+                return True
+        else:
+            return False
             
     def move_blip(self):
         if isinstance(self.game.selectedTile, EntryPoint):
@@ -1359,7 +1369,30 @@ class blAction:
                     if self.move_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if self.game.clickedTile != None:
                             if self.check_move():
-                                self.move_blip()
+                                if self.game.selectedModel.AP > 0:
+                                    self.game.selectedModel.AP -= 1
+                                    self.move_blip()
+
+                    elif self.end_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.game.selectedModel.AP = 0
+                        self.game.reset_select()
+                        self.game.reset_clicked()
+                        self.gameStateManager.screen.fill('black')
+                        self.gameStateManager.run_gamestate('gsTurn')
+
+                    elif self.interact_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if self.check_door():
+                            if self.game.selectedModel.AP > 0:
+                                self.game.selectedModel.AP -= 1
+                                self.game.interact_door(self.game.clickedTile)
+                                pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.clickedTile.button.rect)
+                                self.game.clickedTile.render(self.gameStateManager.screen)
+                                pygame.display.update(self.game.clickedTile.button.rect)
+
+                    elif self.reveal_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.gameStateManager.screen.fill('black')
+                        self.game.reset_clicked()
+                        self.gameStateManager.run_gamestate('reveal')
 
                     else:
                         for tile in self.game.map:
@@ -1373,6 +1406,107 @@ class blAction:
                                             self.game.clickedTile = tile
                                         print(tile)
                                         print(tile.occupand)
+
+
+class revealGS:
+    def __init__(self, game, gameStateManager) -> None:
+        self.game = game
+        self.gameStateManager = gameStateManager
+
+        self.left_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.right_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.turnFull_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.accept_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.left_button = Button(810, 500, self.left_image, 1)
+        self.right_button = Button(810, 600, self.right_image, 1)
+        self.turnFull_button = Button(810, 500, self.turnFull_image, 1)
+        self.accept_button = Button(810, 500, self.accept_image, 1)
+
+    def run(self):
+        gsList = []
+        hasPlaced = False
+
+        a = 0
+        while a > self.game.selectedModel.count:
+            gsList.append(Genestealer())
+
+        self.game.blipReserve.append(self.game.selectedModel.count)
+        self.game.blModelList.remove(self.game.selectedModel)
+        self.game.selectedModel = gsList.pop[0]
+        self.game.selectedTile.occupand = self.game.selectedModel
+        self.game.gsModelList.append(self.game.selectedModel)
+
+        for tile in self.game.map:
+                        tile.render(self.gameStateManager.screen)
+
+        self.right_button.draw(self.gameStateManager.screen)
+        self.left_button.draw(self.gameStateManager.screen)
+        self.turnFull_button.draw(self.gameStateManager.screen)
+        self.accept_button.draw(self.gameStateManager.screen)
+        
+        pygame.display.flip()
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_s:
+                        for tile in self.game.map:
+                            tile.scroll((0, -1))
+                        print(self.game.map[0].y)
+                        print(self.game.map[0].graphicsY)
+
+                    if event.key == pygame.K_w:
+                        for tile in self.game.map:
+                            tile.scroll((0, 1))
+                        print(self.game.map[0].y)
+                        print(self.game.map[0].graphicsY)
+
+                    if event.key == pygame.K_a:
+                        for tile in self.game.map:
+                            tile.scroll((1, 0))
+                        print(self.game.map[0].x)
+                        print(self.game.map[0].graphicsX)
+
+                    if event.key == pygame.K_d:
+                        for tile in self.game.map:
+                            tile.scroll((-1, 0))
+                        print(self.game.map[0].x)
+                        print(self.game.map[0].graphicsX)
+
+                    self.gameStateManager.screen.fill("black")
+
+                    for tile in self.game.map:
+                        tile.render(self.gameStateManager.screen)
+
+                    self.right_button.draw(self.gameStateManager.screen)
+                    self.left_button.draw(self.gameStateManager.screen)
+                    self.turnFull_button.draw(self.gameStateManager.screen)
+                    self.accept_button.draw(self.gameStateManager.screen)
+                    
+                    pygame.display.flip()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.left_button.rect.collidepoint(pygame.mouse.ger_pos()):
+                        self.game.turn_model(self.game.selectedModel, "left")
+                        pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
+                        self.game.selectedTile.render(self.gameStateManager.screen)
+                        pygame.display.update(self.game.selectedTile.button.rect)
+
+                    if self.right_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.game.turn_model(self.game.selectedModel, "right")
+                        pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
+                        self.game.selectedTile.render(self.gameStateManager.screen)
+                        pygame.display.update(self.game.selectedTile.button.rect)
+
+                    if self.turnFull_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.game.turn_model(self.game.selectedModel, "full")
+                        pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
+                        self.game.selectedTile.render(self.gameStateManager.screen)
+                        pygame.display.update(self.game.selectedTile.button.rect)
 
 
 class gsTurn:
