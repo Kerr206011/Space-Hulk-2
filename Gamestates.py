@@ -1417,14 +1417,39 @@ class revealGS:
         self.right_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.turnFull_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.accept_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.left_button = Button(810, 500, self.left_image, 1)
         self.right_button = Button(810, 600, self.right_image, 1)
-        self.turnFull_button = Button(810, 500, self.turnFull_image, 1)
-        self.accept_button = Button(810, 500, self.accept_image, 1)
+        self.turnFull_button = Button(810, 700, self.turnFull_image, 1)
+        self.accept_button = Button(810, 800, self.accept_image, 1)
+        self.place_button = Button(810, 900, self.place_image, 1)
 
+    def check_place(self, tile):
+        if ((self.game.clickedTile.x == tile.x +1) or (self.game.clickedTile.x == tile.x -1) or (self.game.clickedTile.x == tile.x)) and ((self.game.clickedTile.y == tile.y +1) or (self.game.clickedTile.y == tile.y -1) or (self.game.cklickedTile.y == tile.y)):
+            if isinstance(self.game.clickedTile, Tile):
+                if not self.game.clickedTile.isOccupied:
+                    return True
+                
+    def check_space(self, startTile):
+        frSpace = 0
+        for tile in self.game.map:
+            if ((startTile.x == tile.x +1) or (startTile.x == tile.x -1) or (startTile.x == tile.x)) and ((startTile.y == tile.y +1) or (startTile.y == tile.y -1) or (startTile.y == tile.y)):
+                if isinstance(tile, Tile):
+                    if not tile.isOccupied:
+                        if isinstance(tile,Door):
+                            if tile.isOpen == True:
+                                frSpace +=1
+                        else:
+                            frSpace +=1
+        if frSpace != 0:
+            return True
+        else:
+            return False
+        
     def run(self):
         gsList = []
         hasPlaced = False
+        centerTile = self.game.selectedTile
 
         a = 0
         while a > self.game.selectedModel.count:
@@ -1507,6 +1532,18 @@ class revealGS:
                         pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
                         self.game.selectedTile.render(self.gameStateManager.screen)
                         pygame.display.update(self.game.selectedTile.button.rect)
+
+                    if self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if gsList.__len__() == 0:
+                            self.game.reset_select()
+                            self.game.reset_clicked()
+                            self.gameStateManager.screen.fill('black')
+                            self.gameStateManager.run_gamestate('gsTurn')
+                        else:
+                            hasPlaced = True
+
+                    if self.place_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        
 
 
 class gsTurn:
