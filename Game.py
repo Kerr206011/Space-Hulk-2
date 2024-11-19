@@ -5,25 +5,26 @@ from Models import *
 
 class Game():
     def __init__(self) -> None:
-        self.map = []
-        self.blipSack = []
-        self.blipReserve = []
-        self.cp = random.randint(1,6)
-        self.player1 = "Player_1"; self.player2 = "Player_2"
-        self.isPlaying = self.player1
-        self.gsModelList = [];self.smModelList = [];self.blipSack = [];self.blModelList = []
-        self.level = int
-        self.startBlip = int
-        self.reinforcement = int
-        self.selectedTile = None
+        self.map = []       #A list to save all the board tiles
+        self.blipSack = []      #A list of integers to represent the Stack of bips that can still be drawn from 
+        self.blipReserve = []   #A list of integers to represent the already used blips
+        self.cp = random.randint(1,6)   #An integer to represent the CP available to the SM player
+        self.player1 = "Player_1"; self.player2 = "Player_2"    #Names of player 1/2
+        self.isPlaying = self.player1   #depricated for now, can be important if the game goes online
+        self.gsModelList = [];self.smModelList = [];self.blModelList = []   #Lists to represent the three diffrent types of models 
+        self.level = int    #Integer to save the levelnumber, important for saving and loading
+        self.startBlip = int    #Amount of blips given at the start of the game
+        self.reinforcement = int    #Amount of blips given each round
+        self.selectedTile = None    #Saved tiles/models. Most of the time for internal logic
         self.clickedTile = None
         self.selectedModel = None
         self.clickedModel = None
-        self.assaultCannonAmmo = 10
-        self.assaultCannonReload = True
+        self.assaultCannonAmmo = 10 #Self explainatory
+        self.assaultCannonReload = True 
         self.flamerAmmo = 6
         self.psyPoints = 20
         self.broodLord = False
+        self.maxGS = 23 #including Broodlord as he is classified as a Genstealer
 
     def make_save(self):
         saveMap = []
@@ -740,10 +741,12 @@ class Game():
     def check_full_vision(self):
         visionlist = []
         for tile in self.map:
-            if tile.isOccupied:
-                if tile.occupand in self.smModelList:
-                    visionlist.append(self.check_vision(tile.occupand, tile))
+            if isinstance(tile, Tile):
+                if tile.isOccupied:
+                    if tile.occupand in self.smModelList:
+                        visionlist.append(self.check_vision(tile.occupand, tile))
         return visionlist
+    #edit to tiles 
 
 game = Game()
 game.load_level("level_1")

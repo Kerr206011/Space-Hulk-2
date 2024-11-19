@@ -17,3 +17,4 @@ Blips can only be revealed if they have 6AP left
 Blips can be revealed outside Entry Areas (List, blitting a purple number?)
 
 limit number of GS models in play to 22
+implement Broodlord revela if possible
