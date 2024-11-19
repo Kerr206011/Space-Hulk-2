@@ -1435,12 +1435,13 @@ class revealGS:
         for tile in self.game.map:
             if ((startTile.x == tile.x +1) or (startTile.x == tile.x -1) or (startTile.x == tile.x)) and ((startTile.y == tile.y +1) or (startTile.y == tile.y -1) or (startTile.y == tile.y)):
                 if isinstance(tile, Tile):
-                    if not tile.isOccupied:
-                        if isinstance(tile,Door):
-                            if tile.isOpen == True:
+                    if not tile.isBurning:
+                        if not tile.isOccupied:
+                            if isinstance(tile,Door):
+                                if tile.isOpen == True:
+                                    frSpace +=1
+                            else:
                                 frSpace +=1
-                        else:
-                            frSpace +=1
         if frSpace != 0:
             return True
         else:
