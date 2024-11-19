@@ -10,4 +10,10 @@ interact button only shown when door to interact with
 implement burning/flamer
 
 add restriction on placing GS on burning tiles if the original Tile is burning
+
 Blips are only forced to lurk for one turn
+Blips cannot move within one square of a space marine
+Blips can only be revealed if they have 6AP left
+Blips can be revealed outside Entry Areas (List, blitting a purple number?)
+
+limit number of GS models in play to 22

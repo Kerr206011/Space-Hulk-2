@@ -737,6 +737,14 @@ class Game():
             door.isOpen = True
             door.change_picture(door.picturePath)
 
+    def check_full_vision(self):
+        visionlist = []
+        for tile in self.map:
+            if tile.isOccupied:
+                if tile.occupand in self.smModelList:
+                    visionlist.append(self.check_vision(tile.occupand, tile))
+        return visionlist
+
 game = Game()
 game.load_level("level_1")
 print(game.map)

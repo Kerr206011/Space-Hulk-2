@@ -1393,6 +1393,7 @@ class blAction:
                         self.gameStateManager.screen.fill('black')
                         self.game.reset_clicked()
                         self.gameStateManager.run_gamestate('reveal')
+                        #add option, if tile is Entrypoint, just add the GS to the entrypoint directly
 
                     else:
                         for tile in self.game.map:
@@ -1409,7 +1410,7 @@ class blAction:
 
 
 class revealGS:
-    def __init__(self, game, gameStateManager) -> None:
+    def __init__(self, gameStateManager, game) -> None:
         self.game = game
         self.gameStateManager = gameStateManager
 
@@ -1428,10 +1429,13 @@ class revealGS:
         if ((self.game.clickedTile.x == tile.x +1) or (self.game.clickedTile.x == tile.x -1) or (self.game.clickedTile.x == tile.x)) and ((self.game.clickedTile.y == tile.y +1) or (self.game.clickedTile.y == tile.y -1) or (self.game.cklickedTile.y == tile.y)):
             if isinstance(self.game.clickedTile, Tile):
                 if not self.game.clickedTile.isOccupied:
-                    return True
+                    if not self.game.clickedTile.isBurning:
+                        #rewrite to check against list
+                        return True
                 
     def check_space(self, startTile):
-        frSpace = 0
+        frSpace = []
+        visionlist = self.game.check_full_vision()
         for tile in self.game.map:
             if ((startTile.x == tile.x +1) or (startTile.x == tile.x -1) or (startTile.x == tile.x)) and ((startTile.y == tile.y +1) or (startTile.y == tile.y -1) or (startTile.y == tile.y)):
                 if isinstance(tile, Tile):
@@ -1439,13 +1443,19 @@ class revealGS:
                         if not tile.isOccupied:
                             if isinstance(tile,Door):
                                 if tile.isOpen == True:
-                                    frSpace +=1
+                                    frSpace.append(tile)
                             else:
-                                frSpace +=1
-        if frSpace != 0:
-            return True
-        else:
-            return False
+                                frSpace.append(tile)
+                elif isinstance(tile, EntryPoint):
+                    frSpace.append(tile)
+
+        for tile in frSpace:
+            if tile == startTile:
+                frSpace.remove(startTile)
+            elif tile in visionlist:
+                frSpace.remove(tile)
+
+        return frSpace
         
     def run(self):
         gsList = []
@@ -1544,7 +1554,7 @@ class revealGS:
                             hasPlaced = True
 
                     if self.place_button.rect.collidepoint(pygame.mouse.get_pos()):
-                        
+                        pass
 
 
 class gsTurn:

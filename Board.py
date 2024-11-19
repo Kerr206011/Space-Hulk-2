@@ -107,6 +107,7 @@ class EntryPoint:
         self.x = x
         self.y = y
         self.blips = []
+        self.genstealers = []
 
     def scroll(self, input):
         self.graphicsX += input[0]
