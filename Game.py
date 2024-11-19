@@ -739,12 +739,17 @@ class Game():
             door.change_picture(door.picturePath)
 
     def check_full_vision(self):
+        fullVisionList = []
         visionlist = []
         for tile in self.map:
             if isinstance(tile, Tile):
                 if tile.isOccupied:
                     if tile.occupand in self.smModelList:
-                        visionlist.append(self.check_vision(tile.occupand, tile))
+                        fullVisionList.append(self.check_vision(tile.occupand, tile))
+        for vlist in fullVisionList:
+            for tile in vlist:
+                if tile not in visionlist:
+                    visionlist.append(tile)
         return visionlist
     #edit to tiles 
 
