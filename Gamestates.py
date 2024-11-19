@@ -1229,10 +1229,60 @@ class gsAction:
     def __init__(self, gameStateManager, game) -> None:
         self.game = game
         self.gameStateManager = gameStateManager
+        self.move_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.interact_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.turn_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.melee_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.end_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.move_button = Button(810, 400, self.move_image, 1)
+        self.interact_button = Button(810, 500, self.interact_image, 1)
+        self.turn_button = Button(810, 600, self.turn_image, 1)
+        self.melee_button = Button(810, 700, self.melee_image, 1)
+        self.end_button = Button(810, 800, self.end_image, 1)
+
+    def check_move(self):
+        inRange = False
+        burning = False
+        doorOpen = False
+        occupied = False
+
+        if isinstance(self.game.clickedTile, Tile):
+            if ((self.game.selectedTile.x + 1 == self.game.clickedTile.x) or (self.game.selectedTile.x - 1 == self.game.clickedTile.x) or (self.game.selectedTile.x == self.game.clickedTile.x)) and ((self.game.selectedTile.y + 1 == self.game.clickedTile.y) or (self.game.selectedTile.y - 1 == self.game.clickedTile.y) or (self.game.selectedTile.y == self.game.clickedTile.y)):
+                inRange = True
+                print("inRange")
+            if (self.game.clickedTile.isBurning == False) or (self.game.selectedTile.isBurning == True):
+                burning = True
+                print("burning")
+            if (self.game.clickedTile.isOccupied == False) or (isinstance(self.game.clickedTile.occupand, Item)):
+                occupied = True
+                print("occupied")
+            if isinstance(self.game.clickedTile, Door):
+                if self.game.clickedTile.isOpen:
+                    doorOpen = True
+                    print("Door open")
+            else:
+                doorOpen = True
+                print("Door open")
+
+            if self.game.clickedTile in self.game.check_full_vision():
+                seen = False
+                print("seen!")
+
+            if inRange and burning and doorOpen and occupied and seen:
+                return True
+            else:
+                return False 
+
+    def check_door(self):
+        if isinstance(self.game.clickedTile, Door):
+            if ((self.game.selectedTile.x + 1 == self.game.clickedTile.x) or (self.game.selectedTile.x - 1 == self.game.clickedTile.x) or (self.game.selectedTile.x == self.game.clickedTile.x)) and ((self.game.selectedTile.y + 1 == self.game.clickedTile.y) or (self.game.selectedTile.y - 1 == self.game.clickedTile.y) or (self.game.selectedTile.y == self.game.clickedTile.y)):
+                print("Door")
+                return True
+        else:
+            return False
 
     def run(self):
         pass
-
 
 class blAction:
     def __init__(self, gameStateManager, game) -> None:
@@ -1445,9 +1495,8 @@ class revealGS:
                 
     def check_space(self, startTile):
         frSpace = []
-        visionlist = self.game.check_full_vision()
         for tile in self.game.map:
-            if ((startTile.x == tile.x +1) or (startTile.x == tile.x -1) or (startTile.x == tile.x)) and ((startTile.y == tile.y +1) or (startTile.y == tile.y -1) or (startTile.y == tile.y)):
+            if ((startTile.x + 1 == tile.x) or (startTile.x - 1 == tile.x) or (startTile.x == tile.x)) and ((startTile.y + 1 == tile.y) or (startTile.y - 1 == tile.y) or (startTile.y == tile.y)):
                 if isinstance(tile, Tile):
                     if not tile.isBurning:
                         if not tile.isOccupied:
@@ -1459,10 +1508,10 @@ class revealGS:
                 elif isinstance(tile, EntryPoint):
                     frSpace.append(tile)
 
-        for tile in frSpace:
+        for tile in frSpace[:]:
             if tile == startTile:
                 frSpace.remove(startTile)
-            elif tile in visionlist:
+            if tile in self.game.check_full_vision():
                 frSpace.remove(tile)
 
         return frSpace
@@ -1614,8 +1663,6 @@ class revealGS:
                         if hasPlaced == False:
                             for tile in self.game.map:
                                 if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
-                                    print(self.game.check_full_vision())
-                                    print(tile)
                                     if tile in self.game.check_full_vision():
                                         print("Tile in vision")
                                     if isinstance(tile, Tile) and (tile in freeTiles):
