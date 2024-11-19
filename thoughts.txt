@@ -8,3 +8,6 @@ terminator weapon/loadout can be displayed by classsystem (GW 8th symbols)
 interact button only shown when door to interact with
 
 implement burning/flamer
+
+add restriction on placing GS on burning tiles if the original Tile is burning
+Blips are only forced to lurk for one turn
