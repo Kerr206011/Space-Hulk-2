@@ -27,7 +27,6 @@ class GameStateManager:     #class to manage interactions between gamestates and
 
         self.freeShot = False   #if sm has free shoot Action
         self.freeTurn = False   #if gs has a free turn
-        self.freeMove = False   #if gs has a free move
 
     def run_gamestate(self, gameState):     #method for executing the run methods of the individual gamestates
         self.gamestates[gameState].run()
@@ -614,6 +613,15 @@ class smAction:
                     return True
             else: 
                 return False
+            
+    def check_door(self):
+        face = self.game.selectedModel.face
+        if isinstance(self.game.clickedTile, Door):
+            if ((self.game.selectedTile.x + face[0] == self.game.clickedTile.x) and (face[0] != 0)) or ((self.game.selectedTile.y + face[1] == self.game.clickedTile.y) and (face[1] != 0)):
+                print("Door")
+                return True
+        else:
+            return False
         
     def calculate_movement_cost(self):
         if ((self.game.clickedTile.x == self.game.selectedTile.x + self.game.selectedModel.face[0]) and (self.game.selectedModel.face[0] != 0)) or ((self.game.clickedTile.y == self.game.selectedTile.y + self.game.selectedModel.face[1]) and (self.game.selectedModel.face[1] != 0)):
@@ -641,7 +649,6 @@ class smAction:
         pygame.display.update(self.game.selectedTile.button.rect)
         self.game.selectedTile = self.game.clickedTile
         self.game.reset_clicked()
-
             
     def run(self):
 
@@ -656,7 +663,8 @@ class smAction:
                 self.melee_button.draw(self.gameStateManager.screen)
         # self.shoot_button.draw(self.gameStateManager.screen)
         self.accept_button.draw(self.gameStateManager.screen)
-        self.interact_button.draw(self.gameStateManager.screen)
+        if self.check_door():
+            self.interact_button.draw(self.gameStateManager.screen)
         # self.overwatch_button.draw(self.gameStateManager.screen)
 
         pygame.display.flip()
@@ -708,7 +716,8 @@ class smAction:
                             self.melee_button.draw(self.gameStateManager.screen)
                     # self.shoot_button.draw(self.gameStateManager.screen)
                     self.accept_button.draw(self.gameStateManager.screen)
-                    self.interact_button.draw(self.gameStateManager.screen)
+                    if self.check_door():
+                        self.interact_button.draw(self.gameStateManager.screen)
                     # self.overwatch_button.draw(self.gameStateManager.screen)
                     
                     pygame.display.flip()
@@ -720,25 +729,20 @@ class smAction:
                             if self.calculate_movement_cost() <= (self.game.selectedModel.AP + self.game.cp):
                                 self.reduce_ap(self.calculate_movement_cost())
                                 self.move_model()       #add walking through flame
-                                if self.game.clickedTile != None:
-                                    if self.check_melee():
-                                        self.melee_button.draw(self.gameStateManager.screen)
-                                        pygame.display.update(self.melee_button.rect)
                                 self.gameStateManager.freeShoot = True
                             print(self.game.check_full_vision())
                     
                     elif self.interact_button.rect.collidepoint(pygame.mouse.get_pos()):        #only render when door in proximity
-                        if isinstance(self.game.clickedTile, Door):
+                        if self.check_door():
                             if self.game.selectedModel.AP + self.game.cp != 0:
-                                if (self.game.selectedTile.x + self.game.selectedModel.face[0] == self.game.clickedTile.x) or (self.game.selectedTile.y + self.game.selectedModel.face[1] == self.game.clickedTile.y):
-                                    self.game.interact_door(self.game.clickedTile)
-                                    self.reduce_ap(1)
-                                    pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.clickedTile.button.rect)
-                                    self.game.clickedTile.render(self.gameStateManager.screen)
-                                    pygame.display.update(self.game.clickedTile.button.rect)
-                                    if not self.check_melee():
-                                        pygame.draw.rect(self.gameStateManager.screen, 'black', self.melee_button.rect)
-                                        pygame.display.update(self.melee_button.rect)
+                                self.game.interact_door(self.game.clickedTile)
+                                self.reduce_ap(1)
+                                pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.clickedTile.button.rect)
+                                self.game.clickedTile.render(self.gameStateManager.screen)
+                                pygame.display.update(self.game.clickedTile.button.rect)
+                                if not self.check_melee():
+                                    pygame.draw.rect(self.gameStateManager.screen, 'black', self.melee_button.rect)
+                                    pygame.display.update(self.melee_button.rect)
 
                     elif self.turn_button.rect.collidepoint(pygame.mouse.get_pos()):
                         self.gameStateManager.screen.fill('black')
@@ -1264,25 +1268,163 @@ class gsAction:
                 doorOpen = True
                 print("Door open")
 
-            if self.game.clickedTile in self.game.check_full_vision():
-                seen = False
-                print("seen!")
-
-            if inRange and burning and doorOpen and occupied and seen:
+            if inRange and burning and doorOpen and occupied:
                 return True
             else:
-                return False 
+                return False
+        else: 
+            return False
+
+    def calculate_movement_cost(self):
+        face = self.game.selectedModel.face
+        if ((self.game.selectedTile.x - face[0] == self.game.clickedTile.x) and (face[0] != 0)) or ((self.game.selectedTile.y - face[1] == self.game.clickedTile.y) and (face[1] != 0)):
+            return 2
+        else:
+            return 1
+            
+    def move_model(self):
+        self.game.clickedTile.occupand = self.game.selectedModel
+        self.game.selectedTile.isOccupied = False
+        self.game.selectedTile.occupand = None
+        self.game.clickedTile.isOccupied = True
+        pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
+        pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.clickedTile.button.rect)
+        self.game.selectedTile.render(self.gameStateManager.screen)
+        self.game.clickedTile.render(self.gameStateManager.screen)
+        pygame.display.update(self.game.clickedTile.button.rect)
+        pygame.display.update(self.game.selectedTile.button.rect)
+        self.game.selectedTile = self.game.clickedTile
+        self.game.reset_clicked()
+        self.gameStateManager.freeTurn = True
 
     def check_door(self):
+        face = self.game.selectedModel.face
         if isinstance(self.game.clickedTile, Door):
-            if ((self.game.selectedTile.x + 1 == self.game.clickedTile.x) or (self.game.selectedTile.x - 1 == self.game.clickedTile.x) or (self.game.selectedTile.x == self.game.clickedTile.x)) and ((self.game.selectedTile.y + 1 == self.game.clickedTile.y) or (self.game.selectedTile.y - 1 == self.game.clickedTile.y) or (self.game.selectedTile.y == self.game.clickedTile.y)):
+            if ((self.game.selectedTile.x + face[0] == self.game.clickedTile.x) and (face[0] != 0)) or ((self.game.selectedTile.y + face[1] == self.game.clickedTile.y) and (face[1] != 0)):
                 print("Door")
                 return True
         else:
             return False
+        
+    def check_melee(self):
+        if isinstance(self.game.clickedTile, Tile):
+            if (self.game.selectedTile.x + self.game.selectedModel.face[0] == self.game.clickedTile.x) and (self.game.selectedTile.y + self.game.selectedModel.face[1] == self.game.clickedTile.y):
+                if self.game.clickedModel != None:
+                    return True
+                elif(isinstance(self.game.clickedTile, Door)):
+                    if self.game.clickedTile.isOpen == False:
+                        return True
+                else: 
+                    return False
 
     def run(self):
-        pass
+        for tile in self.game.map:
+            tile.render(self.gameStateManager.screen)
+
+        self.move_button.draw(self.gameStateManager.screen)
+        if self.check_door():
+            self.interact_button.draw(self.gameStateManager.screen)
+        self.turn_button.draw(self.gameStateManager.screen)
+        if self.check_melee():
+            self.melee_button.draw(self.gameStateManager.screen)
+        self.end_button.draw(self.gameStateManager.screen)
+
+        pygame.display.flip()
+
+        print('GS Action')
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_s:
+                        for tile in self.game.map:
+                            tile.scroll((0, -1))
+                        print(self.game.map[0].y)
+                        print(self.game.map[0].graphicsY)
+
+                    if event.key == pygame.K_w:
+                        for tile in self.game.map:
+                            tile.scroll((0, 1))
+                        print(self.game.map[0].y)
+                        print(self.game.map[0].graphicsY)
+
+                    if event.key == pygame.K_a:
+                        for tile in self.game.map:
+                            tile.scroll((1, 0))
+                        print(self.game.map[0].x)
+                        print(self.game.map[0].graphicsX)
+
+                    if event.key == pygame.K_d:
+                        for tile in self.game.map:
+                            tile.scroll((-1, 0))
+                        print(self.game.map[0].x)
+                        print(self.game.map[0].graphicsX)
+
+                    self.gameStateManager.screen.fill("black")
+
+                    for tile in self.game.map:
+                        tile.render(self.gameStateManager.screen)
+
+                    self.move_button.draw(self.gameStateManager.screen)
+                    if self.check_door():
+                        self.interact_button.draw(self.gameStateManager.screen)
+                    self.turn_button.draw(self.gameStateManager.screen)
+                    if self.check_melee():
+                        self.melee_button.draw(self.gameStateManager.screen)
+                    self.end_button.draw(self.gameStateManager.screen)
+                    
+                    pygame.display.flip()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.move_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if self.check_move():
+                            if self.calculate_movement_cost() <= (self.game.selectedModel.AP):
+                                self.game.selectedModel.AP -= self.calculate_movement_cost()
+                                self.move_model()       #add walking through flame
+                    
+                    elif self.interact_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if self.check_door():
+                            if self.game.selectedModel.AP != 0:
+                                self.game.interact_door(self.game.clickedTile)
+                                self.game.selectedModel.AP -= 1
+                                pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.clickedTile.button.rect)
+                                self.game.clickedTile.render(self.gameStateManager.screen)
+                                pygame.display.update(self.game.clickedTile.button.rect)
+
+                    elif self.turn_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.gameStateManager.screen.fill('black')
+                        self.gameStateManager.run_gamestate('gsTruning')
+
+                    elif self.end_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.game.selectedModel.AP = 0
+                        self.game.reset_select()
+                        self.game.reset_clicked()
+                        self.gameStateManager.screen.fill('black')
+                        self.gameStateManager.run_gamestate('gsTurn')
+
+                    else:
+                        for tile in self.game.map:
+                            if isinstance(tile, Tile):
+                                if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
+                                    if tile != self.game.selectedTile:
+                                        self.game.clickedTile = tile
+                                        if self.check_melee():
+                                            pygame.draw.rect(self.gameStateManager.screen, 'black', self.melee_button.rect)
+                                            self.melee_button.draw(self.gameStateManager.screen)
+                                            pygame.display.update(self.melee_button.rect)
+                                        if self.check_door():
+                                            pygame.draw.rect(self.gameStateManager.screen, 'black', self.interact_button.rect)
+                                            self.interact_button.draw(self.gameStateManager.screen)
+                                            pygame.display.update(self.interact_button.rect)
+                                        print(tile)
+                                        if tile.isOccupied:
+                                            if isinstance(tile.occupand, SpaceMarine):
+                                                self.game.clickedModel = tile.occupand
+
 
 class blAction:
     def __init__(self, gameStateManager, game) -> None:
@@ -1768,29 +1910,28 @@ class gsTurning:
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager = gameStateManager
         self.game = game
-
-    def run_thread(self):
-        while self.gameStateManager.runThread:
-            self.gameStateManager.run_map_turning()
-
-    def run(self):
-        startFace = self.game.selectedModel.face
-        turnAmount = 0
-        self.gameStateManager.runThread = True
-        thread = threading.Thread(target=self.run_thread,args=())
-        thread.start()
-
         self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.right_button = Button(810, 500, self.place_image, 1)
         self.left_button = Button(810, 600, self.amount_image, 1)
         self.accept_button = Button(810, 700, self.amount_image, 1)
 
+    def run(self):
+        turnAmount = 0
+
+        for tile in self.game.map:
+            tile.render(self.gameStateManager.screen)
+        
+        self.right_button.draw(self.gameStateManager.screen)
+        self.left_button.draw(self.gameStateManager.screen)
+        self.accept_button.draw(self.gameStateManager.screen)
+        pygame.display.flip()
+
+        print('GS Turning')
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.gameStateManager.runThread = False
-                    thread.join()
                     pygame.quit()
                     sys.exit()
 
@@ -1800,16 +1941,19 @@ class gsTurning:
                             tile.scroll((0, -1))
                         print(self.game.map[0].y)
                         print(self.game.map[0].graphicsY)
+
                     if event.key == pygame.K_w:
                         for tile in self.game.map:
                             tile.scroll((0, 1))
                         print(self.game.map[0].y)
                         print(self.game.map[0].graphicsY)
+
                     if event.key == pygame.K_a:
                         for tile in self.game.map:
                             tile.scroll((1, 0))
                         print(self.game.map[0].x)
                         print(self.game.map[0].graphicsX)
+
                     if event.key == pygame.K_d:
                         for tile in self.game.map:
                             tile.scroll((-1, 0))
@@ -1817,96 +1961,101 @@ class gsTurning:
                         print(self.game.map[0].graphicsX)
 
                     self.gameStateManager.screen.fill("black")
-                    pygame.display.update()
 
-            if self.left_button.draw(self.gameStateManager.screen):
-                turnAmount += 1
-                self.game.turn_model(self.game.selectedModel, "left")
-                self.gameStateManager.screen.fill("black")
+                    for tile in self.game.map:
+                        tile.render(self.gameStateManager.screen)
 
-            if self.right_button.draw(self.gameStateManager.screen):
-                turnAmount -= 1
-                self.game.turn_model(self.game.selectedModel, "right")
-                self.gameStateManager.screen.fill("black")
+                    self.left_button.draw(self.gameStateManager.screen)
+                    self.right_button.draw(self.gameStateManager.screen)
+                    self.accept_button.draw(self.gameStateManager.screen)
+                    
+                    pygame.display.flip()
 
-            if self.accept_button.draw(self.gameStateManager.screen):
-                if turnAmount == 0:
-                    pass
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.left_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        turnAmount += 1
+                        self.game.turn_model(self.game.selectedModel, "left")
+                        pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
+                        self.game.selectedTile.render(self.gameStateManager.screen)
+                        pygame.display.update(self.game.selectedTile.button.rect)
 
-                elif turnAmount < 0:
-                    cost = abs(turnAmount) % 4
-                    match cost:
-                        case 0:
+                    elif self.right_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        turnAmount -= 1
+                        self.game.turn_model(self.game.selectedModel, "right")
+                        pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
+                        self.game.selectedTile.render(self.gameStateManager.screen)
+                        pygame.display.update(self.game.selectedTile.button.rect)
+
+                    elif self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if turnAmount == 0:
                             pass
 
-                        case 1:
-                            if self.gameStateManager.freeTurn:
-                                pass
-                            elif self.game.selectedModel.AP > 0:
-                                self.game.reduce_ap_sm(self.game.selectedModel, 1)
-                                self.gameStateManager.freeMove = True
-                            else:
-                                print("Not enough AP/CP!")
-                                self.game.turn_model(self.game.selectedModel, "left")
+                        elif turnAmount < 0:
+                            cost = abs(turnAmount) % 4
+                            match cost:
+                                case 0:
+                                    pass
 
-                        case 2:
-                            if self.game.selectedModel.AP > 0:
-                                self.game.reduce_ap_sm(self.game.selectedModel, 1)
-                            else:
-                                print("Not enough AP/CP!")
-                                self.game.turn_model(self.game.selectedModel, "full")
+                                case 1:
+                                    if self.gameStateManager.freeTurn:
+                                        self.gameStateManager.freeTurn = False
+                                    elif self.game.selectedModel.AP > 0:
+                                        self.game.selectedModel.AP -= 1
+                                    else:
+                                        print("Not enough AP/CP!")
+                                        self.game.turn_model(self.game.selectedModel, "left")
 
-                        case 3:
-                            if self.gameStateManager.freeTurn:
-                                pass
-                            if self.game.selectedModel.AP > 0:
-                                self.game.reduce_ap_sm(self.game.selectedModel, 1)
-                                self.gameStateManager.freeMove = True
-                            else:
-                                print("Not enough AP/CP!")
-                                self.game.turn_model(self.game.selectedModel, "right")
+                                case 2:
+                                    if self.game.selectedModel.AP > 0:
+                                        self.game.selectedModel.AP -= 1
+                                    else:
+                                        print("Not enough AP/CP!")
+                                        self.game.turn_model(self.game.selectedModel, "full")
 
-                elif turnAmount > 0:
-                    cost = abs(turnAmount) % 4
-                    match cost:
-                        case 0:
-                            pass
+                                case 3:
+                                    if self.gameStateManager.freeTurn:
+                                        self.gameStateManager.freeTurn = False
+                                    elif self.game.selectedModel.AP > 0:
+                                        self.game.selectedModel.AP -= 1
+                                    else:
+                                        print("Not enough AP/CP!")
+                                        self.game.turn_model(self.game.selectedModel, "right")
 
-                        case 1:
-                            if self.gameStateManager.freeTurn == True:
-                                pass
-                            elif self.game.selectedModel.AP > 0:
-                                self.game.reduce_ap_sm(self.game.selectedModel, 1)
-                                self.gameStateManager.freeMove = True
-                            else:
-                                print("Not enough AP/CP!")
-                                self.game.turn_model(self.game.selectedModel, "right")
-                                
+                        elif turnAmount > 0:
+                            cost = abs(turnAmount) % 4
+                            match cost:
+                                case 0:
+                                    pass
 
-                        case 2:
-                            if self.game.selectedModel.AP > 0:
-                                self.game.reduce_ap_sm(self.game.selectedModel, 1)
-                            else:
-                                print("Not enough AP/CP!")
-                                self.game.turn_model(self.game.selectedModel, "full")
+                                case 1:
+                                    if self.gameStateManager.freeTurn:
+                                        self.gameStateManager.freeTurn = False
+                                    elif self.game.selectedModel.AP > 0:
+                                        self.game.selectedModel.AP -= 1
+                                    else:
+                                        print("Not enough AP/CP!")
+                                        self.game.turn_model(self.game.selectedModel, "right")
+                                        
 
-                        case 3:
-                            if self.gameStateManager.freeTurn:
-                                pass
-                            elif self.game.selectedModel.AP > 0:
-                                self.game.reduce_ap_sm(self.game.selectedModel, 1)
-                                self.gameStateManager.freeMove = True
-                            else:
-                                print("Not enough AP/CP!")
-                                self.game.turn_model(self.game.selectedModel, "left")
+                                case 2:
+                                    if self.game.selectedModel.AP > 0:
+                                        self.game.selectedModel.AP -= 1
+                                    else:
+                                        print("Not enough AP/CP!")
+                                        self.game.turn_model(self.game.selectedModel, "full")
 
-                self.gameStateManager.runThread = False
-                self.gameStateManager.screen.fill("black")
-                print(self.game.selectedModel.AP)
-                self.gameStateManager.run_gamestate("smAction")
+                                case 3:
+                                    if self.gameStateManager.freeTurn:
+                                        self.gameStateManager.freeTurn = False
+                                    elif self.game.selectedModel.AP > 0:
+                                        self.game.selectedModel.AP -= 1
+                                    else:
+                                        print("Not enough AP/CP!")
+                                        self.game.turn_model(self.game.selectedModel, "left")
 
-                #implement switch to action menu!
-            pygame.display.update()
+                        self.gameStateManager.screen.fill("black")
+                        print(self.game.selectedModel.AP)
+                        self.gameStateManager.run_gamestate("gsAction")
 
 class gamestateMain:
     def __init__(self,gameStateManager, game) -> None:

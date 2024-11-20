@@ -18,3 +18,6 @@ Blips can be revealed outside Entry Areas (List, blitting a purple number?)
 
 limit number of GS models in play to 22
 implement Broodlord revela if possible
+
+checkmove needs to pe appended so that it blocks models from passing diagonally between a model and a wall(p.59)
+freeMove needs to be implemented so that the GS Player does not get cheaper back movement(not implement it at all??)
