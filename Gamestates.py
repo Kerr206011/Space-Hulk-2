@@ -19,8 +19,7 @@ class GameStateManager:     #class to manage interactions between gamestates and
                            "main":gamestateMain(self, self.game),
                            "gsStart": BLstart(self, self.game),
                            "blSelect": ChooseBlip(self, self.game), 
-                           "gsPlace": PlaceBL(self, self.game), 
-                           "mlRoll": MeleeDiceRoll(self, self.game), 
+                           "gsPlace": PlaceBL(self, self.game),  
                            "mlRollDoorSM": MeleeDiceRollDoorSM(self, self.game),
                            "mlRollDoorGS": MeleeDiceRollDoorGS(self, self.game),
                            "smPlace": PlaceSM(self, self.game)}
@@ -770,12 +769,21 @@ class smAction:
                                 if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
                                     if tile != self.game.selectedTile:
                                         self.game.clickedTile = tile
-                                        if (self.game.selectedTile.x + self.game.selectedModel.face[0] == tile.x) and (self.game.selectedTile.y + self.game.selectedModel.face[1] == tile.y):
-                                            if isinstance(tile, Door):
-                                                if tile.isOpen == False:
+                                        if self.check_door():
+                                            if tile.isOpen == False:
+                                                if self.check_melee():
                                                     pygame.draw.rect(self.gameStateManager.screen, 'black', self.melee_button.rect)
                                                     self.melee_button.draw(self.gameStateManager.screen)
                                                     pygame.display.update(self.melee_button.rect)
+                                                pygame.draw.rect(self.gameStateManager.screen, 'black', self.interact_button.rect)
+                                                self.interact_button.draw(self.gameStateManager.screen)
+                                                pygame.display.update(self.interact_button.rect)
+                                        else:
+                                            pygame.draw.rect(self.gameStateManager.screen, 'black', self.melee_button.rect)
+                                            pygame.display.update(self.melee_button.rect)
+                                            pygame.draw.rect(self.gameStateManager.screen, 'black', self.interact_button.rect)
+                                            pygame.display.update(self.interact_button.rect)
+
                                         print(tile)
                                         if tile.isOccupied:
                                             if isinstance(tile.occupand, Genestealer):
@@ -1454,6 +1462,7 @@ class blAction:
         doorOpen = False
         occupied = False
         seen = True
+        inProximity = True
 
         if isinstance(self.game.clickedTile, Tile):
             if ((self.game.selectedTile.x + 1 == self.game.clickedTile.x) or (self.game.selectedTile.x - 1 == self.game.clickedTile.x) or (self.game.selectedTile.x == self.game.clickedTile.x)) and ((self.game.selectedTile.y + 1 == self.game.clickedTile.y) or (self.game.selectedTile.y - 1 == self.game.clickedTile.y) or (self.game.selectedTile.y == self.game.clickedTile.y)):
@@ -1477,7 +1486,14 @@ class blAction:
                 seen = False
                 print("seen!")
 
-            if inRange and burning and doorOpen and occupied and seen:
+            for tile in self.game.map:
+                if ((tile.x == self.game.clickedTile.x + 1) or (tile.x == self.game.clickedTile.x - 1) or (tile.x == self.game.clickedTile.x)) and ((tile.y == self.game.clickedTile.y + 1) or (tile.y == self.game.clickedTile.y - 1) or (tile.y == self.game.clickedTile.y)):
+                    if isinstance(tile, Tile):
+                        if tile.isOccupied:
+                            if tile.occupand in self.game.smModelList:
+                                inProximity = False
+
+            if inRange and burning and doorOpen and occupied and seen and inProximity:
                 return True
             else:
                 return False 
@@ -1690,18 +1706,32 @@ class revealGS:
                 self.gameStateManager.run_gamestate('gsTurn')
 
         print (self.game.selectedModel)
+        if isinstance(self.game.selectedTile, EntryPoint):
+            self.game.selectedTile.blips.remove(self.game.selectedModel)
         #add Broodlord Button here
         self.game.blipReserve.append(self.game.selectedModel.count)
         self.game.blModelList.remove(self.game.selectedModel)
         self.game.selectedModel = gsList.pop(0)
-        self.game.selectedTile.occupand = self.game.selectedModel
-        self.game.gsModelList.append(self.game.selectedModel)
+        if isinstance(self.game.selectedTile, Tile):
+            self.game.selectedTile.occupand = self.game.selectedModel
+            self.game.gsModelList.append(self.game.selectedModel)
+
+        elif isinstance(self.game.selectedTile, EntryPoint):
+            self.game.selectedTile.genstealers.append(self.game.selectedModel)
+            for model in gsList:
+                self.game.selectedTile.genstealers.append(model)
+            print(self.game.selectedTile.genstealers)
+            self.game.reset_select()
+            self.game.reset_clicked()
+            self.gameStateManager.screen.fill('black')
+            self.gameStateManager.run_gamestate('gsTurn')
 
         for tile in self.game.map:
             tile.render(self.gameStateManager.screen)
 
-        self.right_button.draw(self.gameStateManager.screen)
-        self.left_button.draw(self.gameStateManager.screen)
+        if isinstance(self.game.selectedTile, Tile):
+            self.right_button.draw(self.gameStateManager.screen)
+            self.left_button.draw(self.gameStateManager.screen)
         self.accept_button.draw(self.gameStateManager.screen)
         
         pygame.display.flip()
@@ -1742,8 +1772,9 @@ class revealGS:
                     for tile in self.game.map:
                         tile.render(self.gameStateManager.screen)
 
-                    self.right_button.draw(self.gameStateManager.screen)
-                    self.left_button.draw(self.gameStateManager.screen)
+                    if isinstance(self.game.selectedTile, Tile):
+                        self.right_button.draw(self.gameStateManager.screen)
+                        self.left_button.draw(self.gameStateManager.screen)
                     if hasPlaced:
                         self.accept_button.draw(self.gameStateManager.screen)
                     if hasPlaced == False:
@@ -1753,18 +1784,20 @@ class revealGS:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.left_button.rect.collidepoint(pygame.mouse.get_pos()):
-                        if hasPlaced:
-                            self.game.turn_model(self.game.selectedModel, "left")
-                            pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
-                            self.game.selectedTile.render(self.gameStateManager.screen)
-                            pygame.display.update(self.game.selectedTile.button.rect)
+                        if isinstance(self.game.selectedTile, Tile):
+                            if hasPlaced:
+                                self.game.turn_model(self.game.selectedModel, "left")
+                                pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
+                                self.game.selectedTile.render(self.gameStateManager.screen)
+                                pygame.display.update(self.game.selectedTile.button.rect)
 
                     elif self.right_button.rect.collidepoint(pygame.mouse.get_pos()):
-                        if hasPlaced:
-                            self.game.turn_model(self.game.selectedModel, "right")
-                            pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
-                            self.game.selectedTile.render(self.gameStateManager.screen)
-                            pygame.display.update(self.game.selectedTile.button.rect)
+                        if isinstance(self.game.selectedTile, Tile):
+                            if hasPlaced:
+                                self.game.turn_model(self.game.selectedModel, "right")
+                                pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
+                                self.game.selectedTile.render(self.gameStateManager.screen)
+                                pygame.display.update(self.game.selectedTile.button.rect)
 
                     elif self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if gsList.__len__() == 0 or freeTiles.__len__() == 0:
@@ -1775,7 +1808,7 @@ class revealGS:
                         else:
                             hasPlaced = False
                             self.game.selectedModel = gsList.pop(0)
-                            if self.game.selectedTile in freeTiles:
+                            if (self.game.selectedTile in freeTiles) and not (isinstance(self.game.selcetedTile, EntryPoint)):
                                 freeTiles.remove(self.game.selectedTile)
                             pygame.draw.rect(self.gameStateManager.screen,'black',self.accept_button.rect)
                             self.place_button.draw(self.gameStateManager.screen)
@@ -2168,246 +2201,6 @@ class gamestateMain:
 
             pygame.display.update()
 
-
-class MeleeDiceRoll:
-    def __init__(self, gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
-        self.dice_1 = Dice(10,10)
-        self.dice_2 = Dice(110, 10)
-        self.dice_3 = Dice(210, 10)
-        self.dice_4 = Dice(410, 10)
-        self.dice_5 = Dice(510, 10)
-
-    def turn_to_face(self, attacker, defender):
-        match attacker.face:
-            case (1, 0):
-                match defender.face:
-                    case (-1, 0):
-                        pass
-                    case (1, 0):
-                        self.game.turn_model(defender, "full")
-                    case (0, -1):
-                        self.game.turn_model(defender, "left")
-                    case (0, 1):
-                        self.game.turn_model(defender, "right")
-            case (-1, 0):
-                match defender.face:
-                    case (1, 0):
-                        pass
-                    case (-1, 0):
-                        self.game.turn_model(defender, "full")
-                    case (0, 1):
-                        self.game.turn_model(defender, "left")
-                    case (0, -1):
-                        self.game.turn_model(defender, "right")
-            case (0, 1):
-                match defender.face:
-                    case (0, -1):
-                        pass
-                    case (0, 1):
-                        self.game.turn_model(defender, "full")
-                    case (1, 0):
-                        self.game.turn_model(defender, "left")
-                    case (-1, 0):
-                        self.game.turn_model(defender, "right")
-            case (0, -1):
-                match defender.face:
-                    case (0, 1):
-                        pass
-                    case (0, -1):
-                        self.game.turn_model(defender, "full")
-                    case(1, 0):
-                        self.game.turn_model(defender, "right")
-                    case(-1, 0):
-                        self.game.turn_model(defender, "left")
-
-    def run(self):
-        turnToFace = False
-        sm = None
-        gs = None
-        facing = self.game.is_facing(self.game.selectedModel, self.game.clickedModel)
-
-        if self.game.selectedModel in self.game.smModelList:
-            sm = self.game.selectedModel
-            gs = self.game.clickedModel
-        else:
-            gs = self.game.selectedModel
-            sm = self.game.clickedModel
-
-        self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
-        self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
-        self.accept_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
-        self.psyup_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
-        self.psydown_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
-        self.place_button = Button(810, 500, self.place_image, 1)
-        self.amount_button = Button(810, 600, self.amount_image, 1)
-        self.accept_button = Button(410, 700, self.accept_image, 1)
-        self.psyup_button = Button(410, 100, self.psyup_image, 1)
-        self.psydown_button = Button(410, 160, self.psydown_image, 1)
-        self.face_button = Button(810, 400, self.place_image, 1)
-
-        selectedDice = None
-        psyPoints = 0
-        
-        parry = False
-        guard = self.game.selectedModel.guard
-        winner = None
-
-        diceList = [self.dice_1, self.dice_2]
-
-        if self.game.isPlaying == self.game.player1:
-            if sm.weapon != "Thunderhammer":
-                diceList.append(self.dice_3)
-            if sm.weapon == "Powersword":
-                parry = True
-            if self.game.selectedModel.weapon == "Lightningclaws":
-                diceList.append(self.dice_4)
-                diceList.append(self.dice_5)
-            else:
-                diceList.append(self.dice_4)
-
-        elif self.game.isPlaying == self.game.player2:
-            if self.game.is_facing(gs, sm):
-                if sm.weapon != "Thunderhammer" or facing == False:
-                    diceList.append(self.dice_3)
-                if sm.weapon == "Powersword" and facing:
-                    parry = True
-                if sm.weapon == "Lightningclaws" and facing:
-                    diceList.append(self.dice_4)
-                    diceList.append(self.dice_5)
-                else:
-                    diceList.append(self.dice_4)
-
-        a = True
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-            self.gameStateManager.screen.fill("Black")
-            if a:
-                for dice in diceList:
-                    dice.roll_dice(self.gameStateManager.screen)
-
-                    if self.dice_5 in diceList:
-                        winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, self.dice_1.face, self.dice_2.face, self.dice_3.face, self.dice_4.face, self.dice_5.face, psyPoints)
-                    elif self.dice_3 in diceList:
-                        winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, self.dice_1.face, self.dice_2.face, self.dice_3.face, self.dice_4.face, 0, psyPoints)
-                    else:
-                        winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, self.dice_1.face, self.dice_2.face, 0, self.dice_4.face, 0, psyPoints)
-
-                    if winner in self.game.smModelList:
-                        print("SM Wins!")
-                    elif winner == None:
-                        print("Draw!")
-                    else:
-                        print("GS Wins!")
-
-                a = False
-
-            for dice in diceList:
-                if dice.show_result(self.gameStateManager.screen):
-                    selectedDice = dice
-                    print(selectedDice)
-
-            if parry == True:
-                if self.place_button.draw(self.gameStateManager.screen):
-                    if selectedDice == self.dice_1 or selectedDice == self.dice_2 or selectedDice == self.dice_3:
-                            selectedDice.roll_dice(self.gameStateManager.screen)
-                            parry = False
-                            winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, self.dice_1.face, self.dice_2.face, self.dice_3.face, self.dice_4.face, 0, 0)
-
-                            if winner in self.game.smModelList:
-                                print("SM Wins!")
-                            elif winner == None:
-                                print("Draw!")
-                            else:
-                                print("GS Wins!")
-
-            if guard == True:
-                if self.amount_button.draw(self.gameStateManager.screen):
-                    if selectedDice == self.dice_4 or selectedDice == self.dice_5:
-                        selectedDice.roll_dice(self.gameStateManager.screen)
-                        guard = False
-                        if self.dice_5 in diceList:
-                            winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, self.dice_1.face, self.dice_2.face, self.dice_3.face, self.dice_4.face, self.dice_5.face, psyPoints)
-                        elif self.dice_3 in diceList:
-                            winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, self.dice_1.face, self.dice_2.face, self.dice_3.face, self.dice_4.face, 0, psyPoints)
-                        else:
-                            winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, self.dice_1.face, self.dice_2.face, 0, self.dice_4.face, 0, psyPoints)
-                        
-                        if winner in self.game.smModelList:
-                            print("SM Wins!")
-                        elif winner == None:
-                            print("Draw!")
-                        else:
-                            print("GS Wins!")
-
-            if sm.weapon == "Axe":
-                if self.psyup_button.draw(self.gameStateManager.screen):
-                    if psyPoints <= self.game.psyPoints:
-                        psyPoints += 1
-                        winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, self.dice_1.face, self.dice_2.face, self.dice_3.face, self.dice_4.face, 0, psyPoints)
-                        
-                        if winner in self.game.smModelList:
-                            print("SM Wins!")
-                        elif winner == None:
-                            print("Draw!")
-                        else:
-                            print("GS Wins!")
-
-                if self.psydown_button.draw(self.gameStateManager.screen):
-                    if psyPoints > 0:
-                        psyPoints -= 1
-                        winner = self.game.melee(self.game.selectedModel, self.game.clickedModel, self.dice_1.face, self.dice_2.face, self.dice_3.face, self.dice_4.face, 0, psyPoints)
-                        
-                        if winner in self.game.smModelList:
-                            print("SM Wins!")
-                        elif winner == None:
-                            print("Draw!")
-                        else:
-                            print("GS Wins!")
-
-            if winner != self.game.selectedModel:
-                if self.face_button.draw(self.gameStateManager.screen):
-                    if turnToFace:
-                        turnToFace = False
-                        print("turn to face")
-                    else:
-                        turnToFace = True
-                        print("dont turn to face")
-
-            if self.accept_button.draw(self.gameStateManager.screen):
-                self.game.psyPoints -= psyPoints
-                print(self.game.psyPoints)
-                if turnToFace:
-                    self.turn_to_face(self.game.selectedModle, self.game.clickedModel)
-                    
-                if winner == None:
-                    pass
-                    #import option to turn, maby even in this menu?
-                elif winner == self.game.selectedModel:
-                    if facing:
-                        self.game.destroy_model(self.game.clickedModel, self.game.clickedTile)
-                else: 
-                    if facing:
-                        self.game.destroy_model(self.game.selectedModel, self.game.selectedTile)  
-
-                print(game.selectedModel)
-                print(game.clickedModel)   
-                self.gameStateManager.screen.fill("black")
-                if self.game.selectedModel != None:
-                    if self.game.isPlaying == self.game.player1:
-                        self.gameStateManager.run_gamestate("smAction")
-                    else:
-                        self.gameStateManager.run_gamestate()
-                else:
-                    if self.game.isPlaying == self.game.player1:
-                        self.gameStateManager.run_gamestate("smTurn")
-                    else:
-                        self.gameStateManager.run_gamestate()
-            pygame.display.update()
             
 pygame.init()
 game = Game()
