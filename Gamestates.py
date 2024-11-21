@@ -22,6 +22,7 @@ class GameStateManager:     #class to manage interactions between gamestates and
                            "gsPlace": PlaceBL(self, self.game), 
                            "mlRoll": MeleeDiceRoll(self, self.game), 
                            "mlRollDoorSM": MeleeDiceRollDoorSM(self, self.game),
+                           "mlRollDoorGS": MeleeDiceRollDoorGS(self, self.game),
                            "smPlace": PlaceSM(self, self.game)}
         self.runThread = True
 
@@ -1406,6 +1407,14 @@ class gsAction:
                         self.gameStateManager.screen.fill('black')
                         self.gameStateManager.run_gamestate('gsTurn')
 
+                    elif self.melee_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if self.game.selectedModel.AP != 0:
+                            if self.game.clickedTile != None:
+                                if self.check_melee():
+                                    if self.game.clickedTile.isOccupied == False:
+                                        self.gameStateManager.screen.fill("Black")  #replace with semi Transparent blit
+                                        self.gameStateManager.run_gamestate("mlRollDoorGS")
+
                     else:
                         for tile in self.game.map:
                             if isinstance(tile, Tile):
@@ -2056,6 +2065,73 @@ class gsTurning:
                         self.gameStateManager.screen.fill("black")
                         print(self.game.selectedModel.AP)
                         self.gameStateManager.run_gamestate("gsAction")
+
+
+class MeleeDiceRollDoorGS:
+    def __init__(self, gameStateManager, game) -> None:
+        self.gameStateManager = gameStateManager
+        self.game = game
+        self.dice_1 = Dice(10,10)
+        self.dice_2 = Dice(110, 10)
+        self.dice_3 = Dice(210, 10)
+        self.rollAgain_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.accept_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.rollAgain_button = Button(410, 500, self.rollAgain_image, 1)
+        self.accept_button = Button(410, 700, self.accept_image, 1)
+
+    def melee_door(self, roll_1, roll_2, roll_3):
+        if roll_1 > 5 or roll_2 > 5 or roll_3 > 5:
+            return True
+    
+    def run(self):
+        roll_1 = 0
+        roll_2 = 0
+        roll_3 = 0
+
+        diceList = []
+
+        diceList.append(self.dice_1)
+        diceList.append(self.dice_2)
+        diceList.append(self.dice_3)
+        
+        self.accept_button.draw(self.gameStateManager.screen)
+        if self.game.selectedModel.AP != 0:
+            self.rollAgain_button.draw(self.gameStateManager.screen)
+
+        pygame.display.flip()
+
+        for dice in diceList:
+            dice.roll_dice(self.gameStateManager.screen)
+        roll_1 = self.dice_1.face
+        roll_2 = self.dice_2.face
+        roll_3 = self.dice_3.face
+
+        print('Melee Diceroll Door GS')
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+
+                    if self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if self.melee_door(roll_1, roll_2, roll_3):
+                            self.game.map.remove(self.game.clickedTile)
+                            newTile = self.game.clickedTile.get_destroyed()
+                            self.game.map.append(newTile)
+                            self.game.clickedTile = newTile
+                        self.gameStateManager.screen.fill('black')
+                        self.gameStateManager.run_gamestate("gsAction")
+
+                    
+                    if self.game.selectedModel.AP != 0:
+                        if self.rollAgain_button.rect.collidepoint(pygame.mouse.get_pos()):
+                            self.game.selectedModel.AP -= 1
+                            self.gameStateManager.screen.fill('black')
+                            self.gameStateManager.run_gamestate("mlRollDoorGS")
+
 
 class gamestateMain:
     def __init__(self,gameStateManager, game) -> None:
