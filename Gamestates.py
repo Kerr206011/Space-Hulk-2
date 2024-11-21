@@ -1169,8 +1169,220 @@ class MeleeDiceRollDoorSM:
                             self.reduce_ap(1)
                             self.gameStateManager.screen.fill('black')
                             self.gameStateManager.run_gamestate("mlRollDoorSM")
-                                                   
 
+
+class MeleeDiceRollSM:
+    def __init__(self, gameStateManager, game) -> None:
+        self.game = game
+        self.gameStateManager = gameStateManager
+        self.dice_1 = Dice(10, 10)
+        self.dice_2 = Dice(110, 10)
+        self.dice_3 = Dice(210, 10)
+        self.dice_4 = Dice(360, 10)
+        self.dice_5 = Dice(460,10)
+        self.accept_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.reroll_image = pygame.image.load('Pictures/Tiles/Floor_1.png')     
+        self.psyup_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.psydown_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.turn_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.accept_button = Button(500,100, self.accept_image, 1)
+        self.reroll_button = Button(100,100, self.reroll_image, 1)
+        self.psyup_button = Button(200,100, self.psyup_image, 1)
+        self.psydown_button = Button(300,100, self.psydown_image, 1)
+        self.turn_button = Button(400,100, self.turn_image, 1)
+
+    def melee_model(self, roll_1, roll_2, roll_3, roll_4, roll_5, psypoints = 0):
+        attacker = self.game.selectedModel
+        defender = self.game.clickedModel
+        facing = self.game.is_facing(attacker,defender)
+
+        if attacker.weapon == "Thunderhammer":
+            roll_3 = 0
+            roll_4 += 2
+        if attacker.weapon == "Powersword":
+            roll_4 += 1
+        if attacker.weapon == "Lightningclaws":
+            if roll_1 > roll_2:
+                roll_4 +=1
+            else:
+                roll_5 +=1
+        if attacker.weapon == "Axe":
+            roll_4 +=1
+            roll_4 += psypoints
+
+        if defender.isBroodlord and facing:
+            if attacker.weapon != "Thunderhammer":
+                if (roll_1 > roll_2 and roll_2 > roll_3) or (roll_3 > roll_2 and roll_2 > roll_1):
+                    roll_1 = roll_1 + roll_3
+                elif (roll_1 > roll_3 and roll_3 > roll_2) or (roll_2 > roll_3 and roll_3 > roll_1):
+                    roll_1 = roll_1 + roll_2
+                elif (roll_2 > roll_1 and roll_1 > roll_3) or (roll_3 > roll_1 and roll_1 > roll_2):
+                    roll_1 = roll_2 + roll_3
+            else:
+                roll_1 = roll_1 + roll_2
+
+
+        if attacker.weapon == "Thunderhammer":
+            if roll_1 > roll_4 or roll_2 > roll_4:
+                winner = defender
+            elif roll_1 == roll_4 or roll_2 == roll_4:
+                winner = None
+            else:
+                winner = attacker
+        
+        elif attacker.weapon == "Powersword":
+            if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                winner = defender
+            elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                winner = None
+            else:
+                winner = attacker
+
+        elif attacker.weapon == "Lightningclaws":
+            if (roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4) and (roll_1 > roll_5 or roll_2 > roll_5 or roll_3 > roll_5):
+                winner = defender
+            elif (roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4 and roll_4 > roll_5) or (roll_1 == roll_5 or roll_2 == roll_5 or roll_3 == roll_5 and roll_4 < roll_5):
+                winner = None
+            else:
+                winner = attacker
+
+        elif attacker.weapon == "Axe":
+            if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                winner = defender
+            elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                winner = None
+            else:
+                winner = attacker
+        
+        else:
+            if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                winner = defender
+            elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                winner = None
+            else:
+                winner = attacker
+
+        return winner  
+
+    def loose(self):
+        model = self.game.selectedModel
+        self.game.smModelList.remove(model)
+        self.game.selectedTile.isOccupied = False
+        self.game.selectedTile.occupand = None
+        self.game.reset_select()
+        self.game.reset_clicked()
+        self.gameStateManager.screen.fill('black')
+        self.gameStateManager.run_gamestate("smTurn")
+
+    def win(self):
+        model = self.game.clickedModel
+        self.game.gsModelList.remove(model)
+        self.game.clickedTile.isOccupied = False
+        self.game.clickedTile.occupand = None
+        self.game.reset_clicked()
+        self.gameStateManager.screen.fill('black')
+        self.gameStateManager.run_gamestate('smAction')
+
+    def adjust_facing(self):
+        attacker = self.game.selectedModel
+        defender = self.game.clickedModel
+        wantedFace = (attacker.face[0] * (-1), attacker.face[1] * (-1))
+
+        while defender.face != wantedFace:
+            game.turn_model(defender, "left")
+
+    def run(self):
+        roll_1 = 0 
+        roll_2 = 0
+        roll_3 = 0
+        roll_4 = 0
+        roll_5 = 0
+        diceList = []
+        facing = self.game.is_facing(self.game.selectedModel, self.game.clickedModel)
+        reroll = False
+        if self.game.selectedModel.weapon == "Powersword":
+            reroll = True
+        psypoints = 0
+        turn = False
+
+        self.accept_button.draw(self.gameStateManager.screen)
+        self.reroll_button.draw(self.gameStateManager.screen)
+        self.turn_button.draw(self.gameStateManager.screen)
+        if self.game.selectedModel.weapon == "Axe":
+            self.psyup_button.draw(self.gameStateManager.screen)
+            self.psydown_button.draw(self.gameStateManager.screen)
+
+        diceList.append(self.dice_1, self.dice_2)
+        self.dice_1.roll_dice(self.gameStateManager.screen)
+        roll_1 = self.dice_1.face
+        self.dice_2.roll_dice(self.gameStateManager.screen)
+        roll_2 = self.dice_2.face
+
+        if self.game.selectedModel.weapon != "Thunderhammer":
+            self.dice_3.roll_dice(self.gameStateManager.screen)
+            roll_3 = self.dice_3.face
+            diceList.append(self.dice_3)
+
+        self.dice_4.roll_dice(self.gameStateManager.screen)
+        roll_4 = self.dice_4.face
+        diceList.append(self.dice_4)
+        if self.game.selectedModel.weapon == "Lightningclaws":
+            self.dice_5.roll_dice(self.gameStateManager.screen)
+            roll_5 = self.dice_5.face
+            diceList.append(self.dice_5)
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+
+                    if self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        print(self.melee_model(roll_1,roll_2,roll_3,roll_4,roll_5,psypoints))
+                        if self.melee_model(roll_1, roll_2,roll_3,roll_4,roll_5,psypoints) == self.game.clickedModel:
+                            if facing:
+                                self.loose()
+                            else:
+                                if turn:
+                                    self.adjust_facing()
+                                self.gameStateManager.screen.fill('black')
+                                self.gameStateManager.run_gamestate('smAction')
+                        elif self.melee_model(roll_1, roll_2,roll_3,roll_4,roll_5,psypoints) == self.game.selectedModel:
+                            self.win()
+                        else:
+                            if turn:
+                                self.adjust_facing()
+                            self.gameStateManager.screen.fill('black')
+                            self.gameStateManager.run_gamestate('smAction')
+
+                    if self.turn_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        turn = not turn
+                        print('Turn: '+turn)
+
+                    if reroll and self.reroll_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if roll_1 > roll_2 and roll_1 > roll_3:
+                            self.dice_1.roll_dice(self.gameStateManager.screen)
+                            roll_1 = self.dice_1.face
+                        elif roll_2 > roll_1 and roll_2 > roll_3:
+                            self.dice_2.roll_dice(self.gameStateManager.screen)
+                            roll_2 = self.dice_2.face
+                        else:
+                            self.dice_3.roll_dice(self.gameStateManager.screen)
+                            roll_3 = self.dice_3.face
+                        reroll = False
+
+                    if self.game.selectedModel.weapon == "Axe":
+                        if self.psyup_button.rect.collidepoint(pygame.mouse.get_pos()):
+                            if self.game.psyPoints != 0:
+                                psypoints += 1
+
+                        if self.psydown_button.rect.collidepoint(pygame.mouse.get_pos()):
+                            if psypoints != 0:
+                                psypoints -= 1
+       
+                                                 
 class ChooseBlip:
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager = gameStateManager
