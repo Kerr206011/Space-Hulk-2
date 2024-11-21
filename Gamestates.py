@@ -22,6 +22,7 @@ class GameStateManager:     #class to manage interactions between gamestates and
                            "gsPlace": PlaceBL(self, self.game),  
                            "mlRollDoorSM": MeleeDiceRollDoorSM(self, self.game),
                            "mlRollDoorGS": MeleeDiceRollDoorGS(self, self.game),
+                           "mlRollSM": MeleeDiceRollSM(self, self.game),
                            "smPlace": PlaceSM(self, self.game)}
         self.runThread = True
 
@@ -216,8 +217,13 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
         self.amount_button = Button(810, 600, self.amount_image, 1)
 
     def take_blips(self):
+        numb = 0
+        for tile in self.game.map:
+            if isinstance(tile, EntryPoint):
+                numb += (3 - tile.blips.__len__())
+        print(numb)
         x = 0
-        while x < self.BLAmount:
+        while x < self.BLAmount and x < numb:
             choice = random.randint(0, self.game.blipSack.__len__() - 1)
             print(choice)
             a = self.gameStateManager.game.blipSack.pop(choice)
@@ -758,10 +764,14 @@ class smAction:
                     elif self.melee_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if self.game.selectedModel.AP + self.game.cp != 0:
                             if self.game.clickedTile != None:
+                                self.reduce_ap(1)
                                 if self.check_melee():
                                     if self.game.clickedTile.isOccupied == False:
                                         self.gameStateManager.screen.fill("Black")  #replace with semi Transparent blit
-                                        self.gameStateManager.run_gamestate("mlRollDoorSM")
+                                        self.gameStateManager.run_gamestate("mlRollDoorSM")                                   
+                                    else:
+                                        self.gameStateManager.screen.fill('black')
+                                        self.gameStateManager.run_gamestate("mlRollSM")
 
                     else:
                         for tile in self.game.map:
@@ -1185,11 +1195,11 @@ class MeleeDiceRollSM:
         self.psyup_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.psydown_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.turn_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
-        self.accept_button = Button(500,100, self.accept_image, 1)
-        self.reroll_button = Button(100,100, self.reroll_image, 1)
-        self.psyup_button = Button(200,100, self.psyup_image, 1)
-        self.psydown_button = Button(300,100, self.psydown_image, 1)
-        self.turn_button = Button(400,100, self.turn_image, 1)
+        self.accept_button = Button(410,500, self.accept_image, 1)
+        self.reroll_button = Button(410,100, self.reroll_image, 1)
+        self.psyup_button = Button(410,200, self.psyup_image, 1)
+        self.psydown_button = Button(410,300, self.psydown_image, 1)
+        self.turn_button = Button(410,400, self.turn_image, 1)
 
     def melee_model(self, roll_1, roll_2, roll_3, roll_4, roll_5, psypoints = 0):
         attacker = self.game.selectedModel
@@ -1275,8 +1285,7 @@ class MeleeDiceRollSM:
         self.gameStateManager.run_gamestate("smTurn")
 
     def win(self):
-        model = self.game.clickedModel
-        self.game.gsModelList.remove(model)
+        self.game.gsModelList.remove(self.game.clickedModel)
         self.game.clickedTile.isOccupied = False
         self.game.clickedTile.occupand = None
         self.game.reset_clicked()
@@ -1292,6 +1301,7 @@ class MeleeDiceRollSM:
             game.turn_model(defender, "left")
 
     def run(self):
+        print('Melee Diceroll SM')
         roll_1 = 0 
         roll_2 = 0
         roll_3 = 0
@@ -1312,7 +1322,10 @@ class MeleeDiceRollSM:
             self.psyup_button.draw(self.gameStateManager.screen)
             self.psydown_button.draw(self.gameStateManager.screen)
 
-        diceList.append(self.dice_1, self.dice_2)
+        pygame.display.flip()
+
+        diceList.append(self.dice_1)
+        diceList.append(self.dice_2)
         self.dice_1.roll_dice(self.gameStateManager.screen)
         roll_1 = self.dice_1.face
         self.dice_2.roll_dice(self.gameStateManager.screen)
@@ -1359,7 +1372,7 @@ class MeleeDiceRollSM:
 
                     if self.turn_button.rect.collidepoint(pygame.mouse.get_pos()):
                         turn = not turn
-                        print('Turn: '+turn)
+                        print(turn)
 
                     if reroll and self.reroll_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if roll_1 > roll_2 and roll_1 > roll_3:
@@ -2012,15 +2025,17 @@ class revealGS:
                                 pygame.display.update(self.game.selectedTile.button.rect)
 
                     elif self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
-                        if gsList.__len__() == 0 or freeTiles.__len__() == 0:
+                        if gsList.__len__() == 0 or freeTiles.__len__() == 0:                           
+                            self.game.gsModelList.append(self.game.selectedModel)
                             self.game.reset_select()
                             self.game.reset_clicked()
                             self.gameStateManager.screen.fill('black')
                             self.gameStateManager.run_gamestate('gsTurn')
                         else:
-                            hasPlaced = False
+                            hasPlaced = False  
+                            self.game.gsModelList.append(self.game.selectedModel)
                             self.game.selectedModel = gsList.pop(0)
-                            if (self.game.selectedTile in freeTiles) and not (isinstance(self.game.selcetedTile, EntryPoint)):
+                            if (self.game.selectedTile in freeTiles) and not (isinstance(self.game.selectedTile, EntryPoint)):
                                 freeTiles.remove(self.game.selectedTile)
                             pygame.draw.rect(self.gameStateManager.screen,'black',self.accept_button.rect)
                             self.place_button.draw(self.gameStateManager.screen)
