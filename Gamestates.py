@@ -37,61 +37,6 @@ class GameStateManager:     #class to manage interactions between gamestates and
             tile.render(self.screen)
         pygame.display.flip()
 
-    def run_map_command(self):      #method for showing the map in the commandphase
-        for tile in self.game.map:
-            tile.render(self.screen)
-
-    def run_map_blPlace(self):      #method for showing the map in the reinforcement phase
-        for tile in self.game.map:
-            if tile.button.draw(self.screen):
-                if isinstance(tile, EntryPoint):
-                    self.game.clickedTile = tile
-            tile.render(self.screen)
-        pygame.display.update()
-
-    def run_map_turning(self):
-        for tile in self.game.map:
-            tile.render(self.screen)
-        pygame.display.update()
-
-    def run_map_smActivation(self):
-        for tile in self.game.map:
-            if tile.button.draw(self.screen):
-                if isinstance(tile, Wall):
-                    pass
-                elif isinstance(tile, EntryPoint):
-                    pass
-                elif tile.isOccupied:
-                    if isinstance(tile.occupand, SpaceMarine):
-                        pass
-                    else:
-                        self.game.clickedTile = tile
-                        self.game.clickedModel = tile.occupand
-                else:
-                    self.clickedTile = tile
-                    print(self.clickedTile)
-            tile.render(self.screen)
-        pygame.display.update()
-
-    def run_map_smTurn(self):       #method for running the map during the Space Marine turn
-        for tile in self.game.map:
-            if tile.button.draw(self.screen):
-                if isinstance(tile, Wall):
-                    pass
-                elif isinstance(tile, EntryPoint):
-                    pass
-                elif tile.isOccupied:
-                    if isinstance(tile.occupand, SpaceMarine):
-                        self.game.selectedTile = tile
-                        self.game.selectedModel = tile.occupand
-                    else:
-                        self.game.clickedTile = tile
-                        self.game.clickedModel = tile.occupand
-                else:
-                    self.clickedTile = tile
-                    print(self.clickedTile)
-            tile.render(self.screen)
-        pygame.display.update()
 
 class BLstart:
     def __init__(self, gameStateManager, game) -> None:
@@ -108,7 +53,7 @@ class BLstart:
         x = 0
         while x < self.BLAmount:
             choice = random.randint(0, self.game.blipSack.__len__() - 1)
-            print(choice)
+            logger.debug(f"Chosen position in blipSack: {choice}")
             a = self.gameStateManager.game.blipSack.pop(choice)
             self.blipList.append(a)
             x += 1
@@ -120,14 +65,13 @@ class BLstart:
                 blip = Blip(a)
                 self.game.clickedTile.blips.append(blip)
                 self.game.blModelList.append(blip)
-                print(self.blipList)
-                print(game.clickedTile.blips)
-                print(game.clickedTile.blips[0].count)
+                logger.debug(f"Current Bliplist: {self.blipList}")
+                logger.debug(f"Blips in the clicked Tile: {game.clickedTile.blips}")
             else:
-                print("Too many blips outside the area!")
+                logger.debug("Too many blips outside the area!")
         else:
             #normally trow error to display for player to see
-            print("Can't Place Model there, please select valid Entrypoint!")
+            logger.warning("Non Entrypoint Tile clicked!")
 
     def endState(self):
         self.game.reset_select()
@@ -147,7 +91,7 @@ class BLstart:
 
         pygame.display.flip()
 
-        print('BL Start')
+        logger.info(f"Current GameState: blStart")
 
         while True:
             for event in pygame.event.get():
@@ -201,8 +145,7 @@ class BLstart:
                             if isinstance(tile, EntryPoint):
                                 if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
                                     self.game.clickedTile = tile  
-                                    print(tile.blips)  
-                                    print("It works!")
+                                    logger.debug(f"Blips on clicked Tile: {tile.blips}")  
 
 
 class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
@@ -221,11 +164,14 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
         for tile in self.game.map:
             if isinstance(tile, EntryPoint):
                 numb += (3 - tile.blips.__len__())
-        print(numb)
+        logger.debug(f"Amount of free Entrypoints: {numb}")
+        if numb == 0:
+            logger.debug(f"Skipping blPlace since there are no free Entrypoints")
+            self.gameStateManager.run_gamestate('gsTurn')
         x = 0
         while x < self.BLAmount and x < numb:
             choice = random.randint(0, self.game.blipSack.__len__() - 1)
-            print(choice)
+            logger.debug(f"Chosen position in blipSack: {choice}")
             a = self.gameStateManager.game.blipSack.pop(choice)
             self.blipList.append(a)
             x += 1
@@ -237,14 +183,13 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
                 blip = Blip(a)
                 self.game.clickedTile.blips.append(blip)
                 self.game.blModelList.append(blip)
-                print(self.blipList)
-                print(game.clickedTile.blips)
-                print(game.clickedTile.blips[0].count)
+                logger.debug(f"Current Bliplist: {self.blipList}")
+                logger.debug(f"Blips in the clicked Tile: {game.clickedTile.blips}")
             else:
-                print("Too many blips outside the area!")
+                print(f"Too many blips outside the area!")
         else:
             #normally trow error to display for player to see
-            print("Can't Place Model there, please select valid Entrypoint!")
+            logger.warning(f"Non Entrypoint Tile clicked!")
 
     def endState(self):
         for model in self.game.gsModelList:
@@ -255,7 +200,7 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
         self.game.reset_select()
         self.game.reset_clicked()
         self.gameStateManager.screen.fill("black")
-        self.gameStateManager.run_gamestate('gsTurn')  ### rewrite to GS turn
+        self.gameStateManager.run_gamestate('gsTurn')
 
     def run(self):
         self.BLAmount = self.game.reinforcement
@@ -270,7 +215,7 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
 
         pygame.display.flip()
 
-        print('Place BL')
+        logger.info(f"Current GameState: blStart")
 
         while True:
             for event in pygame.event.get():
@@ -323,9 +268,8 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
                         for tile in self.game.map:
                             if isinstance(tile, EntryPoint):
                                 if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
-                                    self.game.clickedTile = tile  
-                                    print(tile.blips)  
-                                    print("It works!")
+                                    self.game.clickedTile = tile
+                                    logger.debug(f"Blips on clicked Tile: {tile.blips}")  
 
 
 class PlaceSM:
@@ -349,9 +293,9 @@ class PlaceSM:
                 self.game.selectedTile.render(self.gameStateManager.screen)
                 pygame.display.update(self.game.selectedTile.button.rect)
             else:
-                print("Chose an unoccupied Tile!")
+                logger.warning(f"Occupied Tile chosen!")
         else:
-            print("Can't Place Model there, please select valid Entrypoint!")
+            logger.warning(f"Non ControlledArea Tile clicked!")
         
         if self.smList.__len__() == 0:
             self.gameStateManager.screen.fill('black')
@@ -384,7 +328,7 @@ class PlaceSM:
 
         pygame.display.flip()
 
-        print('Place SM')
+        logger.info("Current GameState: placeSM")
 
         while True:
             for event in pygame.event.get():
@@ -461,13 +405,12 @@ class PlaceSM:
                             pygame.display.update(self.game.selectedTile.button.rect)
                     if action:
                         for tile in self.game.map:
-                            if isinstance(tile, Tile):
+                            if isinstance(tile, ControlledArea):
                                 if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
                                     self.game.selectedTile = tile  
                                     if tile.isOccupied:
                                         self.game.selectedModel = tile.occupand
-                                    print(tile.occupand)   
-                                    print("It works!")
+                                    
 
 
 class commandPhase:
@@ -486,6 +429,19 @@ class commandPhase:
         self.gameStateManager.run_gamestate('smTurn')
 
     def run(self):
+        logger.info("Current GameState: Command")
+
+        reroll = False
+        for model in self.game.smModelList:
+            model.AP = 4
+            model.overwatch = False
+            model.guard = False
+            model.jam = False
+
+            if model.rank == "sergant":
+                reroll = True
+                logger.debug(f"Sergant model: {model} present")
+                logger.debug(f"Reroll of CP: {reroll}")
 
         for tile in self.game.map:
             if isinstance(tile, Tile):
@@ -495,21 +451,10 @@ class commandPhase:
             tile.render(self.gameStateManager.screen)
 
         self.accept_button.draw(self.gameStateManager.screen)
-        self.reroll_button.draw(self.gameStateManager.screen)
+        if reroll:
+            self.reroll_button.draw(self.gameStateManager.screen)
 
         pygame.display.flip()
-
-        print('command')
-
-        reroll = False
-        for model in self.game.smModelList:
-            model.AP = 4
-            model.overwatch = False
-            model.guard = False
-
-            if model.rank == "sergant":
-                reroll = True
-                print("sergant")
                 
         self.gameStateManager.freeShot = False
 
@@ -561,13 +506,16 @@ class commandPhase:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if reroll == True:
-                        if self.reroll_button.rect.collidepoint(pygame.mouse.get_pos()):    #remove Button after reroll
+                        if self.reroll_button.rect.collidepoint(pygame.mouse.get_pos()):    
                             self.dice.roll_dice(self.gameStateManager.screen)
                             self.roll = self.dice.face
                             reroll = False
+                            pygame.draw.rect(self.gameStateManager.screen, 'black', self.reroll_button.rect)
+                            pygame.display.update(self.reroll_button.rect)
 
                     if self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
                         self.game.cp = self.roll
+                        logger.debug(f"CP: {self.game.cp}")
                         self.endState()
 
 
@@ -657,7 +605,7 @@ class smAction:
         self.game.reset_clicked()
             
     def run(self):
-
+        logger.info("Current GameState: smAction")
         for tile in self.game.map:
             tile.render(self.gameStateManager.screen)
 
@@ -674,8 +622,6 @@ class smAction:
         # self.overwatch_button.draw(self.gameStateManager.screen)
 
         pygame.display.flip()
-
-        print('SM Action')
 
         while True:
             for event in pygame.event.get():
@@ -753,6 +699,11 @@ class smAction:
                     elif self.turn_button.rect.collidepoint(pygame.mouse.get_pos()):
                         self.gameStateManager.screen.fill('black')
                         self.gameStateManager.run_gamestate("smTurning")
+
+                    elif self.guard_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if self.game.selectedModel.AP + self.game.cp > 1:
+                            self.game.selectedModel.guard = True
+                            self.reduce_ap(2)
 
                     elif self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
                         self.game.selectedModel.AP = 0
@@ -1212,7 +1163,7 @@ class MeleeDiceRollSM:
         if attacker.weapon == "Powersword":
             roll_4 += 1
         if attacker.weapon == "Lightningclaws":
-            if roll_1 > roll_2:
+            if roll_4 > roll_5:
                 roll_4 +=1
             else:
                 roll_5 +=1
@@ -1249,12 +1200,15 @@ class MeleeDiceRollSM:
                 winner = attacker
 
         elif attacker.weapon == "Lightningclaws":
-            if (roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4) and (roll_1 > roll_5 or roll_2 > roll_5 or roll_3 > roll_5):
+            if ((roll_1 > roll_4) and (roll_1 > roll_5)) or ((roll_2 > roll_4) and (roll_2 > roll_5)) or ((roll_3 > roll_4) and (roll_3 > roll_5)):
                 winner = defender
-            elif (roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4 and roll_4 > roll_5) or (roll_1 == roll_5 or roll_2 == roll_5 or roll_3 == roll_5 and roll_4 < roll_5):
-                winner = None
-            else:
+                print(roll_1,roll_2,roll_3,roll_4,roll_5)
+            elif ((roll_4 > roll_1) and (roll_4 > roll_2) and (roll_4 > roll_3)) or ((roll_5 > roll_1) and (roll_5 > roll_2) and (roll_5 > roll_3)):
                 winner = attacker
+                print(roll_1,roll_2,roll_3,roll_4,roll_5)
+            else:
+                winner = None
+                print(roll_1,roll_2,roll_3,roll_4,roll_5)
 
         elif attacker.weapon == "Axe":
             if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
@@ -2406,7 +2360,7 @@ class gamestateMain:
         self.load_button = Button(810, 700, self.amount_image, 1)
         self.exit_button = Button(810, 800, self.amount_image, 1)
 
-        print('Main')
+        logger.debug("Gamestate Main")
 
         while True:
             for event in pygame.event.get():
@@ -2431,6 +2385,7 @@ class gamestateMain:
             
 pygame.init()
 game = Game()
+logger.info("Game initialized successfully.")
 # wall = Wall("Pictures/Tiles/Floor_1.png",1,1)
 # entry = EntryPoint("Pictures/Tiles/Floor_1.png",4,4)
 # game.map.append(entry)
@@ -2438,6 +2393,7 @@ game = Game()
 
 screen = screen = pygame.display.set_mode((900, 900), pygame.DOUBLEBUF)
 screen.fill("black")
+logger.info("Initialized screen.")
 gameStateManager = GameStateManager(game, screen)
 # game.selectedModel = game.smModelList[0]
 # game.clickedModel = game.gsModelList[0]

@@ -2,6 +2,18 @@ import json
 import random
 from Board import *
 from Models import *
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,  # Set to INFO, WARNING, or ERROR as needed
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler("game.log"),  # Save logs to a file
+        logging.StreamHandler()          # Also log to console
+    ]
+)
+
+logger = logging.getLogger(__name__)
 
 class Game():
     def __init__(self) -> None:
@@ -77,6 +89,9 @@ class Game():
 
     def load_level(self,levelFile):
         file_path = "Levels/"+levelFile+".json"
+
+        logger.info(file_path)
+
         with open(file_path, 'r') as json_file:
             data = json.load(json_file)
         self.level = data["level"]
@@ -84,7 +99,6 @@ class Game():
         self.reinforcement = data["reinforcement"]
         smList = data["smModelList"]
         self.broodLord = data["broodLord"]
-
         self.startBlip = data["startBlip"]
 
         bluePrint = data["map"]

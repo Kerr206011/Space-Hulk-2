@@ -7,7 +7,7 @@ terminator weapon/loadout can be displayed by classsystem (GW 8th symbols)
 
 interact button only shown when door to interact with
 
-implement burning/flamer
+implement burning/flamer/moving through flames
 
 Blips are only forced to lurk for one turn
 Blips cannot move within one square of a space marine
@@ -21,4 +21,6 @@ checkmove needs to pe appended so that it blocks models from passing diagonally 
 
 implement GS moving onto the board from entrypoint
 
-placebl needs to be changes so that in case of no empty entrypoints, it instantly skips it
+placebl needs to be changes so that the broodlord can be placed
+
+implement visual distinction for Guard/Overwatch/Jam
