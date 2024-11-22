@@ -23,4 +23,6 @@ implement GS moving onto the board from entrypoint
 
 placebl needs to be changes so that the broodlord can be placed
 
+the initial placement of blips must be skippable for certain missions
+
 implement visual distinction for Guard/Overwatch/Jam

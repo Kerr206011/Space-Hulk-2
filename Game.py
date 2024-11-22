@@ -37,6 +37,7 @@ class Game():
         self.psyPoints = 20
         self.broodLord = False
         self.maxGS = 23 #including Broodlord as he is classified as a Genstealer
+        self.reuseBlips = -1
 
     def make_save(self):
         saveMap = []

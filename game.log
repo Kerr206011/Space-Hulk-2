@@ -1,41 +1,6 @@
-2024-11-22 13:01:16,379 - INFO - Levels/level_1.json
-2024-11-22 13:01:16,981 - INFO - Game initialized successfully.
-2024-11-22 13:01:17,067 - INFO - Initialized screen.
-2024-11-22 13:01:17,148 - DEBUG - Gamestate Main
-2024-11-22 13:01:21,238 - INFO - Levels/level_1.json
-2024-11-22 13:01:35,373 - INFO - 13
-2024-11-22 13:01:35,374 - INFO - 13
-2024-11-22 13:31:23,724 - INFO - Levels/level_1.json
-2024-11-22 13:31:24,633 - INFO - Game initialized successfully.
-2024-11-22 13:31:24,758 - INFO - Initialized screen.
-2024-11-22 13:31:24,838 - DEBUG - Gamestate Main
-2024-11-22 13:31:25,966 - INFO - Levels/level_1.json
-2024-11-22 13:31:26,021 - INFO - Current GameState: placeSM
-2024-11-22 13:31:39,573 - WARNING - Non ControlledArea Tile clicked!
-2024-11-22 13:32:17,325 - DEBUG - Chosen position in blipSack: 18
-2024-11-22 13:32:17,326 - DEBUG - Chosen position in blipSack: 3
-2024-11-22 13:32:17,329 - INFO - Current GameState: blStart
-2024-11-22 13:32:18,692 - DEBUG - Blips on clicked Tile: []
-2024-11-22 13:32:19,539 - DEBUG - Current Bliplist: [1]
-2024-11-22 13:32:19,540 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000017B5DCF79B0>]
-2024-11-22 13:32:19,983 - DEBUG - Current Bliplist: []
-2024-11-22 13:32:19,983 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000017B5DCF79B0>, <Models.Blip object at 0x0000017B5DCF79E0>]
-2024-11-22 13:32:19,988 - INFO - Current GameState: Command
-2024-11-22 13:34:36,976 - INFO - Levels/level_1.json
-2024-11-22 13:34:37,817 - INFO - Game initialized successfully.
-2024-11-22 13:34:37,969 - INFO - Initialized screen.
-2024-11-22 13:34:38,061 - DEBUG - Gamestate Main
-2024-11-22 13:34:39,213 - INFO - Levels/level_1.json
-2024-11-22 13:34:39,273 - INFO - Current GameState: placeSM
-2024-11-22 13:34:52,540 - WARNING - Occupied Tile chosen!
-2024-11-22 13:35:36,238 - DEBUG - Chosen position in blipSack: 17
-2024-11-22 13:35:36,238 - DEBUG - Chosen position in blipSack: 0
-2024-11-22 13:35:36,242 - INFO - Current GameState: blStart
-2024-11-22 13:35:37,461 - DEBUG - Blips on clicked Tile: []
-2024-11-22 13:35:38,284 - DEBUG - Current Bliplist: [1]
-2024-11-22 13:35:38,285 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000029DEA2F7980>]
-2024-11-22 13:35:38,488 - DEBUG - Current Bliplist: []
-2024-11-22 13:35:38,489 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000029DEA2F7980>, <Models.Blip object at 0x0000029DEA2F79B0>]
-2024-11-22 13:35:38,493 - INFO - Current GameState: Command
-2024-11-22 13:35:38,494 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x0000029DEA734A40> present
-2024-11-22 13:35:38,495 - DEBUG - Reroll of CP: True
+2024-11-22 15:23:29,780 - INFO - Levels/level_1.json
+2024-11-22 15:23:30,259 - INFO - Game initialized successfully.
+2024-11-22 15:23:30,308 - INFO - Initialized screen.
+2024-11-22 15:23:30,351 - DEBUG - Gamestate Main
+2024-11-22 15:23:32,302 - INFO - Levels/level_1.json
+2024-11-22 15:23:32,333 - INFO - Current GameState: placeSM
