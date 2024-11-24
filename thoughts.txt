@@ -26,3 +26,9 @@ placebl needs to be changes so that the broodlord can be placed
 the initial placement of blips must be skippable for certain missions
 
 implement visual distinction for Guard/Overwatch/Jam
+
+melee logic on lightningclaws is wonky, error probably by r1 > r4 anf r1 = r5
+
+certain buttons don't appear/disappear
+
+sustained Fire needs to be proced on every gs individually

@@ -3,7 +3,7 @@ from Board import *
 from Game import *
 import pygame.docs 
 
-class GameStateManager:     #class to manage interactions between gamestates and provide a schared game object and storage
+class GameStateManager:     #class to manage interactions between gamestates and provide a shared game object and storage
     def __init__(self, game, screen) -> None:
         self.game = game
         self.screen = screen
@@ -23,13 +23,14 @@ class GameStateManager:     #class to manage interactions between gamestates and
                            "mlRollDoorSM": MeleeDiceRollDoorSM(self, self.game),
                            "mlRollDoorGS": MeleeDiceRollDoorGS(self, self.game),
                            "mlRollSM": MeleeDiceRollSM(self, self.game),
+                           "mlRollGS": MeleeDiceRollGS(self, self.game),
                            "smPlace": PlaceSM(self, self.game)}
-        self.runThread = True
+        self.runThread = True   #depricated
 
-        self.freeShot = False   #if sm has free shoot Action
-        self.freeTurn = False   #if gs has a free turn
+        self.freeShot = False   #if sm has free shoot Action and doesn't need to pay the AP for shooting
+        self.freeTurn = False   #if gs has a free turn and doesn't need to expend AP for turning 90°
 
-    def run_gamestate(self, gameState):     #method for executing the run methods of the individual gamestates
+    def run_gamestate(self, gameState):     #method for executing the run methods of the individual gamestates saved in self.gamestates
         self.gamestates[gameState].run()
 
     def refresh(self):
@@ -603,6 +604,9 @@ class smAction:
         pygame.display.update(self.game.selectedTile.button.rect)
         self.game.selectedTile = self.game.clickedTile
         self.game.reset_clicked()
+        self.gameStateManager.freeShot = True
+        self.game.selectedModel.guard = False
+        self.game.selectedModel.overwatch = False
             
     def run(self):
         logger.info("Current GameState: smAction")
@@ -611,7 +615,7 @@ class smAction:
 
         self.move_button.draw(self.gameStateManager.screen)
         self.turn_button.draw(self.gameStateManager.screen)
-        # self.guard_button.draw(self.gameStateManager.screen)
+        self.guard_button.draw(self.gameStateManager.screen)
         if self.game.clickedTile != None:
             if self.check_melee():
                 self.melee_button.draw(self.gameStateManager.screen)
@@ -662,7 +666,7 @@ class smAction:
 
                     self.move_button.draw(self.gameStateManager.screen)
                     self.turn_button.draw(self.gameStateManager.screen)
-                    # self.guard_button.draw(self.gameStateManager.screen)
+                    self.guard_button.draw(self.gameStateManager.screen)
                     if self.game.clickedTile != None:
                         if self.check_melee():
                             self.melee_button.draw(self.gameStateManager.screen)
@@ -688,6 +692,8 @@ class smAction:
                         if self.check_door():
                             if self.game.selectedModel.AP + self.game.cp != 0:
                                 self.game.interact_door(self.game.clickedTile)
+                                self.game.selectedModel.guard = False
+                                self.game.selectedModel.overwatch = False
                                 self.reduce_ap(1)
                                 pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.clickedTile.button.rect)
                                 self.game.clickedTile.render(self.gameStateManager.screen)
@@ -703,7 +709,9 @@ class smAction:
                     elif self.guard_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if self.game.selectedModel.AP + self.game.cp > 1:
                             self.game.selectedModel.guard = True
+                            self.game.selectedModel.overwatch = False
                             self.reduce_ap(2)
+                            logger.debug(f"Guard == {self.game.selectedModel.guard}")
 
                     elif self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
                         self.game.selectedModel.AP = 0
@@ -719,9 +727,13 @@ class smAction:
                                 if self.check_melee():
                                     if self.game.clickedTile.isOccupied == False:
                                         self.gameStateManager.screen.fill("Black")  #replace with semi Transparent blit
+                                        self.game.selectedModel.guard = False
+                                        self.game.selectedModel.overwatch = False
                                         self.gameStateManager.run_gamestate("mlRollDoorSM")                                   
                                     else:
-                                        self.gameStateManager.screen.fill('black')
+                                        self.gameStateManager.screen.fill('black')                                    
+                                        self.game.selectedModel.guard = False
+                                        self.game.selectedModel.overwatch = False
                                         self.gameStateManager.run_gamestate("mlRollSM")
 
                     else:
@@ -753,18 +765,6 @@ class smAction:
                                                     pygame.draw.rect(self.gameStateManager.screen, 'black', self.melee_button.rect)
                                                     self.melee_button.draw(self.gameStateManager.screen)
                                                     pygame.display.update(self.melee_button.rect)
-
-
-            # if self.check_melee():
-            #     if self.melee_button.draw(self.gameStateManager.screen):
-            #         for tile in self.game.map:
-            #             if tile.x == self.game.selectedTile.x + self.game.selectedModel.face[0] and tile.y == self.game.selectedTile.y + self.game.selectedModel.face[1]:
-            #                 self.game.clickedTile = tile
-            #                 self.game.clickedModel = tile.occupand
-            #                 if tile.isOccupied:
-            #                     self.gameStateManager.run_gamestate("mlRoll")
-            #                 else:
-            #                     self.gameStateManager.run_gamestate("mlRollDoorSM")
           
 
 class smTurn:
@@ -958,7 +958,9 @@ class smTurning:
 
                                 case 1:
                                     if self.game.cp + self.game.selectedModel.AP > 0:
-                                        self.reduce_ap(1)
+                                        self.reduce_ap(1)                     
+                                        self.game.selectedModel.guard = False
+                                        self.game.selectedModel.overwatch = False
                                         self.gameStateManager.freeShot = True
                                     else:
                                         print("Not enough AP/CP!")
@@ -967,7 +969,9 @@ class smTurning:
                                 case 2:
                                     if self.game.cp + self.game.selectedModel.AP > 1:
                                         self.reduce_ap(2)
-                                        self.gameStateManager.freeShot = True
+                                        self.gameStateManager.freeShot = True                     
+                                        self.game.selectedModel.guard = False
+                                        self.game.selectedModel.overwatch = False
                                     else:
                                         print("Not enough AP/CP!")
                                         self.game.turn_model(self.game.selectedModel, "full")
@@ -975,7 +979,9 @@ class smTurning:
                                 case 3:
                                     if self.game.cp + self.game.selectedModel.AP > 0:
                                         self.reduce_ap(1)
-                                        self.gameStateManager.freeShot = True
+                                        self.gameStateManager.freeShot = True                     
+                                        self.game.selectedModel.guard = False
+                                        self.game.selectedModel.overwatch = False
                                     else:
                                         print("Not enough AP/CP!")
                                         self.game.turn_model(self.game.selectedModel, "right")
@@ -989,7 +995,9 @@ class smTurning:
                                 case 1:
                                     if self.game.cp + self.game.selectedModel.AP > 0:
                                         self.reduce_ap(1)
-                                        self.gameStateManager.freeShot = True
+                                        self.gameStateManager.freeShot = True                     
+                                        self.game.selectedModel.guard = False
+                                        self.game.selectedModel.overwatch = False
                                     else:
                                         print("Not enough AP/CP!")
                                         self.game.turn_model(self.game.selectedModel, "right")
@@ -998,7 +1006,9 @@ class smTurning:
                                 case 2:
                                     if self.game.cp + self.game.selectedModel.AP > 1:
                                         self.reduce_ap(2)
-                                        self.gameStateManager.freeShot = True
+                                        self.gameStateManager.freeShot = True                     
+                                        self.game.selectedModel.guard = False
+                                        self.game.selectedModel.overwatch = False
                                     else:
                                         print("Not enough AP/CP!")
                                         self.game.turn_model(self.game.selectedModel, "full")
@@ -1006,7 +1016,9 @@ class smTurning:
                                 case 3:
                                     if self.game.cp + self.game.selectedModel.AP > 0:
                                         self.reduce_ap(1)
-                                        self.gameStateManager.freeShot = True
+                                        self.gameStateManager.freeShot = True                     
+                                        self.game.selectedModel.guard = False
+                                        self.game.selectedModel.overwatch = False
                                     else:
                                         print("Not enough AP/CP!")
                                         self.game.turn_model(self.game.selectedModel, "left")
@@ -1125,7 +1137,7 @@ class MeleeDiceRollDoorSM:
                         self.gameStateManager.run_gamestate("smAction")
 
                     
-                    if self.game.selectedModel.AP + self.game.cp != 0:
+                    if (self.game.selectedModel.AP + self.game.cp != 0) and (self.melee_door(roll_1,roll_2,psyPoints) == False):
                         if self.rollAgain_button.rect.collidepoint(pygame.mouse.get_pos()):
                             self.reduce_ap(1)
                             self.gameStateManager.screen.fill('black')
@@ -1255,7 +1267,7 @@ class MeleeDiceRollSM:
             game.turn_model(defender, "left")
 
     def run(self):
-        print('Melee Diceroll SM')
+        logger.info(f"Current gamestate: mlRollSM")
         roll_1 = 0 
         roll_2 = 0
         roll_3 = 0
@@ -1335,9 +1347,12 @@ class MeleeDiceRollSM:
                         elif roll_2 > roll_1 and roll_2 > roll_3:
                             self.dice_2.roll_dice(self.gameStateManager.screen)
                             roll_2 = self.dice_2.face
-                        else:
+                        elif roll_3 != 0:
                             self.dice_3.roll_dice(self.gameStateManager.screen)
                             roll_3 = self.dice_3.face
+                        else:
+                            self.dice_1.roll_dice(self.gameStateManager.screen)
+                            roll_1 = self.dice_1.face
                         reroll = False
 
                     if self.game.selectedModel.weapon == "Axe":
@@ -1348,8 +1363,58 @@ class MeleeDiceRollSM:
                         if self.psydown_button.rect.collidepoint(pygame.mouse.get_pos()):
                             if psypoints != 0:
                                 psypoints -= 1
-       
-                                                 
+
+
+class Shoot:
+    def __init__(self, gameStateManager, game) -> None:
+        self.gameStateManager = gameStateManager
+        self.game = game
+        self.dice_1 = Dice(10,10)
+        self.dice_2 = Dice(110, 10)
+        self.dice_3 = Dice(210, 10)
+        self.rollAgain_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.accept_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.rollAgain_button = Button(410, 500, self.rollAgain_image, 1)
+        self.accept_button = Button(410, 700, self.accept_image, 1)
+
+    def shoot_bolter(self, roll_1, roll_2):
+        attacker = self.game.selectedModelModel
+        defender = self.game.clickedModel
+
+        if attacker.susf:
+            roll_1 += 1
+            roll_2 += 1
+
+        if defender.isBroodlord == False:
+            if roll_1 > 5 or roll_2 > 5:
+                self.game.clickedTile.isOccupied = False
+                self.game.gsModelList.remove(defender)
+                self.game.clickedTile.occupand = None
+                self.gameStateManager.screen.fill('black')
+                self.gameStateManager.run_gamestate('smAction')
+        else:
+            if roll_1 > 5 and roll_2 > 5:
+                self.game.clickedTile.isOccupied = False
+                self.game.gsModelList.remove(defender)
+                self.game.clickedTile.occupand = None
+                self.gameStateManager.screen.fill('black')
+                self.gameStateManager.run_gamestate('smAction')
+        
+    def shoot_bolter_door(self,roll_1,roll_2):
+        attacker = self.game.selectedModelModel
+
+        if attacker.susf:
+            roll_1 += 1
+            roll_2 += 1
+
+        if roll_1 > 5 or roll_2 > 5:
+            self.game.map.remove(self.game.clickedTile)
+            newTile = self.game.clickedTile.get_destroyed()
+            self.game.map.append(newTile)
+            self.game.clickedTile = newTile
+            self.gameStateManager.screen.fill('black')
+            self.gameStateManager.run_gamestate("smAction")
+                              
 class ChooseBlip:
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager = gameStateManager
@@ -1519,7 +1584,7 @@ class gsAction:
 
         pygame.display.flip()
 
-        print('GS Action')
+        logger.info(f"Current gamestate: gsAction")
 
         while True:
             for event in pygame.event.get():
@@ -1601,7 +1666,10 @@ class gsAction:
                                     if self.game.clickedTile.isOccupied == False:
                                         self.gameStateManager.screen.fill("Black")  #replace with semi Transparent blit
                                         self.gameStateManager.run_gamestate("mlRollDoorGS")
-
+                                    else:
+                                        self.gameStateManager.screen.fill("Black")  #replace with semi Transparent blit
+                                        self.gameStateManager.run_gamestate("mlRollGS")
+                                        
                     else:
                         for tile in self.game.map:
                             if isinstance(tile, Tile):
@@ -2345,6 +2413,243 @@ class MeleeDiceRollDoorGS:
                             self.game.selectedModel.AP -= 1
                             self.gameStateManager.screen.fill('black')
                             self.gameStateManager.run_gamestate("mlRollDoorGS")
+
+
+class MeleeDiceRollGS:
+    def __init__(self, gameStateManager, game) -> None:
+        self.game = game
+        self.gameStateManager = gameStateManager
+        self.dice_1 = Dice(10, 10)
+        self.dice_2 = Dice(110, 10)
+        self.dice_3 = Dice(210, 10)
+        self.dice_4 = Dice(360, 10)
+        self.dice_5 = Dice(460,10)
+        self.accept_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.reroll_image = pygame.image.load('Pictures/Tiles/Floor_1.png')     
+        self.psyup_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.psydown_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.turn_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.accept_button = Button(410,500, self.accept_image, 1)
+        self.reroll_button = Button(410,100, self.reroll_image, 1)
+        self.psyup_button = Button(410,200, self.psyup_image, 1)
+        self.psydown_button = Button(410,300, self.psydown_image, 1)
+        self.turn_button = Button(410,400, self.turn_image, 1)
+
+    def melee_model(self, roll_1, roll_2, roll_3, roll_4, roll_5, psypoints = 0):
+        attacker = self.game.selectedModel
+        defender = self.game.clickedModel
+        facing = self.game.is_facing(attacker,defender)
+
+        if defender.weapon == "Thunderhammer" and facing:
+            roll_3 = 0
+            roll_4 += 2
+        if defender.weapon == "Powersword" and facing:
+            roll_4 += 1
+        if defender.weapon == "Lightningclaws" and facing:
+            if roll_4 > roll_5:
+                roll_4 +=1
+            else:
+                roll_5 +=1
+        if defender.weapon == "Axe":
+            if facing:
+                roll_4 +=1
+            roll_4 += psypoints
+
+        if attacker.isBroodlord:
+            if defender.weapon == "Thunderhammer" and facing:
+                roll_1 = roll_1 + roll_2
+            else:
+                if (roll_1 > roll_2 and roll_2 > roll_3) or (roll_3 > roll_2 and roll_2 > roll_1):
+                    roll_1 = roll_1 + roll_3
+                elif (roll_1 > roll_3 and roll_3 > roll_2) or (roll_2 > roll_3 and roll_3 > roll_1):
+                    roll_1 = roll_1 + roll_2
+                elif (roll_2 > roll_1 and roll_1 > roll_3) or (roll_3 > roll_1 and roll_1 > roll_2):
+                    roll_1 = roll_2 + roll_3
+
+        if defender.weapon == "Thunderhammer" and facing:
+            if roll_1 > roll_4 or roll_2 > roll_4:
+                winner = attacker
+            elif roll_1 == roll_4 or roll_2 == roll_4:
+                winner = None
+            else:
+                winner = defender
+        
+        elif defender.weapon == "Powersword":
+            if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                winner = attacker
+            elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                winner = None
+            else:
+                winner = defender
+
+        elif defender.weapon == "Lightningclaws" and facing:
+            if ((roll_1 > roll_4) and (roll_1 > roll_5)) or ((roll_2 > roll_4) and (roll_2 > roll_5)) or ((roll_3 > roll_4) and (roll_3 > roll_5)):
+                winner = attacker
+                print(roll_1,roll_2,roll_3,roll_4,roll_5)
+            elif ((roll_4 > roll_1) and (roll_4 > roll_2) and (roll_4 > roll_3)) or ((roll_5 > roll_1) and (roll_5 > roll_2) and (roll_5 > roll_3)):
+                winner = defender
+                print(roll_1,roll_2,roll_3,roll_4,roll_5)
+            else:
+                winner = None
+                print(roll_1,roll_2,roll_3,roll_4,roll_5)
+
+        elif defender.weapon == "Axe":
+            if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                winner = attacker
+            elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                winner = None
+            else:
+                winner = defender
+        
+        else:
+            if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                winner = attacker
+            elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                winner = None
+            else:
+                winner = defender
+
+        return winner  
+
+    def loose(self):
+        model = self.game.selectedModel
+        self.game.gsModelList.remove(model)
+        self.game.selectedTile.isOccupied = False
+        self.game.selectedTile.occupand = None
+        self.game.reset_select()
+        self.game.reset_clicked()
+        self.gameStateManager.screen.fill('black')
+        self.gameStateManager.run_gamestate("gsTurn")
+
+    def win(self):
+        self.game.smModelList.remove(self.game.clickedModel)
+        self.game.clickedTile.isOccupied = False
+        self.game.clickedTile.occupand = None
+        self.game.reset_clicked()
+        self.gameStateManager.screen.fill('black')
+        self.gameStateManager.run_gamestate('gsAction')
+
+    def adjust_facing(self):
+        attacker = self.game.selectedModel
+        defender = self.game.clickedModel
+        wantedFace = (attacker.face[0] * (-1), attacker.face[1] * (-1))
+
+        while defender.face != wantedFace:
+            game.turn_model(defender, "left")
+
+    def run(self):
+        logger.info(f"Gamestate GSMeleeRoll")
+        roll_1 = 0 
+        roll_2 = 0
+        roll_3 = 0
+        roll_4 = 0
+        roll_5 = 0
+        selectDice = None
+        diceList = []
+        facing = self.game.is_facing(self.game.selectedModel, self.game.clickedModel)
+        reroll = False
+        guard = False
+        if self.game.clickedModel.weapon == "Powersword" and facing:
+            reroll = True
+        if self.game.clickedModel.guard:
+            guard = True
+        psypoints = 0
+        turn = False
+
+        self.accept_button.draw(self.gameStateManager.screen)
+        self.reroll_button.draw(self.gameStateManager.screen)
+        self.turn_button.draw(self.gameStateManager.screen)
+        if self.game.clickedModel.weapon == "Axe":
+            self.psyup_button.draw(self.gameStateManager.screen)
+            self.psydown_button.draw(self.gameStateManager.screen)
+
+        pygame.display.flip()
+
+        diceList.append(self.dice_1)
+        diceList.append(self.dice_2)
+        self.dice_1.roll_dice(self.gameStateManager.screen)
+        roll_1 = self.dice_1.face
+        self.dice_2.roll_dice(self.gameStateManager.screen)
+        roll_2 = self.dice_2.face
+
+        if self.game.clickedModel.weapon != "Thunderhammer" or (facing == False):
+            self.dice_3.roll_dice(self.gameStateManager.screen)
+            roll_3 = self.dice_3.face
+            diceList.append(self.dice_3)
+
+        self.dice_4.roll_dice(self.gameStateManager.screen)
+        roll_4 = self.dice_4.face
+        diceList.append(self.dice_4)
+        if self.game.clickedModel.weapon == "Lightningclaws" and facing:
+            self.dice_5.roll_dice(self.gameStateManager.screen)
+            roll_5 = self.dice_5.face
+            diceList.append(self.dice_5)
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+
+                    if self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        logger.debug(f"Melee won by: {self.melee_model(roll_1,roll_2,roll_3,roll_4,roll_5,psypoints)}")
+                        if self.melee_model(roll_1, roll_2,roll_3,roll_4,roll_5,psypoints) == self.game.clickedModel:
+                            if facing:
+                                self.loose()
+                            else:
+                                if turn:
+                                    self.adjust_facing()
+                                self.gameStateManager.screen.fill('black')
+                                self.gameStateManager.run_gamestate('gsAction')
+                        elif self.melee_model(roll_1, roll_2,roll_3,roll_4,roll_5,psypoints) == self.game.selectedModel:
+                            self.win()
+                        else:
+                            if turn:
+                                self.adjust_facing()
+                            self.gameStateManager.screen.fill('black')
+                            self.gameStateManager.run_gamestate('gsAction')
+
+                    elif self.turn_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        turn = not turn
+                        logger.debug(f"Turn = {turn}")
+
+                    elif self.reroll_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if selectDice in diceList:
+                            if (guard) and (selectDice == self.dice_4 or selectDice == self.dice_5):
+                                selectDice.roll_dice(self.gameStateManager.screen)
+                                if selectDice == self.dice_4:
+                                    roll_4 = self.dice_4.face
+                                else:
+                                    roll_5 = self.dice_5.face
+                                guard = False
+                            
+                            elif (reroll) and ((selectDice == self.dice_1) or (selectDice == self.dice_2) or (selectDice == self.dice_3)):
+                                if selectDice == self.dice_1:
+                                    self.dice_1.roll_dice(self.gameStateManager.screen)
+                                    roll_1 = self.dice_1.face
+                                elif selectDice == self.dice_2:
+                                    self.dice_2.roll_dice(self.gameStateManager.screen)
+                                    roll_2 = self.dice_2.face
+                                elif selectDice == self.dice_3:
+                                    self.dice_3.roll_dice(self.gameStateManager.screen)
+                                    roll_3 = self.dice_3.face
+                                reroll = False
+
+                    else:
+                        for dice in diceList:
+                            if dice.rect.collidepoint(pygame.mouse.get_pos()):
+                                selectDice = dice
+
+                    if self.game.clickedModel.weapon == "Axe":
+                        if self.psyup_button.rect.collidepoint(pygame.mouse.get_pos()):
+                            if self.game.psyPoints != 0:
+                                psypoints += 1
+
+                        if self.psydown_button.rect.collidepoint(pygame.mouse.get_pos()):
+                            if psypoints != 0:
+                                psypoints -= 1
 
 
 class gamestateMain:

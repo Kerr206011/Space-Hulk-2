@@ -1,6 +1,73 @@
-2024-11-22 15:23:29,780 - INFO - Levels/level_1.json
-2024-11-22 15:23:30,259 - INFO - Game initialized successfully.
-2024-11-22 15:23:30,308 - INFO - Initialized screen.
-2024-11-22 15:23:30,351 - DEBUG - Gamestate Main
-2024-11-22 15:23:32,302 - INFO - Levels/level_1.json
-2024-11-22 15:23:32,333 - INFO - Current GameState: placeSM
+2024-11-24 15:09:02,371 - INFO - Levels/level_1.json
+2024-11-24 15:09:02,528 - INFO - Game initialized successfully.
+2024-11-24 15:09:02,559 - INFO - Initialized screen.
+2024-11-24 15:09:02,594 - DEBUG - Gamestate Main
+2024-11-24 15:09:03,475 - INFO - Levels/level_1.json
+2024-11-24 15:09:03,498 - INFO - Current GameState: placeSM
+2024-11-24 15:09:12,404 - DEBUG - Chosen position in blipSack: 8
+2024-11-24 15:09:12,404 - DEBUG - Chosen position in blipSack: 7
+2024-11-24 15:09:12,406 - INFO - Current GameState: blStart
+2024-11-24 15:09:13,453 - DEBUG - Blips on clicked Tile: []
+2024-11-24 15:09:14,295 - DEBUG - Current Bliplist: [1]
+2024-11-24 15:09:14,296 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001FE0EA7E900>]
+2024-11-24 15:09:16,174 - DEBUG - Current Bliplist: []
+2024-11-24 15:09:16,175 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001FE0EA7E900>, <Models.Blip object at 0x000001FE0EA7D190>]
+2024-11-24 15:09:16,175 - INFO - Current GameState: Command
+2024-11-24 15:09:16,176 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x000001FE0EA7E570> present
+2024-11-24 15:09:16,176 - DEBUG - Reroll of CP: True
+2024-11-24 15:09:18,695 - DEBUG - CP: 5
+2024-11-24 15:09:20,411 - INFO - Current GameState: smAction
+2024-11-24 15:09:29,452 - INFO - Current GameState: smAction
+2024-11-24 15:09:38,992 - INFO - Current GameState: smAction
+2024-11-24 15:09:45,826 - INFO - Current GameState: smAction
+2024-11-24 15:09:50,249 - INFO - Current GameState: smAction
+2024-11-24 15:10:02,439 - DEBUG - Amount of free Entrypoints: 4
+2024-11-24 15:10:02,440 - DEBUG - Chosen position in blipSack: 14
+2024-11-24 15:10:02,440 - DEBUG - Chosen position in blipSack: 14
+2024-11-24 15:10:02,442 - INFO - Current GameState: blStart
+2024-11-24 15:10:03,663 - DEBUG - Blips on clicked Tile: [<Models.Blip object at 0x000001FE0EA7E900>, <Models.Blip object at 0x000001FE0EA7D190>]
+2024-11-24 15:10:04,593 - DEBUG - Current Bliplist: [3]
+2024-11-24 15:10:04,594 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001FE0EA7E900>, <Models.Blip object at 0x000001FE0EA7D190>, <Models.Blip object at 0x000001FE0EA8A7B0>]
+2024-11-24 15:10:07,111 - DEBUG - Blips on clicked Tile: []
+2024-11-24 15:10:07,735 - DEBUG - Current Bliplist: []
+2024-11-24 15:10:07,736 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001FE0EA8A7E0>]
+2024-11-24 15:10:27,409 - INFO - Current GameState: Command
+2024-11-24 15:10:27,409 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x000001FE0EA7E570> present
+2024-11-24 15:10:27,410 - DEBUG - Reroll of CP: True
+2024-11-24 15:10:29,957 - DEBUG - CP: 4
+2024-11-24 15:10:31,307 - INFO - Current GameState: smAction
+2024-11-24 15:10:34,165 - DEBUG - Guard == True
+2024-11-24 15:10:36,538 - INFO - Current GameState: smAction
+2024-11-24 15:10:38,894 - INFO - Current GameState: smAction
+2024-11-24 15:10:45,035 - INFO - Current GameState: smAction
+2024-11-24 15:10:45,947 - DEBUG - Guard == True
+2024-11-24 15:10:51,557 - INFO - Current GameState: smAction
+2024-11-24 15:10:57,577 - INFO - Current GameState: smAction
+2024-11-24 15:11:02,337 - INFO - Current GameState: smAction
+2024-11-24 15:11:08,175 - DEBUG - Amount of free Entrypoints: 3
+2024-11-24 15:11:08,175 - DEBUG - Chosen position in blipSack: 12
+2024-11-24 15:11:08,176 - DEBUG - Chosen position in blipSack: 6
+2024-11-24 15:11:08,178 - INFO - Current GameState: blStart
+2024-11-24 15:11:09,178 - DEBUG - Blips on clicked Tile: [<Models.Blip object at 0x000001FE0EA7E900>, <Models.Blip object at 0x000001FE0EA7D190>, <Models.Blip object at 0x000001FE0EA8A7B0>]
+2024-11-24 15:11:11,005 - DEBUG - Blips on clicked Tile: []
+2024-11-24 15:11:11,751 - DEBUG - Current Bliplist: [1]
+2024-11-24 15:11:11,751 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001FE0EA8BD70>]
+2024-11-24 15:11:12,145 - DEBUG - Current Bliplist: []
+2024-11-24 15:11:12,145 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001FE0EA8BD70>, <Models.Blip object at 0x000001FE0EA8BE60>]
+2024-11-24 15:11:24,545 - INFO - Current gamestate: gsAction
+2024-11-24 15:11:34,763 - INFO - Gamestate GSMeleeRoll
+2024-11-24 15:11:51,233 - DEBUG - Melee won by: <Models.SpaceMarine object at 0x000001FE0EA7E570>
+2024-11-24 15:11:54,279 - INFO - Current gamestate: gsAction
+2024-11-24 15:12:00,830 - INFO - Gamestate GSMeleeRoll
+2024-11-24 15:13:00,205 - DEBUG - Melee won by: <Models.SpaceMarine object at 0x000001FE0EA7E570>
+2024-11-24 15:13:02,111 - INFO - Current gamestate: gsAction
+2024-11-24 15:13:06,623 - INFO - Gamestate GSMeleeRoll
+2024-11-24 15:13:10,142 - DEBUG - Melee won by: <Models.Genestealer object at 0x000001FE0EA8BF50>
+2024-11-24 15:13:10,145 - INFO - Current gamestate: gsAction
+2024-11-24 15:13:17,483 - INFO - Gamestate GSMeleeRoll
+2024-11-24 15:13:25,657 - DEBUG - Melee won by: <Models.Genestealer object at 0x000001FE0EA8BF50>
+2024-11-24 15:13:25,660 - INFO - Current gamestate: gsAction
+2024-11-24 15:13:29,225 - INFO - Gamestate GSMeleeRoll
+2024-11-24 15:13:32,582 - DEBUG - Turn = True
+2024-11-24 15:13:40,129 - DEBUG - Melee won by: <Models.Genestealer object at 0x000001FE0EA8BF50>
+2024-11-24 15:13:40,132 - INFO - Current gamestate: gsAction
