@@ -32,3 +32,8 @@ melee logic on lightningclaws is wonky, error probably by r1 > r4 anf r1 = r5
 certain buttons don't appear/disappear
 
 sustained Fire needs to be proced on every gs individually
+
+add shoot button only after check_ranged()
+perhaps split shooting up in different gamestates
+
+add burning tiles (change picture)

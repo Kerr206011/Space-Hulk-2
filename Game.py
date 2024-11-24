@@ -15,6 +15,16 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+def handle_exception(exc_type, exc_value, exc_traceback):
+    if issubclass(exc_type, KeyboardInterrupt):
+        # Allow keyboard interrupts to exit silently
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+    logger.critical("Unhandled exception", exc_info=(exc_type, exc_value, exc_traceback))
+
+# Override the default exception handler
+sys.excepthook = handle_exception
+
 class Game():
     def __init__(self) -> None:
         self.map = []       #A list to save all the board tiles
@@ -165,28 +175,15 @@ class Game():
                 elif model.face == (0,1):
                     model.face = (0,-1)
 
-    def move_model(self, model, tile, target):
-        tile.isOccupied = False
-        tile.occupand = None
-        target.occupand = model
-        target.isOccupied = True
-
-        self.selectedTile = target
-        self.clickedTile = None
-
-    def set_guard(self, model):
-        model.guard = True
-
-    def set_overwatch(self, model):
-        model.overwatch = True
-
     def reset_select(self):
         self.selectedModel = None
         self.selectedTile = None
+        logger.debug(f"Reset selectedModel and Tile to None")
 
     def reset_clicked(self):
         self.clickedModel = None
         self.clickedTile = None
+        logger.debug(f"Reset ClickedModel and Tile to None")
 
     def destroy_model(self, model, tile):
         if model == self.selectedModel:
@@ -228,7 +225,7 @@ class Game():
         
         return facing
 
-    def melee(self, attacker, defender, roll_1, roll_2, roll_3, roll_4, roll_5, pyscic):
+    def melee(self, attacker, defender, roll_1, roll_2, roll_3, roll_4, roll_5, pyscic):       #depricated, oly here for reference 
         facing = self.is_facing(attacker, defender)
         winner = None
         if attacker in self.gsModelList:
@@ -432,40 +429,6 @@ class Game():
 
         if roll_1 > 5 or roll_2 > 5 or roll_3 > 5:
             return True
-
-    def shoot_bolter(self, shooter, targetTile, roll_1, roll_2):
-        hit = False
-
-        if shooter.susf == True:
-            roll_1 += 1
-            roll_2 += 1
-
-        if targetTile.isOccupied:
-            if targetTile.occupand.isBroodlord == True:
-                if roll_1 > 5 and roll_2 > 5:
-                    hit = True
-            else:
-                if roll_1 > 5 or roll_2 > 5:
-                    hit = True
-
-        shooter.susf = True
-
-        return hit
-        
-        
-    def shoot_door(self, shooter):
-        hit = False
-
-        if shooter.susf == True:
-            roll_1 += 1
-            roll_2 += 1
-
-        if roll_1 > 5 or roll_2 > 5:
-            hit = True
-
-        shooter.susf = True
-
-        return hit
 
     def overwatch_bolter(self, shooter, targetTile):
         hit = False
@@ -766,7 +729,6 @@ class Game():
                 if tile not in visionlist:
                     visionlist.append(tile)
         return visionlist
-    #edit to tiles 
 
 game = Game()
 game.load_level("level_1")
