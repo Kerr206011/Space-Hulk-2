@@ -119,11 +119,11 @@ class Game():
         for entry in bluePrint:
 
             if entry[1] == "tile":
-                newTile = Tile(entry[2],entry[0][0],entry[0][1],entry[3])
+                newTile = Tile(entry[2], entry[4], entry[0][0],entry[0][1],entry[3])
                 self.map.append(newTile)
 
             elif entry[1] == "door":
-                newDoor = Door(entry[2], entry[4], entry[0][0], entry[0][1], entry[3], entry[5])
+                newDoor = Door(entry[2], entry[4], entry[6], entry[0][0], entry[0][1], entry[3], entry[5])
                 if entry[5] == False:
                     newDoor.change_picture(newDoor.pictureClosedPath)
                 self.map.append(newDoor)
@@ -137,7 +137,7 @@ class Game():
                 self.map.append(newEntry)
 
             elif entry[1] == "control":
-                newControl = ControlledArea(entry[2],entry[0][0],entry[0][1],entry[3])
+                newControl = ControlledArea(entry[2],entry[4],entry[0][0],entry[0][1],entry[3])
                 self.map.append(newControl)
 
     def turn_model(self, model, dir):

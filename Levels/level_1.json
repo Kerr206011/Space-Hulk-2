@@ -64,7 +64,8 @@
             ],
             "control",
             "Pictures/Tiles/SM_entry.png",
-            0
+            0,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -89,7 +90,8 @@
             ],
             "control",
             "Pictures/Tiles/SM_entry.png",
-            0
+            0,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -114,7 +116,8 @@
             ],
             "control",
             "Pictures/Tiles/SM_entry.png",
-            0
+            0,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -139,7 +142,8 @@
             ],
             "control",
             "Pictures/Tiles/SM_entry.png",
-            0
+            0,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -164,7 +168,8 @@
             ],
             "control",
             "Pictures/Tiles/SM_entry.png",
-            0
+            0,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -199,7 +204,8 @@
             "Pictures/Tiles/Door_open_V.png",
             1,
             "Pictures/Tiles/Door_V.png",
-            false
+            false,
+            "Pictures/Tiles/Door_burning_V.png"
         ],
         [
             [
@@ -232,7 +238,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            1
+            1,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -241,7 +248,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            1
+            1,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -250,7 +258,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            1
+            1,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -275,7 +284,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            1
+            1,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -284,7 +294,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            1
+            1,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -293,7 +304,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            1
+            1,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -304,7 +316,8 @@
             "Pictures/Tiles/Door_open_H.png",
             1,
             "Pictures/Tiles/Door_H.png",
-            false
+            false,
+            "Pictures/Tiles/Door_burning_H.png"
         ],
         [
             [
@@ -321,7 +334,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            1
+            1,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -330,7 +344,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            1
+            1,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -339,7 +354,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            1
+            1,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -374,7 +390,8 @@
             "Pictures/Tiles/Door_open_V.png",
             1,
             "Pictures/Tiles/Door_V.png",
-            false
+            false,
+            "Pictures/Tiles/Door_burning_V.png"
         ],
         [
             [
@@ -407,7 +424,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            2
+            2,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -432,7 +450,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            2
+            2,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -457,7 +476,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            2
+            2,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -482,7 +502,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            2
+            2,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -517,7 +538,8 @@
             "Pictures/Tiles/Door_open_H.png",
             3,
             "Pictures/Tiles/Door_H.png",
-            false
+            false,
+            "Pictures/Tiles/Door_burning_H.png"
         ],
         [
             [
@@ -550,7 +572,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            3
+            3,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -559,7 +582,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            3
+            3,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -568,7 +592,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            3
+            3,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -593,7 +618,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            3
+            3,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -602,7 +628,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            3
+            3,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -611,7 +638,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            3
+            3,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -620,7 +648,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            3
+            3,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -637,7 +666,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            3
+            3,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -646,7 +676,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            3
+            3,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -655,7 +686,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            3
+            3,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -722,7 +754,8 @@
             "Pictures/Tiles/Door_open_V.png",
             4,
             "Pictures/Tiles/Door_V.png",
-            false
+            false,
+            "Pictures/Tiles/Door_burning_V.png"
         ],
         [
             [
@@ -751,7 +784,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            4
+            4,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -760,7 +794,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            4
+            4,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -769,7 +804,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            4
+            4,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -822,7 +858,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            5
+            5,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -847,7 +884,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            5
+            5,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -872,7 +910,8 @@
             ],
             "tile",
             "Pictures/Tiles/Floor_1.png",
-            5
+            5,
+            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [

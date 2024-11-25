@@ -1,9 +1,10 @@
 from UI import *
 
 class Tile:
-    def __init__(self, picture, x, y, sector) -> None:
+    def __init__(self, picture, burningPicture, x, y, sector) -> None:
 
         self.picturePath = picture
+        self.burningPictureFilePath = burningPicture
         self.sector = sector
         self.scale = 0.7
         self.picture = pygame.image.load(picture)
@@ -65,22 +66,22 @@ class Wall:
         self.button.show(screen)
 
 class Door(Tile):
-    def __init__(self, picture, picture_cosed, x, y, sector, isOpen) -> None:
-        super().__init__(picture, x, y, sector)
+    def __init__(self, picture, picture_cosed, picture_burning, x, y, sector, isOpen) -> None:
+        super().__init__(picture, picture_burning, x, y, sector)
         self.isOpen = isOpen
         self.pictureClosedPath = picture_cosed
-        # self.picture_closed = pygame.image.load(picture_cosed)
+        self.burningPictureFilePath = picture_burning
 
     def get_destroyed(self):
-        newTile = Tile("Pictures/Tiles/Floor_1.png", self.x, self.y, self.sector)
+        newTile = Tile("Pictures/Tiles/Floor_1.png", self.burningPictureFilePath, self.x, self.y, self.sector)
         return newTile
 
 class ControlledArea(Tile):
-    def __init__(self, picture, x, y, sector) -> None:
-        super().__init__(picture, x, y, sector)
+    def __init__(self, picture, burningPicture, x, y, sector) -> None:
+        super().__init__(picture, burningPicture, x, y, sector)
 
     def convert_to_tile(self):
-        tile = Tile("Pictures/Tiles/Floor_1.png", self.x, self.y, self.sector)
+        tile = Tile("Pictures/Tiles/Floor_1.png", self.burningPictureFilePath, self.x, self.y, self.sector)
         if self.isOccupied:
             tile.isOccupied = True
             tile.occupand = self.occupand

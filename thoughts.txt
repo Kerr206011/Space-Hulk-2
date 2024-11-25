@@ -11,17 +11,15 @@ implement burning/flamer/moving through flames
 
 Blips are only forced to lurk for one turn
 Blips cannot move within one square of a space marine
-Blips can only be revealed if they have 6AP left
 Blips can be revealed outside Entry Areas (List, blitting a purple number?)
 
-limit number of GS models in play to 22
 implement Broodlord reveal if possible
 
 checkmove needs to pe appended so that it blocks models from passing diagonally between a model and a wall(p.59)
 
 implement GS moving onto the board from entrypoint
 
-placebl needs to be changes so that the broodlord can be placed
+placebl needs to be changed so that the broodlord can be placed
 
 the initial placement of blips must be skippable for certain missions
 
@@ -36,4 +34,6 @@ sustained Fire needs to be proced on every gs individually
 add shoot button only after check_ranged()
 perhaps split shooting up in different gamestates
 
-add burning tiles (change picture)
+the entire map can be made individualistic, so that sections can be distinguished easely
+
+implement doors not opening if burning
