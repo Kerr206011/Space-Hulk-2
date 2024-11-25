@@ -572,7 +572,7 @@ class smAction:
             
     def check_ranged(self):
         if self.game.clickedTile != None:
-            if (((self.game.clickedModel != None) and (self.game.clickedModel in self.game.gsModelList))  or (self.game.selectedModel.weapon == "Flamer")) and (self.game.clickedTile in game.check_vision(self.game.selectedModel, self.game.clickedTile)):
+            if (((self.game.clickedModel != None) and (self.game.clickedModel in self.game.gsModelList))  or (self.game.selectedModel.weapon == "Flamer")) and (self.game.clickedTile in game.check_vision(self.game.selectedModel, self.game.selectedTile)):
                 if self.game.selectedModel.weapon != "Lightningclaws" and self.game.selectedModel.weapon != "Thunderhammer":
                     return True
             else:
@@ -1524,7 +1524,7 @@ class Shoot:
                             for tile in self.game.map:
                                 if isinstance(tile, Tile):
                                     if tile.sector == targetSector:
-                                        self.shoot_flamer(targetSector, self.dice_1)
+                                        self.shoot_flamer(tile, self.dice_1)
                             self.gameStateManager.screen.fill('black')
                             if self.game.selectedModel in self.game.smModelList:
                                 self.gameStateManager.screen.fill('black')
