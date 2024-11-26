@@ -1519,6 +1519,71 @@ class Shoot:
             self.gameStateManager.screen.fill('black')
             self.gameStateManager.run_gamestate("smAction")
 
+    def shoot_ac(self, roll_1, roll_2, roll_3):
+        attacker = self.game.selectedModelModel
+        defender = self.game.clickedModel
+
+        if self.gameStateManager.freeShot:
+            self.gameStateManager.freeShot == False
+        else:
+            self.reduce_ap(1)
+        self.game.assaultCannonAmmo -= 1
+
+        if attacker.susf:
+            roll_1 += 1
+            roll_2 += 1
+            roll_3 += 1
+        else:
+            attacker.susf = True
+
+        if defender.isBroodlord == False:
+            if roll_1 > 4 or roll_2 > 4 or roll_3 > 4:
+                self.game.clickedTile.isOccupied = False
+                self.game.gsModelList.remove(defender)
+                self.game.clickedTile.occupand = None
+                self.gameStateManager.screen.fill('black')
+                self.gameStateManager.run_gamestate('smAction')
+            else:
+                self.gameStateManager.screen.fill('black')
+                self.gameStateManager.run_gamestate("smAction")
+
+        else:
+            if (roll_1 > 4 and roll_2 > 4) or (roll_1 > 4 and roll_3 > 4) or (roll_2 > 4 and roll_3 > 4):
+                self.game.clickedTile.isOccupied = False
+                self.game.gsModelList.remove(defender)
+                self.game.clickedTile.occupand = None
+                self.gameStateManager.screen.fill('black')
+                self.gameStateManager.run_gamestate('smAction')
+            else:            
+                self.gameStateManager.screen.fill('black')
+                self.gameStateManager.run_gamestate("smAction")
+            
+    def shoot_ac_door(self,roll_1,roll_2, roll_3):
+        attacker = self.game.selectedModel
+        if self.gameStateManager.freeShot:
+            self.gameStateManager.freeShot == False
+        else:
+            self.reduce_ap(1)
+        self.game.assaultCannonAmmo -= 1
+
+        if attacker.susf:
+            roll_1 += 1
+            roll_2 += 1
+            roll_3 += 1
+        else:
+            attacker.susf = True
+
+        if roll_1 > 4 or roll_2 > 4 or roll_3 >4:
+            self.game.map.remove(self.game.clickedTile)
+            newTile = self.game.clickedTile.get_destroyed()
+            self.game.map.append(newTile)
+            self.game.clickedTile = newTile
+            self.gameStateManager.screen.fill('black')
+            self.gameStateManager.run_gamestate("smAction")
+        else:
+            self.gameStateManager.screen.fill('black')
+            self.gameStateManager.run_gamestate("smAction")
+
     def run(self):
         roll_1 = 0
         roll_2 = 0
@@ -1556,7 +1621,18 @@ class Shoot:
 
                     if self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if self.game.selectedModel.weapon == "Assaultcannon":
-                            pass
+                            if self.game.assaultCannonAmmo > 0:
+                                if self.game.clickedTile.isOccupied:
+                                    if (self.game.clickedTile.occupand in self.game.gsModelList):
+                                        self.shoot_ac(roll_1, roll_2, roll_3)
+                                    else:
+                                        logger.error(f"Non Genstealer type Object {self.game.clickedTile.occupand} selected as target!")
+                                elif isinstance(self.game.clickedTile, Door):
+                                    if not self.game.clickedTile.isOpen:
+                                        self.shoot_ac_door(roll_1, roll_2, roll_3)
+                                    
+                            else:
+                                logger.debug(f"AssaultcannonAmmo on {self.game.assaultCannonAmmo}")
 
                         else:
                             if self.game.clickedTile.isOccupied:
@@ -1569,7 +1645,7 @@ class Shoot:
                                     self.shoot_bolter_door(roll_1, roll_2)
 
                     if self.rollAgain_button.rect.collidepoint(pygame.mouse.get_pos()):
-                        if self.game.selectedModel.AP + self.game.cp > 0:
+                        if (self.game.selectedModel.AP + self.game.cp > 0) or self.gameStateManager.freeShot:
                             self.reduce_ap(1)
                             self.gameStateManager.screen.fill('black')
                             pygame.display.flip()

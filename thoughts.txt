@@ -39,3 +39,8 @@ the entire map can be made individualistic, so that sections can be distinguishe
 implement doors not opening if burning
 
 implement flamer burning one one side of the door
+
+implement Assaultcannon explosion and reload
+
+implement Psyker phase 
+fix UI
