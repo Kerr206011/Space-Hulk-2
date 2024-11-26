@@ -7,17 +7,15 @@ terminator weapon/loadout can be displayed by classsystem (GW 8th symbols)
 
 interact button only shown when door to interact with
 
-implement burning/flamer/moving through flames
-
 Blips are only forced to lurk for one turn
-Blips cannot move within one square of a space marine
 Blips can be revealed outside Entry Areas (List, blitting a purple number?)
 
 implement Broodlord reveal if possible
 
 checkmove needs to pe appended so that it blocks models from passing diagonally between a model and a wall(p.59)
 
-implement GS moving onto the board from entrypoint
+implement choosing a genstealer from an entrypoint
+implement GS moving onto the board from entrypoint 
 
 placebl needs to be changed so that the broodlord can be placed
 
@@ -40,3 +38,5 @@ implement Assaultcannon explosion and reload
 implement Psyker phase 
 
 fix UI
+
+implement Overwatch

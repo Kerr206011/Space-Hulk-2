@@ -734,12 +734,20 @@ class Game():
         visited = [startTile]
         x = 0
 
-        while x > maxDist:
-            for start in visited:
-                for tile in self.game.map:
+        while x < maxDist:
+            for start in visited[:]:
+                for tile in self.map:
                     if ((tile.x + 1 == start.x) or (tile.x - 1 == start.x) or (tile.x == start.x)) and ((tile.y + 1 == start.y) or (tile.y - 1 == start.y) or (tile.y == start.y)):
                         if isinstance(tile, Tile):
-                            
+                            if tile not in visited:
+                                visited.append(tile)
+            if targetTile in visited:
+                logger.info(f"TargetTile {targetTile} in distance of {x}.")
+                return True
+            x += 1
+        logger.info(f"TargetTile not within {maxDist}.")
+        logger.info(visited)
+        return False
 
 game = Game()
 game.load_level("level_1")
