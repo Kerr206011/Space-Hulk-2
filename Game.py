@@ -729,6 +729,17 @@ class Game():
                 if tile not in visionlist:
                     visionlist.append(tile)
         return visionlist
+    
+    def checkpath(self,startTile, targetTile, maxDist):
+        visited = [startTile]
+        x = 0
+
+        while x > maxDist:
+            for start in visited:
+                for tile in self.game.map:
+                    if ((tile.x + 1 == start.x) or (tile.x - 1 == start.x) or (tile.x == start.x)) and ((tile.y + 1 == start.y) or (tile.y - 1 == start.y) or (tile.y == start.y)):
+                        if isinstance(tile, Tile):
+                            
 
 game = Game()
 game.load_level("level_1")

@@ -588,7 +588,12 @@ class smAction:
         face = self.game.selectedModel.face
         if isinstance(self.game.clickedTile, Door):
             if ((self.game.selectedTile.x + face[0] == self.game.clickedTile.x) and (face[0] != 0)) or ((self.game.selectedTile.y + face[1] == self.game.clickedTile.y) and (face[1] != 0)):
-                print("Door")
+                logger.info(f"Door")
+                for tile in self.game.map:
+                    if ((tile.x + 1 == self.game.clickedTile.x) or (tile.x - 1 == self.game.clickedTile.x) or (tile.x == self.game.clickedTile.x)) and ((tile.y + 1 == self.game.clickedTile.y) or (tile.y - 1 == self.game.clickedTile.y) or (tile.y == self.game.clickedTile.y)):
+                        if isinstance(tile, Tile):
+                            if tile.isBurning:
+                                return False
                 return True
         else:
             return False
@@ -603,8 +608,8 @@ class smAction:
         if self.game.selectedModel.AP >= amount:
             self.game.selectedModel.AP -= amount
         else:
-            self.game.selectedModel.AP = 0
             self.game.cp -= (amount - self.game.selectedModel.AP)
+            self.game.selectedModel.AP = 0
 
     def move_model(self):
 
@@ -940,8 +945,8 @@ class smTurning:
         if self.game.selectedModel.AP >= amount:
             self.game.selectedModel.AP -= amount
         else:
-            self.game.selectedModel.AP = 0
             self.game.cp -= (amount - self.game.selectedModel.AP)
+            self.game.selectedModel.AP = 0
 
     def run(self):
         turnAmount = 0
@@ -1143,8 +1148,8 @@ class MeleeDiceRollDoorSM:
         if self.game.selectedModel.AP >= amount:
             self.game.selectedModel.AP -= amount
         else:
-            self.game.selectedModel.AP = 0
             self.game.cp -= (amount - self.game.selectedModel.AP)
+            self.game.selectedModel.AP = 0
     
     def run(self):
         roll_1 = 0
@@ -1286,15 +1291,15 @@ class MeleeDiceRollSM:
                 winner = attacker
 
         elif attacker.weapon == "Lightningclaws":
-            if ((roll_1 > roll_4) and (roll_1 > roll_5)) or ((roll_2 > roll_4) and (roll_2 > roll_5)) or ((roll_3 > roll_4) and (roll_3 > roll_5)):
-                winner = defender
-                print(roll_1,roll_2,roll_3,roll_4,roll_5)
-            elif ((roll_4 > roll_1) and (roll_4 > roll_2) and (roll_4 > roll_3)) or ((roll_5 > roll_1) and (roll_5 > roll_2) and (roll_5 > roll_3)):
-                winner = attacker
-                print(roll_1,roll_2,roll_3,roll_4,roll_5)
+            defenderRoll = max(roll_1,roll_2,roll_3)
+            attackerRoll = max(roll_4,roll_5)
+
+            if defenderRoll > attackerRoll:
+                return defender
+            elif attackerRoll > defenderRoll:
+                return attacker
             else:
-                winner = None
-                print(roll_1,roll_2,roll_3,roll_4,roll_5)
+                return None
 
         elif attacker.weapon == "Axe":
             if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
@@ -1455,8 +1460,8 @@ class Shoot:
         if self.game.selectedModel.AP >= amount:
             self.game.selectedModel.AP -= amount
         else:
-            self.game.selectedModel.AP = 0
             self.game.cp -= (amount - self.game.selectedModel.AP)
+            self.game.selectedModel.AP = 0
 
     def shoot_bolter(self, roll_1, roll_2):
         attacker = self.game.selectedModelModel
@@ -1665,8 +1670,8 @@ class ShootFlamer:
         if self.game.selectedModel.AP >= amount:
             self.game.selectedModel.AP -= amount
         else:
-            self.game.selectedModel.AP = 0
             self.game.cp -= (amount - self.game.selectedModel.AP)
+            self.game.selectedModel.AP = 0
     
     def shoot_flamer(self, target, dice):
         target.isBurning = True
@@ -1736,9 +1741,8 @@ class ShootFlamer:
                     for tile in self.game.map:
                         tile.render(self.gameStateManager.screen)
 
-                    self.left_button.draw(self.gameStateManager.screen)
-                    self.right_button.draw(self.gameStateManager.screen)
-                    self.accept_button.draw(self.gameStateManager.screen)
+                    self.exit_button.draw(self.gameStateManager.screen)
+                    self.shoot_button.draw(self.gameStateManager.screen)
                     
                     pygame.display.flip()
 
@@ -1747,13 +1751,14 @@ class ShootFlamer:
                     if self.shoot_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if self.game.clickedTile in self.game.check_vision(self.game.selectedModel, self.game.selectedTile):
                             if isinstance(self.game.clickedTile, Door):
-                                if self.game.clickedTile.isOpen:
+                                if not self.game.clickedTile.isOpen:
                                     seenTiles = []
                                     for tile in self.game.map:
                                         if isinstance(tile, Tile):
                                             if tile.sector == self.game.clickedTile.sector:
                                                 if tile in self.game.check_vision(self.game.selectedModel, self.game.selectedTile):
-                                                    seenTiles.append(tile)
+                                                    if tile != self.game.clickedTile:
+                                                        seenTiles.append(tile)
                                     if seenTiles.__len__() != 0:
                                         pass
                                     else:
@@ -1966,7 +1971,12 @@ class gsAction:
         face = self.game.selectedModel.face
         if isinstance(self.game.clickedTile, Door):
             if ((self.game.selectedTile.x + face[0] == self.game.clickedTile.x) and (face[0] != 0)) or ((self.game.selectedTile.y + face[1] == self.game.clickedTile.y) and (face[1] != 0)):
-                print("Door")
+                logger.info(f"Door")
+                for tile in self.game.map:
+                    if ((tile.x + 1 == self.game.clickedTile.x) or (tile.x - 1 == self.game.clickedTile.x) or (tile.x == self.game.clickedTile.x)) and ((tile.y + 1 == self.game.clickedTile.y) or (tile.y - 1 == self.game.clickedTile.y) or (tile.y == self.game.clickedTile.y)):
+                        if isinstance(tile, Tile):
+                            if tile.isBurning:
+                                return False
                 return True
         else:
             return False
@@ -2158,9 +2168,15 @@ class blAction:
                 return False 
 
     def check_door(self):
+        face = self.game.selectedModel.face
         if isinstance(self.game.clickedTile, Door):
-            if ((self.game.selectedTile.x + 1 == self.game.clickedTile.x) or (self.game.selectedTile.x - 1 == self.game.clickedTile.x) or (self.game.selectedTile.x == self.game.clickedTile.x)) and ((self.game.selectedTile.y + 1 == self.game.clickedTile.y) or (self.game.selectedTile.y - 1 == self.game.clickedTile.y) or (self.game.selectedTile.y == self.game.clickedTile.y)):
-                print("Door")
+            if ((self.game.selectedTile.x + face[0] == self.game.clickedTile.x) and (face[0] != 0)) or ((self.game.selectedTile.y + face[1] == self.game.clickedTile.y) and (face[1] != 0)):
+                logger.info(f"Door")
+                for tile in self.game.map:
+                    if ((tile.x + 1 == self.game.clickedTile.x) or (tile.x - 1 == self.game.clickedTile.x) or (tile.x == self.game.clickedTile.x)) and ((tile.y + 1 == self.game.clickedTile.y) or (tile.y - 1 == self.game.clickedTile.y) or (tile.y == self.game.clickedTile.y)):
+                        if isinstance(tile, Tile):
+                            if tile.isBurning and not self.game.clickedTile.isOpen:
+                                return False
                 return True
         else:
             return False
@@ -2930,15 +2946,15 @@ class MeleeDiceRollGS:
                 winner = defender
 
         elif defender.weapon == "Lightningclaws" and facing:
-            if ((roll_1 > roll_4) and (roll_1 > roll_5)) or ((roll_2 > roll_4) and (roll_2 > roll_5)) or ((roll_3 > roll_4) and (roll_3 > roll_5)):
-                winner = attacker
-                print(roll_1,roll_2,roll_3,roll_4,roll_5)
-            elif ((roll_4 > roll_1) and (roll_4 > roll_2) and (roll_4 > roll_3)) or ((roll_5 > roll_1) and (roll_5 > roll_2) and (roll_5 > roll_3)):
-                winner = defender
-                print(roll_1,roll_2,roll_3,roll_4,roll_5)
+            attackerRoll = max(roll_1,roll_2,roll_3)
+            defenderRoll = max(roll_4,roll_5)
+
+            if defenderRoll > attackerRoll:
+                return defender
+            elif attackerRoll > defenderRoll:
+                return attacker
             else:
-                winner = None
-                print(roll_1,roll_2,roll_3,roll_4,roll_5)
+                return None
 
         elif defender.weapon == "Axe":
             if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:

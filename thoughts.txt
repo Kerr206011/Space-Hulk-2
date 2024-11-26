@@ -25,22 +25,18 @@ the initial placement of blips must be skippable for certain missions
 
 implement visual distinction for Guard/Overwatch/Jam
 
-melee logic on lightningclaws is wonky, error probably by r1 > r4 anf r1 = r5
-
 certain buttons don't appear/disappear
 
-sustained Fire needs to be proced on every gs individually
+sustained Fire needs to be processed on every gs individually
 
 add shoot button only after check_ranged()
-perhaps split shooting up in different gamestates
 
 the entire map can be made individualistic, so that sections can be distinguished easely
-
-implement doors not opening if burning
 
 implement flamer burning one one side of the door
 
 implement Assaultcannon explosion and reload
 
 implement Psyker phase 
+
 fix UI
