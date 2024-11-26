@@ -37,3 +37,5 @@ perhaps split shooting up in different gamestates
 the entire map can be made individualistic, so that sections can be distinguished easely
 
 implement doors not opening if burning
+
+implement flamer burning one one side of the door
