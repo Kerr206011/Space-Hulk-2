@@ -741,12 +741,11 @@ class Game():
                         if isinstance(tile, Tile):
                             if tile not in visited:
                                 visited.append(tile)
+            x += 1
             if targetTile in visited:
                 logger.info(f"TargetTile {targetTile} in distance of {x}.")
                 return True
-            x += 1
         logger.info(f"TargetTile not within {maxDist}.")
-        logger.info(visited)
         return False
 
 game = Game()

@@ -92,3 +92,51 @@ AttributeError: 'NoneType' object has no attribute 'x'
 2024-11-27 01:44:33,347 - INFO - [<Board.Tile object at 0x0000023808BEE510>, <Board.Door object at 0x0000023808BEE900>, <Board.Tile object at 0x0000023808BEE360>, <Board.Tile object at 0x0000023808BEEB40>, <Board.Tile object at 0x0000023808BEEB70>, <Board.Tile object at 0x0000023808BEEC00>, <Board.Tile object at 0x0000023808BEE1B0>, <Board.Tile object at 0x0000023808BEEE10>, <Board.Tile object at 0x0000023808BEEE40>, <Board.Tile object at 0x0000023808BEEED0>, <Board.Door object at 0x0000023808BEEF60>, <Board.Tile object at 0x0000023808BEC890>, <Board.Tile object at 0x0000023808BEF0E0>, <Board.Tile object at 0x0000023808BEF110>, <Board.Tile object at 0x0000023808BEF1A0>, <Board.Tile object at 0x0000023808BEF680>, <Board.Tile object at 0x0000023808BEC860>, <Board.Door object at 0x0000023808BEF440>, <Board.Tile object at 0x0000023808BEF830>, <Board.Tile object at 0x0000023808BFD1C0>, <Board.Tile object at 0x0000023808BEF9E0>]
 2024-11-27 01:44:46,274 - INFO - TargetTile not within 6.
 2024-11-27 01:44:46,274 - INFO - [<Board.Tile object at 0x0000023808BEE510>, <Board.Door object at 0x0000023808BEE900>, <Board.Tile object at 0x0000023808BEE360>, <Board.Tile object at 0x0000023808BEEB40>, <Board.Tile object at 0x0000023808BEEB70>, <Board.Tile object at 0x0000023808BEEC00>, <Board.Tile object at 0x0000023808BEE1B0>, <Board.Tile object at 0x0000023808BEEE10>, <Board.Tile object at 0x0000023808BEEE40>, <Board.Tile object at 0x0000023808BEEED0>, <Board.Door object at 0x0000023808BEEF60>, <Board.Tile object at 0x0000023808BEC890>, <Board.Tile object at 0x0000023808BEF0E0>, <Board.Tile object at 0x0000023808BEF110>, <Board.Tile object at 0x0000023808BEF1A0>, <Board.Tile object at 0x0000023808BEF680>, <Board.Tile object at 0x0000023808BEC860>, <Board.Door object at 0x0000023808BEF440>, <Board.Tile object at 0x0000023808BEF830>, <Board.Tile object at 0x0000023808BFD1C0>, <Board.Tile object at 0x0000023808BEF9E0>]
+2024-11-27 01:47:33,082 - INFO - Levels/level_1.json
+2024-11-27 01:47:33,889 - INFO - Game initialized successfully.
+2024-11-27 01:47:33,968 - INFO - Initialized screen.
+2024-11-27 01:47:34,160 - DEBUG - Gamestate Main
+2024-11-27 01:47:35,915 - INFO - Levels/level_1.json
+2024-11-27 01:47:36,045 - INFO - Current GameState: placeSM
+2024-11-27 01:47:46,603 - DEBUG - Reset selectedModel and Tile to None
+2024-11-27 01:47:46,603 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-27 01:47:46,604 - DEBUG - Chosen position in blipSack: 11
+2024-11-27 01:47:46,604 - DEBUG - Chosen position in blipSack: 2
+2024-11-27 01:47:46,607 - INFO - Current GameState: blStart
+2024-11-27 01:47:48,489 - DEBUG - Blips on clicked Tile: []
+2024-11-27 01:47:49,216 - DEBUG - Current Bliplist: [1]
+2024-11-27 01:47:49,217 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001F927C5E090>]
+2024-11-27 01:47:49,368 - DEBUG - Current Bliplist: []
+2024-11-27 01:47:49,368 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001F927C5E090>, <Models.Blip object at 0x000001F927C5E6C0>]
+2024-11-27 01:47:49,369 - DEBUG - Reset selectedModel and Tile to None
+2024-11-27 01:47:49,369 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-27 01:47:49,370 - INFO - Current GameState: Command
+2024-11-27 01:47:49,370 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x000001F927C5DCD0> present
+2024-11-27 01:47:49,370 - DEBUG - Reroll of CP: True
+2024-11-27 01:47:51,450 - DEBUG - CP: 1
+2024-11-27 01:47:51,637 - DEBUG - Reset selectedModel and Tile to None
+2024-11-27 01:47:51,637 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-27 01:47:51,638 - DEBUG - Amount of free Entrypoints: 4
+2024-11-27 01:47:51,639 - DEBUG - Chosen position in blipSack: 0
+2024-11-27 01:47:51,639 - DEBUG - Chosen position in blipSack: 18
+2024-11-27 01:47:51,643 - INFO - Current GameState: blStart
+2024-11-27 01:47:53,569 - WARNING - Non Entrypoint Tile clicked!
+2024-11-27 01:48:01,161 - DEBUG - Blips on clicked Tile: [<Models.Blip object at 0x000001F927C5E090>, <Models.Blip object at 0x000001F927C5E6C0>]
+2024-11-27 01:48:02,085 - DEBUG - Current Bliplist: [3]
+2024-11-27 01:48:02,085 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001F927C5E090>, <Models.Blip object at 0x000001F927C5E6C0>, <Models.Blip object at 0x000001F927C5CB60>]
+2024-11-27 01:48:08,065 - DEBUG - Blips on clicked Tile: []
+2024-11-27 01:48:08,713 - DEBUG - Current Bliplist: []
+2024-11-27 01:48:08,714 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001F927C5CC50>]
+2024-11-27 01:48:08,714 - DEBUG - Reset selectedModel and Tile to None
+2024-11-27 01:48:08,715 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-27 01:48:09,545 - DEBUG - Reset selectedModel and Tile to None
+2024-11-27 01:48:09,545 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-27 01:48:09,547 - INFO - Current GameState: Command
+2024-11-27 01:48:09,547 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x000001F927C5DCD0> present
+2024-11-27 01:48:09,548 - DEBUG - Reroll of CP: True
+2024-11-27 01:48:11,516 - DEBUG - CP: 4
+2024-11-27 01:48:13,552 - INFO - Current GameState: smAction
+2024-11-27 01:48:16,902 - INFO - TargetTile <Board.Tile object at 0x000001F927C5EE40> in distance of 3.
+2024-11-27 01:48:28,603 - INFO - TargetTile not within 6.
+2024-11-27 01:48:45,651 - INFO - TargetTile <Board.Tile object at 0x000001F927C5F9E0> in distance of 6.
+2024-11-27 01:48:52,744 - INFO - TargetTile not within 6.
