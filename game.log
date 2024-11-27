@@ -140,3 +140,30 @@ AttributeError: 'NoneType' object has no attribute 'x'
 2024-11-27 01:48:28,603 - INFO - TargetTile not within 6.
 2024-11-27 01:48:45,651 - INFO - TargetTile <Board.Tile object at 0x000001F927C5F9E0> in distance of 6.
 2024-11-27 01:48:52,744 - INFO - TargetTile not within 6.
+2024-11-27 01:55:52,338 - INFO - Levels/level_1.json
+2024-11-27 01:55:52,585 - INFO - Game initialized successfully.
+2024-11-27 01:55:52,634 - INFO - Initialized screen.
+2024-11-27 01:55:52,741 - DEBUG - Gamestate Main
+2024-11-27 01:55:55,846 - INFO - Levels/level_1.json
+2024-11-27 01:55:55,909 - INFO - Current GameState: placeSM
+2024-11-27 01:56:05,054 - DEBUG - Reset selectedModel and Tile to None
+2024-11-27 01:56:05,055 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-27 01:56:05,055 - DEBUG - Chosen position in blipSack: 16
+2024-11-27 01:56:05,056 - DEBUG - Chosen position in blipSack: 7
+2024-11-27 01:56:05,061 - INFO - Current GameState: blStart
+2024-11-27 01:56:05,734 - DEBUG - Blips on clicked Tile: []
+2024-11-27 01:56:06,309 - DEBUG - Current Bliplist: [1]
+2024-11-27 01:56:06,310 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001DE08E70FB0>]
+2024-11-27 01:56:06,461 - DEBUG - Current Bliplist: []
+2024-11-27 01:56:06,462 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001DE08E70FB0>, <Models.Blip object at 0x000001DE08E72DE0>]
+2024-11-27 01:56:06,462 - DEBUG - Reset selectedModel and Tile to None
+2024-11-27 01:56:06,463 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-27 01:56:06,464 - INFO - Current GameState: Command
+2024-11-27 01:56:06,464 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x000001DE08E723F0> present
+2024-11-27 01:56:06,465 - DEBUG - Reroll of CP: True
+2024-11-27 01:56:07,437 - DEBUG - CP: 6
+2024-11-27 01:56:09,262 - INFO - Current GameState: smAction
+2024-11-27 01:56:10,281 - INFO - TargetTile <Board.Tile object at 0x000001DE08E72A80> in distance of 1.
+2024-11-27 01:56:14,710 - INFO - TargetTile <Board.Tile object at 0x000001DE08E728D0> in distance of 2.
+2024-11-27 01:56:17,070 - INFO - TargetTile <Board.Tile object at 0x000001DE08E73260> in distance of 2.
+2024-11-27 01:56:21,902 - INFO - TargetTile not within 6.
