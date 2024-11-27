@@ -40,3 +40,5 @@ implement Psyker phase
 fix UI
 
 implement Overwatch
+
+implement SM reveal

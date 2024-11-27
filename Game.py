@@ -730,7 +730,19 @@ class Game():
                     visionlist.append(tile)
         return visionlist
     
-    def checkpath(self,startTile, targetTile, maxDist):
+    def check_overwatch(self):
+        overwatchingModels = []
+        for tile in self.map:
+            if tile.isOccupied:
+                if tile.occupand in self.smModelList:
+                    if self.selectedTile in self.check_vision(tile.occupand, tile):
+                        if tile.occupand.weapon != "Thunderhammer" and tile.occupand.weapon != "Lightningclaws" and tile.occupand.weapon != "Flamer":
+                            if tile.occupand.overwatch and (not tile.occupand.jam):
+                                overwatchingModels.append(tile)
+        logger.debug(f"Found {overwatchingModels.__len__()} overwatching models!")
+        return overwatchingModels
+    
+    def check_path(self,startTile, targetTile, maxDist):
         visited = [startTile]
         x = 0
 

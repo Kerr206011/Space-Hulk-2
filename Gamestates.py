@@ -28,6 +28,7 @@ class GameStateManager:     #class to manage interactions between gamestates and
                            "shoot": Shoot(self, self.game),
                            "shootflamer": ShootFlamer(self, self.game)}
         self.runThread = True   #depricated
+        self.overwatchAction = None
 
         self.freeShot = False   #if sm has free shoot Action and doesn't need to pay the AP for shooting
         self.freeTurn = False   #if gs has a free turn and doesn't need to expend AP for turning 90°
@@ -814,7 +815,7 @@ class smAction:
                                 if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
                                     if tile != self.game.selectedTile:
                                         self.game.clickedTile = tile
-                                        self.game.checkpath(self.game.selectedTile, self.game.clickedTile, 6)
+                                        self.game.check_path(self.game.selectedTile, self.game.clickedTile, 6)
                                         if self.check_door():
                                             if tile.isOpen == False:
                                                 if self.check_melee():
@@ -1797,7 +1798,6 @@ class ShootFlamer:
                                     self.game.clickedTile = tile
                                     logger.info(f"ClickedTile: {self.game.clickedTile}")
 
-                         
 class ChooseBlip:
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager = gameStateManager
