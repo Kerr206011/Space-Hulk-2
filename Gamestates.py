@@ -812,9 +812,9 @@ class smAction:
                         for tile in self.game.map:
                             if isinstance(tile, Tile):
                                 if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
-                                    self.game.checkpath(self.game.selectedTile, self.game.clickedTile, 6)
                                     if tile != self.game.selectedTile:
                                         self.game.clickedTile = tile
+                                        self.game.checkpath(self.game.selectedTile, self.game.clickedTile, 6)
                                         if self.check_door():
                                             if tile.isOpen == False:
                                                 if self.check_melee():
