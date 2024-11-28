@@ -167,3 +167,271 @@ AttributeError: 'NoneType' object has no attribute 'x'
 2024-11-27 01:56:14,710 - INFO - TargetTile <Board.Tile object at 0x000001DE08E728D0> in distance of 2.
 2024-11-27 01:56:17,070 - INFO - TargetTile <Board.Tile object at 0x000001DE08E73260> in distance of 2.
 2024-11-27 01:56:21,902 - INFO - TargetTile not within 6.
+2024-11-28 14:08:00,926 - INFO - Levels/level_1.json
+2024-11-28 14:08:01,384 - INFO - Game initialized successfully.
+2024-11-28 14:08:01,432 - INFO - Initialized screen.
+2024-11-28 14:08:01,544 - DEBUG - Gamestate Main
+2024-11-28 14:08:05,599 - INFO - Levels/level_1.json
+2024-11-28 14:08:05,637 - INFO - Current GameState: placeSM
+2024-11-28 14:08:16,492 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:08:16,493 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:08:16,494 - DEBUG - Chosen position in blipSack: 1
+2024-11-28 14:08:16,494 - DEBUG - Chosen position in blipSack: 14
+2024-11-28 14:08:16,497 - INFO - Current GameState: blStart
+2024-11-28 14:08:26,938 - DEBUG - Blips on clicked Tile: []
+2024-11-28 14:08:27,939 - DEBUG - Current Bliplist: [3]
+2024-11-28 14:08:27,940 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001A97E2EA420>]
+2024-11-28 14:08:28,102 - DEBUG - Current Bliplist: []
+2024-11-28 14:08:28,102 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001A97E2EA420>, <Models.Blip object at 0x000001A97E2EA480>]
+2024-11-28 14:08:28,103 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:08:28,103 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:08:28,104 - INFO - Current GameState: Command
+2024-11-28 14:08:28,104 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x000001A97E2EA0F0> present
+2024-11-28 14:08:28,105 - DEBUG - Reroll of CP: True
+2024-11-28 14:08:30,171 - DEBUG - CP: 6
+2024-11-28 14:08:32,678 - INFO - Current GameState: smAction
+2024-11-28 14:08:33,667 - INFO - TargetTile <Board.Door object at 0x000001A97E2EAD20> in distance of 1.
+2024-11-28 14:08:33,668 - INFO - Door
+2024-11-28 14:08:34,362 - INFO - Door
+2024-11-28 14:08:35,235 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:08:36,302 - INFO - TargetTile <Board.Tile object at 0x000001A97E2EAF60> in distance of 1.
+2024-11-28 14:08:37,123 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:08:38,315 - INFO - TargetTile <Board.Tile object at 0x000001A97E2EB230> in distance of 1.
+2024-11-28 14:08:41,884 - INFO - TargetTile <Board.Tile object at 0x000001A97E2EB230> in distance of 1.
+2024-11-28 14:08:42,555 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:08:44,555 - INFO - Current GameState: smAction
+2024-11-28 14:08:45,379 - INFO - TargetTile <Board.Door object at 0x000001A97E2EB350> in distance of 2.
+2024-11-28 14:08:52,196 - INFO - Current GameState: smAction
+2024-11-28 14:08:53,419 - INFO - TargetTile <Board.Door object at 0x000001A97E2EB350> in distance of 2.
+2024-11-28 14:08:57,051 - INFO - Current GameState: smAction
+2024-11-28 14:09:36,168 - INFO - TargetTile not within 6.
+2024-11-28 14:09:37,353 - INFO - TargetTile not within 6.
+2024-11-28 14:09:40,249 - INFO - Current GameState: smAction
+2024-11-28 14:09:43,645 - INFO - Current GameState: smAction
+2024-11-28 14:09:44,731 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:09:44,732 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:09:46,400 - INFO - Current GameState: smAction
+2024-11-28 14:09:47,785 - INFO - TargetTile <Board.Door object at 0x000001A97E2EB830> in distance of 6.
+2024-11-28 14:09:50,119 - DEBUG - check_ranged error
+2024-11-28 14:09:51,095 - DEBUG - check_ranged error
+2024-11-28 14:09:51,394 - DEBUG - check_ranged error
+2024-11-28 14:09:54,874 - INFO - TargetTile <Board.Tile object at 0x000001A97E2EB500> in distance of 5.
+2024-11-28 14:09:55,640 - DEBUG - check_ranged error
+2024-11-28 14:09:58,528 - INFO - TargetTile <Board.Tile object at 0x000001A97E2EAF60> in distance of 3.
+2024-11-28 14:10:03,183 - INFO - Current GameState: smAction
+2024-11-28 14:12:45,776 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:12:45,776 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:12:54,407 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:12:54,407 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:12:54,407 - DEBUG - Amount of free Entrypoints: 4
+2024-11-28 14:12:54,408 - DEBUG - Chosen position in blipSack: 1
+2024-11-28 14:12:54,408 - DEBUG - Chosen position in blipSack: 5
+2024-11-28 14:12:54,410 - INFO - Current GameState: blStart
+2024-11-28 14:12:55,391 - DEBUG - Blips on clicked Tile: []
+2024-11-28 14:12:56,121 - DEBUG - Current Bliplist: [1]
+2024-11-28 14:12:56,121 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001A97E2E9460>]
+2024-11-28 14:12:56,291 - DEBUG - Current Bliplist: []
+2024-11-28 14:12:56,292 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001A97E2E9460>, <Models.Blip object at 0x000001A97E2E9C40>]
+2024-11-28 14:12:56,292 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:12:56,292 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:13:03,797 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:13:23,069 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:16:38,238 - INFO - Levels/level_1.json
+2024-11-28 14:16:38,480 - INFO - Game initialized successfully.
+2024-11-28 14:16:38,529 - INFO - Initialized screen.
+2024-11-28 14:16:38,603 - DEBUG - Gamestate Main
+2024-11-28 14:16:39,834 - INFO - Levels/level_1.json
+2024-11-28 14:16:39,871 - INFO - Current GameState: placeSM
+2024-11-28 14:16:49,966 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:16:49,967 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:16:49,967 - DEBUG - Chosen position in blipSack: 12
+2024-11-28 14:16:49,968 - DEBUG - Chosen position in blipSack: 2
+2024-11-28 14:16:49,970 - INFO - Current GameState: blStart
+2024-11-28 14:16:50,801 - DEBUG - Blips on clicked Tile: []
+2024-11-28 14:16:51,514 - DEBUG - Current Bliplist: [1]
+2024-11-28 14:16:51,514 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000012164839A60>]
+2024-11-28 14:16:51,836 - DEBUG - Current Bliplist: []
+2024-11-28 14:16:51,836 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000012164839A60>, <Models.Blip object at 0x000001216483B890>]
+2024-11-28 14:16:51,837 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:16:51,837 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:16:51,838 - INFO - Current GameState: Command
+2024-11-28 14:16:51,838 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x000001216483AEA0> present
+2024-11-28 14:16:51,839 - DEBUG - Reroll of CP: True
+2024-11-28 14:16:52,828 - DEBUG - CP: 4
+2024-11-28 14:16:54,704 - INFO - Current GameState: smAction
+2024-11-28 14:16:55,896 - INFO - TargetTile <Board.Door object at 0x000001216483BAD0> in distance of 1.
+2024-11-28 14:16:55,897 - INFO - Door
+2024-11-28 14:16:56,753 - INFO - Door
+2024-11-28 14:16:57,712 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:16:58,626 - INFO - TargetTile <Board.Door object at 0x0000012164854170> in distance of 2.
+2024-11-28 14:17:04,057 - INFO - Current GameState: smAction
+2024-11-28 14:17:04,901 - INFO - TargetTile <Board.Tile object at 0x000001216483BD40> in distance of 1.
+2024-11-28 14:17:06,238 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:17:07,410 - INFO - TargetTile <Board.Door object at 0x0000012164854650> in distance of 3.
+2024-11-28 14:17:10,313 - INFO - Current GameState: smAction
+2024-11-28 14:17:11,192 - INFO - TargetTile <Board.Tile object at 0x0000012164854050> in distance of 1.
+2024-11-28 14:17:12,202 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:17:14,425 - INFO - TargetTile <Board.Door object at 0x0000012164854650> in distance of 2.
+2024-11-28 14:17:17,072 - INFO - Current GameState: smAction
+2024-11-28 14:17:19,681 - INFO - Current GameState: smAction
+2024-11-28 14:17:21,049 - INFO - TargetTile <Board.Door object at 0x0000012164854170> in distance of 2.
+2024-11-28 14:17:24,659 - INFO - Current GameState: smAction
+2024-11-28 14:17:28,369 - INFO - Current GameState: smAction
+2024-11-28 14:17:30,697 - INFO - TargetTile <Board.Tile object at 0x00000121648543B0> in distance of 1.
+2024-11-28 14:17:33,028 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:17:36,553 - INFO - Current GameState: smAction
+2024-11-28 14:17:37,692 - INFO - TargetTile <Board.Door object at 0x0000012164854650> in distance of 1.
+2024-11-28 14:17:37,693 - INFO - Door
+2024-11-28 14:17:38,444 - INFO - Door
+2024-11-28 14:17:40,123 - INFO - Door
+2024-11-28 14:17:44,044 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:17:44,045 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:17:46,232 - INFO - Current GameState: smAction
+2024-11-28 14:17:56,382 - INFO - TargetTile not within 6.
+2024-11-28 14:21:17,690 - INFO - Levels/level_1.json
+2024-11-28 14:21:17,894 - INFO - Game initialized successfully.
+2024-11-28 14:21:17,936 - INFO - Initialized screen.
+2024-11-28 14:21:18,039 - DEBUG - Gamestate Main
+2024-11-28 14:21:19,342 - INFO - Levels/level_1.json
+2024-11-28 14:21:19,373 - INFO - Current GameState: placeSM
+2024-11-28 14:21:28,876 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:21:28,876 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:21:28,877 - DEBUG - Chosen position in blipSack: 6
+2024-11-28 14:21:28,878 - DEBUG - Chosen position in blipSack: 0
+2024-11-28 14:21:28,880 - INFO - Current GameState: blStart
+2024-11-28 14:21:29,730 - DEBUG - Blips on clicked Tile: []
+2024-11-28 14:21:30,291 - DEBUG - Current Bliplist: [1]
+2024-11-28 14:21:30,292 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000021C7A3CDD60>]
+2024-11-28 14:21:30,537 - DEBUG - Current Bliplist: []
+2024-11-28 14:21:30,538 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000021C7A3CDD60>, <Models.Blip object at 0x0000021C7A3CF590>]
+2024-11-28 14:21:30,538 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:21:30,539 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:21:30,540 - INFO - Current GameState: Command
+2024-11-28 14:21:30,540 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x0000021C7A3CF1D0> present
+2024-11-28 14:21:30,541 - DEBUG - Reroll of CP: True
+2024-11-28 14:21:31,401 - DEBUG - CP: 2
+2024-11-28 14:21:34,050 - INFO - Current GameState: smAction
+2024-11-28 14:21:35,050 - INFO - Door
+2024-11-28 14:21:41,118 - INFO - Current GameState: smAction
+2024-11-28 14:21:41,120 - INFO - Door
+2024-11-28 14:21:43,699 - INFO - Current GameState: smAction
+2024-11-28 14:21:43,702 - INFO - Door
+2024-11-28 14:21:45,599 - INFO - Current GameState: smAction
+2024-11-28 14:21:45,601 - INFO - Door
+2024-11-28 14:21:47,978 - INFO - Current GameState: smAction
+2024-11-28 14:21:47,980 - INFO - Door
+2024-11-28 14:21:49,930 - INFO - Current GameState: smAction
+2024-11-28 14:21:49,932 - INFO - Door
+2024-11-28 14:21:52,379 - INFO - Current GameState: smAction
+2024-11-28 14:21:52,381 - INFO - Door
+2024-11-28 14:21:55,682 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:21:55,683 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:21:58,090 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:21:58,091 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:21:58,092 - DEBUG - Amount of free Entrypoints: 4
+2024-11-28 14:21:58,092 - DEBUG - Chosen position in blipSack: 15
+2024-11-28 14:21:58,093 - DEBUG - Chosen position in blipSack: 4
+2024-11-28 14:21:58,096 - INFO - Current GameState: blStart
+2024-11-28 14:21:59,035 - DEBUG - Blips on clicked Tile: []
+2024-11-28 14:21:59,795 - DEBUG - Current Bliplist: [1]
+2024-11-28 14:21:59,796 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000021C7A3CE810>]
+2024-11-28 14:21:59,933 - DEBUG - Current Bliplist: []
+2024-11-28 14:21:59,934 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000021C7A3CE810>, <Models.Blip object at 0x0000021C7A3CE840>]
+2024-11-28 14:21:59,934 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:21:59,935 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:22:13,221 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:22:13,222 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:22:21,052 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:22:22,838 - INFO - Door
+2024-11-28 14:22:23,487 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:22:24,952 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:22:26,470 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:22:30,190 - INFO - Door
+2024-11-28 14:22:33,191 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:22:33,192 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:22:34,150 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 14:22:34,151 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:22:34,152 - INFO - Current GameState: Command
+2024-11-28 14:22:34,152 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x0000021C7A3CF1D0> present
+2024-11-28 14:22:34,153 - DEBUG - Reroll of CP: True
+2024-11-28 14:22:36,966 - DEBUG - CP: 3
+2024-11-28 14:22:38,821 - INFO - Current GameState: smAction
+2024-11-28 14:22:39,606 - INFO - Door
+2024-11-28 14:22:40,414 - INFO - Door
+2024-11-28 14:22:41,074 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:22:48,542 - INFO - Current Gamestate: smShoot
+2024-11-28 14:22:50,391 - INFO - Current GameState: smAction
+2024-11-28 14:22:51,902 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 14:22:53,502 - INFO - Current Gamestate: smShoot
+2024-11-28 14:22:55,054 - INFO - Current GameState: smAction
+2024-11-28 14:22:57,149 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 15:32:07,487 - INFO - Levels/level_1.json
+2024-11-28 15:32:07,670 - INFO - Game initialized successfully.
+2024-11-28 15:32:07,722 - INFO - Initialized screen.
+2024-11-28 15:32:07,795 - DEBUG - Gamestate Main
+2024-11-28 15:32:08,755 - INFO - Levels/level_1.json
+2024-11-28 15:32:08,797 - INFO - Current GameState: placeSM
+2024-11-28 15:32:17,794 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 15:32:17,794 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 15:32:17,795 - DEBUG - Chosen position in blipSack: 13
+2024-11-28 15:32:17,795 - DEBUG - Chosen position in blipSack: 6
+2024-11-28 15:32:17,797 - INFO - Current GameState: blStart
+2024-11-28 15:32:18,747 - DEBUG - Blips on clicked Tile: []
+2024-11-28 15:32:19,393 - DEBUG - Current Bliplist: [1]
+2024-11-28 15:32:19,394 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000002AD6758DD60>]
+2024-11-28 15:32:19,545 - DEBUG - Current Bliplist: []
+2024-11-28 15:32:19,545 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000002AD6758DD60>, <Models.Blip object at 0x000002AD6758F590>]
+2024-11-28 15:32:19,546 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 15:32:19,546 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 15:32:19,547 - INFO - Current GameState: Command
+2024-11-28 15:32:19,548 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x000002AD6758F1D0> present
+2024-11-28 15:32:19,548 - DEBUG - Reroll of CP: True
+2024-11-28 15:32:20,945 - DEBUG - CP: 1
+2024-11-28 15:32:22,729 - INFO - Current GameState: smAction
+2024-11-28 15:32:23,500 - INFO - Door
+2024-11-28 15:32:24,770 - INFO - Door
+2024-11-28 15:32:25,904 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 15:32:28,495 - INFO - Current Gamestate: smShoot
+2024-11-28 15:32:30,997 - INFO - Current GameState: smAction
+2024-11-28 15:32:34,029 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 15:32:35,782 - INFO - Current Gamestate: smShoot
+2024-11-28 15:32:37,525 - INFO - Current GameState: smAction
+2024-11-28 15:32:39,525 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 15:34:02,421 - INFO - Levels/level_1.json
+2024-11-28 15:34:02,622 - INFO - Game initialized successfully.
+2024-11-28 15:34:02,648 - INFO - Initialized screen.
+2024-11-28 15:34:02,715 - DEBUG - Gamestate Main
+2024-11-28 15:34:05,845 - INFO - Levels/level_1.json
+2024-11-28 15:34:06,174 - INFO - Game initialized successfully.
+2024-11-28 15:34:06,235 - INFO - Initialized screen.
+2024-11-28 15:34:06,327 - DEBUG - Gamestate Main
+2024-11-28 15:34:11,764 - INFO - Levels/level_1.json
+2024-11-28 15:34:11,820 - INFO - Current GameState: placeSM
+2024-11-28 15:35:05,709 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 15:35:05,709 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 15:35:05,710 - DEBUG - Chosen position in blipSack: 19
+2024-11-28 15:35:05,711 - DEBUG - Chosen position in blipSack: 8
+2024-11-28 15:35:05,713 - INFO - Current GameState: blStart
+2024-11-28 15:35:06,775 - DEBUG - Blips on clicked Tile: []
+2024-11-28 15:35:07,446 - DEBUG - Current Bliplist: [1]
+2024-11-28 15:35:07,447 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000002055A8EFAD0>]
+2024-11-28 15:35:07,621 - DEBUG - Current Bliplist: []
+2024-11-28 15:35:07,622 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000002055A8EFAD0>, <Models.Blip object at 0x000002055A8EFB60>]
+2024-11-28 15:35:07,622 - DEBUG - Reset selectedModel and Tile to None
+2024-11-28 15:35:07,623 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 15:35:07,624 - INFO - Current GameState: Command
+2024-11-28 15:35:07,624 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x000002055A8F0B00> present
+2024-11-28 15:35:07,625 - DEBUG - Reroll of CP: True
+2024-11-28 15:35:09,813 - DEBUG - CP: 6
+2024-11-28 15:35:11,743 - INFO - Current GameState: smAction
+2024-11-28 15:35:12,967 - INFO - Door
+2024-11-28 15:35:13,835 - INFO - Door
+2024-11-28 15:35:14,862 - INFO - Door
+2024-11-28 15:35:15,582 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 15:35:17,152 - INFO - Current Gamestate: smShoot
+2024-11-28 15:35:20,111 - INFO - Current GameState: smAction
+2024-11-28 15:35:21,718 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 15:35:23,798 - DEBUG - Reset ClickedModel and Tile to None
+2024-11-28 15:35:25,350 - INFO - Current Gamestate: smShoot
+2024-11-28 15:35:27,207 - INFO - Current GameState: smAction
+2024-11-28 15:35:31,071 - DEBUG - Reset ClickedModel and Tile to None

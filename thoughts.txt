@@ -42,3 +42,5 @@ fix UI
 implement Overwatch
 
 implement SM reveal
+
+problem with move perhaps in reduceAp

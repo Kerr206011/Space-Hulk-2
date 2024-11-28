@@ -730,15 +730,28 @@ class Game():
                     visionlist.append(tile)
         return visionlist
     
-    def check_overwatch(self):
+    def check_overwatch(self, activationType = "normal"):
         overwatchingModels = []
-        for tile in self.map:
-            if tile.isOccupied:
-                if tile.occupand in self.smModelList:
-                    if self.selectedTile in self.check_vision(tile.occupand, tile):
-                        if tile.occupand.weapon != "Thunderhammer" and tile.occupand.weapon != "Lightningclaws" and tile.occupand.weapon != "Flamer":
-                            if tile.occupand.overwatch and (not tile.occupand.jam):
-                                overwatchingModels.append(tile)
+
+        if activationType == "door":
+
+            for tile in self.map:
+                if tile.isOccupied:
+                    if tile.occupand in self.smModelList:
+                        if self.selectedTile in self.check_vision(tile.occupand, tile) or self.clickedTile in self.check_vision(tile.occupand, tile):
+                            if tile.occupand.weapon != "Thunderhammer" and tile.occupand.weapon != "Lightningclaws" and tile.occupand.weapon != "Flamer":
+                                if tile.occupand.overwatch and (not tile.occupand.jam) and not ((tile.occupand.weapon == "Assaultcannon") and (self.assaultCannonAmmo == 0)):
+                                    overwatchingModels.append(tile)
+
+        else:
+            for tile in self.map:
+                if tile.isOccupied:
+                    if tile.occupand in self.smModelList:
+                        if self.selectedTile in self.check_vision(tile.occupand, tile):
+                            if tile.occupand.weapon != "Thunderhammer" and tile.occupand.weapon != "Lightningclaws" and tile.occupand.weapon != "Flamer":
+                                if tile.occupand.overwatch and (not tile.occupand.jam) and not ((tile.occupand.weapon == "Assaultcannon") and (self.assaultCannonAmmo == 0)):
+                                    overwatchingModels.append(tile)
+
         logger.debug(f"Found {overwatchingModels.__len__()} overwatching models!")
         return overwatchingModels
     

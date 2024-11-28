@@ -801,7 +801,7 @@ class smAction:
                         if self.check_ranged():
                             if (self.game.selectedModel.weapon == "Thunderhammer") or (self.game.selectedModel.weapon == "Lightningclaws"):
                                 pass
-                            elif (self.game.selectedModel.weapon == "Flamer") and (self.game.selectedModel.AP + self.game.cp > 1) and self.game.flamerAmmo != 0:
+                            elif (self.game.selectedModel.weapon == "Flamer") and (self.game.selectedModel.AP + self.game.cp > 1) and (self.game.flamerAmmo != 0) and (self.game.check_path(self.game.selectedTile, self.game.clickedTile, 12)):
                                 self.gameStateManager.screen.fill('black')
                                 self.gameStateManager.run_gamestate('shootflamer')
                             elif ((self.game.selectedModel.weapon != "Flamer") and ((self.game.selectedModel.AP + self.game.cp > 0) or (self.gameStateManager.freeShot))):
@@ -815,7 +815,6 @@ class smAction:
                                 if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
                                     if tile != self.game.selectedTile:
                                         self.game.clickedTile = tile
-                                        self.game.check_path(self.game.selectedTile, self.game.clickedTile, 6)
                                         if self.check_door():
                                             if tile.isOpen == False:
                                                 if self.check_melee():
@@ -1592,6 +1591,7 @@ class Shoot:
             self.gameStateManager.run_gamestate("smAction")
 
     def run(self):
+        logger.info(f"Current Gamestate: smShoot")
         roll_1 = 0
         roll_2 = 0
         roll_3 = 0
@@ -1654,6 +1654,7 @@ class Shoot:
                     if self.rollAgain_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if (self.game.selectedModel.AP + self.game.cp > 0) or self.gameStateManager.freeShot:
                             self.reduce_ap(1)
+                            self.game.selectedModel.susf = True
                             self.gameStateManager.screen.fill('black')
                             pygame.display.flip()
                             self.gameStateManager.run_gamestate('shoot')
@@ -1697,6 +1698,7 @@ class ShootFlamer:
         target.change_picture(target.burningPictureFilePath)
 
     def run(self):
+        logger.info(f"Current Gamestate: smShoot")
         notDoor = True
         
         for tile in self.game.map:
@@ -1795,8 +1797,9 @@ class ShootFlamer:
                         for tile in self.game.map:
                             if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
                                 if tile in self.game.check_vision(self.game.selectedModel, self.game.selectedTile):
-                                    self.game.clickedTile = tile
-                                    logger.info(f"ClickedTile: {self.game.clickedTile}")
+                                    if self.game.check_path(self.game.selectedTile, tile, 12):
+                                        self.game.clickedTile = tile
+                                        logger.info(f"ClickedTile: {self.game.clickedTile}")
 
 class ChooseBlip:
     def __init__(self, gameStateManager, game) -> None:
@@ -1967,6 +1970,10 @@ class gsAction:
         self.game.selectedTile = self.game.clickedTile
         self.game.reset_clicked()
         self.gameStateManager.freeTurn = True
+
+        if (self.game.check_overwatch().__len__() != 0):
+            logger.info(self.game.check_overwatch())
+            gameStateManager.overwatchAction = "move"
 
     def check_door(self):
         face = self.game.selectedModel.face
@@ -2169,9 +2176,8 @@ class blAction:
                 return False 
 
     def check_door(self):
-        face = self.game.selectedModel.face
         if isinstance(self.game.clickedTile, Door):
-            if ((self.game.selectedTile.x + face[0] == self.game.clickedTile.x) and (face[0] != 0)) or ((self.game.selectedTile.y + face[1] == self.game.clickedTile.y) and (face[1] != 0)):
+            if((self.game.selectedTile.x == self.game.clickedTile.x + 1) or (self.game.selectedTile.x == self.game.clickedTile.x - 1) or (self.game.selectedTile.x == self.game.clickedTile.x)) and ((self.game.selectedTile.y == self.game.clickedTile.y + 1) or (self.game.selectedTile.y == self.game.clickedTile.y - 1) or (self.game.selectedTile.y == self.game.clickedTile.y)):
                 logger.info(f"Door")
                 for tile in self.game.map:
                     if ((tile.x + 1 == self.game.clickedTile.x) or (tile.x - 1 == self.game.clickedTile.x) or (tile.x == self.game.clickedTile.x)) and ((tile.y + 1 == self.game.clickedTile.y) or (tile.y - 1 == self.game.clickedTile.y) or (tile.y == self.game.clickedTile.y)):
