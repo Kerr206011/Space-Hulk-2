@@ -43,4 +43,4 @@ implement Overwatch
 
 implement SM reveal
 
-problem with move perhaps in reduceAp
+shoot again has no ap restriction

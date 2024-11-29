@@ -73,7 +73,10 @@ class Door(Tile):
         self.burningPictureFilePath = picture_burning
 
     def get_destroyed(self):
-        newTile = Tile("Pictures/Tiles/Floor_1.png", self.burningPictureFilePath, self.x, self.y, self.sector)
+        newTile = Tile("Pictures/Tiles/Floor_1.png", self.burningPictureFilePath, self.x, self.y, self.sector)      
+        newTile.graphicsX = self.graphicsX
+        newTile.graphicsY = self.graphicsY
+        newTile.button.rect.topleft = ((self.graphicsX * self.graphicOFS),(self.graphicsY * self.graphicOFS))
         return newTile
 
 class ControlledArea(Tile):

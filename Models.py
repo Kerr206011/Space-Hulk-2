@@ -26,8 +26,10 @@ class Genestealer(Model):
     def __init__(self):
         super().__init__(6, 'Pictures/Models/Gs.png')
         self.isBroodlord = False
+        self.lurking = False
 
 class Blip(Model):
     def __init__(self, count):
         super().__init__(6, 'Pictures/Models/Blip.PNG')
         self.count = count
+        self.lurking = False

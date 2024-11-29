@@ -452,28 +452,6 @@ class Game():
 
         return hit
     
-    def shoot_assaultCannon(self, shooter, targetTile, roll_1, roll_2, roll_3):
-        hit = False
-
-        if shooter.susf == True:
-            roll_1 +=1
-            roll_2 +=1
-            roll_3 +=1
-
-        if targetTile.isBroodlord == False:
-            if roll_1 > 4 or roll_2 > 4 or roll_3 > 4:
-                hit = True
-
-        else:
-            if (roll_1 > 4 and roll_2 > 4) or (roll_2 > 4 and roll_3 > 4) or (roll_1 > 4 and roll_3 > 4):
-                hit = True
-
-        shooter.susf = True
-
-        return hit
-
-    def shoot_flamer(self, targetTile):
-        pass
 
     def get_tile(self, x, y):
         for tile in self.map:
@@ -511,6 +489,9 @@ class Game():
                 ofsY =0
 
         while runMiddle:
+            if abs(x) > 100 or abs(y) > 100:
+                logger.debug(f"Checked Distance over 100!")
+                isBlocked = True
             x += model.face[0]
             y += model.face[1]
             checkedtile = self.get_tile(x, y)
@@ -553,6 +534,10 @@ class Game():
                 i +=1
 
         while runLeft1:
+            if abs(x) > 100 or abs(y) > 100:
+                logger.critical(f"Checked Distance over 100!")
+                pygame.quit()
+                sys.exit()
             checkedtile = self.get_tile(x, y)
 
             if isinstance(checkedtile, Tile):
@@ -595,6 +580,10 @@ class Game():
                 y += model.face[1]
 
         while runLeft2:
+            if abs(x) > 100 or abs(y) > 100:
+                logger.critical(f"Checked Distance over 100!")
+                pygame.quit()
+                sys.exit()
             checkedtile = self.get_tile(x, y)
 
             if isinstance(checkedtile, Tile):
@@ -632,6 +621,10 @@ class Game():
                 y += model.face[1]
 
         while runRight1:
+            if abs(x) > 100 or abs(y) > 100:
+                logger.critical(f"Checked Distance over 100!")
+                pygame.quit()
+                sys.exit()
             checkedtile = self.get_tile(x, y)
 
             if isinstance(checkedtile, Tile):
@@ -674,6 +667,10 @@ class Game():
                 y += model.face[1]
 
         while runRight2:
+            if abs(x) > 100 or abs(y) > 100:
+                logger.critical(f"Checked Distance over 100!")
+                pygame.quit()
+                sys.exit()
             checkedtile = self.get_tile(x, y)
 
             if isinstance(checkedtile, Tile):
@@ -736,21 +733,23 @@ class Game():
         if activationType == "door":
 
             for tile in self.map:
-                if tile.isOccupied:
-                    if tile.occupand in self.smModelList:
-                        if self.selectedTile in self.check_vision(tile.occupand, tile) or self.clickedTile in self.check_vision(tile.occupand, tile):
-                            if tile.occupand.weapon != "Thunderhammer" and tile.occupand.weapon != "Lightningclaws" and tile.occupand.weapon != "Flamer":
-                                if tile.occupand.overwatch and (not tile.occupand.jam) and not ((tile.occupand.weapon == "Assaultcannon") and (self.assaultCannonAmmo == 0)):
-                                    overwatchingModels.append(tile)
+                if isinstance(tile, Tile):
+                    if tile.isOccupied:
+                        if tile.occupand in self.smModelList:
+                            if self.selectedTile in self.check_vision(tile.occupand, tile) or self.clickedTile in self.check_vision(tile.occupand, tile):
+                                if tile.occupand.weapon != "Thunderhammer" and tile.occupand.weapon != "Lightningclaws" and tile.occupand.weapon != "Flamer":
+                                    if tile.occupand.overwatch and (not tile.occupand.jam) and not ((tile.occupand.weapon == "Assaultcannon") and (self.assaultCannonAmmo == 0)):
+                                        overwatchingModels.append(tile)
 
         else:
             for tile in self.map:
-                if tile.isOccupied:
-                    if tile.occupand in self.smModelList:
-                        if self.selectedTile in self.check_vision(tile.occupand, tile):
-                            if tile.occupand.weapon != "Thunderhammer" and tile.occupand.weapon != "Lightningclaws" and tile.occupand.weapon != "Flamer":
-                                if tile.occupand.overwatch and (not tile.occupand.jam) and not ((tile.occupand.weapon == "Assaultcannon") and (self.assaultCannonAmmo == 0)):
-                                    overwatchingModels.append(tile)
+                if isinstance(tile, Tile):
+                    if tile.isOccupied:
+                        if tile.occupand in self.smModelList:
+                            if self.selectedTile in self.check_vision(tile.occupand, tile):
+                                if tile.occupand.weapon != "Thunderhammer" and tile.occupand.weapon != "Lightningclaws" and tile.occupand.weapon != "Flamer":
+                                    if tile.occupand.overwatch and (not tile.occupand.jam) and not ((tile.occupand.weapon == "Assaultcannon") and (self.assaultCannonAmmo == 0)):
+                                        overwatchingModels.append(tile)
 
         logger.debug(f"Found {overwatchingModels.__len__()} overwatching models!")
         return overwatchingModels
