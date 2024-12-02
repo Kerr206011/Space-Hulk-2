@@ -1849,6 +1849,8 @@ class Overwatch:
         else:
             attacker.susf = True
 
+        
+
         if isinstance(defender, Door):
             if roll_1 > 5 or roll_2 > 5:
                 logger.info(f"Hit with: {roll_1}, {roll_2}")
@@ -1859,7 +1861,7 @@ class Overwatch:
             else:
                 logger.info(f"Missed with: {roll_1}, {roll_2}")
 
-        else:
+        elif isinstance(defender, Genestealer):
             if defender.isBroodlord == False:
                 if roll_1 > 5 or roll_2 > 5:
                     logger.info(f"Hit with: {roll_1}, {roll_2}")
@@ -2008,20 +2010,21 @@ class Overwatch:
                                             self.gameStateManager.screen.fill('black')
                                     for tile in self.game.map:
                                         tile.render(self.gameStateManager.screen)
+                                    self.activate_button.draw(self.gameStateManager.screen)
                                     overwatchlist.remove(overwatchTile)
                                     overwatchModel = None
                                     overwatchTile = None
 
                                 
                                 else:  
-                                    if self.game.selectedTile in self.game.check_vision(overwatchModel, overwatchTile):
-                                        self.shoot_bolter(roll_1, roll_2, self.game.selectedModel, overwatchModel)
-                                        self.gameStateManager.screen.fill('black')
-                                        for tile in self.game.map:
-                                            tile.render(self.gameStateManager.screen) 
-                                        overwatchlist.remove(overwatchTile)
-                                        overwatchModel = None
-                                        overwatchTile = None
+                                    self.shoot_bolter(roll_1, roll_2, self.game.selectedModel, overwatchModel)
+                                    self.gameStateManager.screen.fill('black')
+                                    for tile in self.game.map:
+                                        tile.render(self.gameStateManager.screen) 
+                                    self.activate_button.draw(self.gameStateManager.screen)
+                                    overwatchlist.remove(overwatchTile)
+                                    overwatchModel = None
+                                    overwatchTile = None
 
                         if overwatchlist.__len__() == 0:
                             self.gameStateManager.screen.fill('black')
@@ -2710,8 +2713,12 @@ class revealGS:
 
         elif isinstance(self.game.selectedTile, EntryPoint):
             self.game.selectedTile.genstealers.append(self.game.selectedModel)
+            self.game.gsModelList.append(self.game.selectedModel)
+            if self.game.selectedModel in self.game.gsModelList:
+                logger.debug(f"GS model = {self.game.selectedModel} in GSmodelList")
             for model in gsList:
                 self.game.selectedTile.genstealers.append(model)
+                self.game.gsModelList.append(model)
             print(self.game.selectedTile.genstealers)
             self.game.reset_select()
             self.game.reset_clicked()
