@@ -12,10 +12,7 @@ Blips can be revealed outside Entry Areas (List, blitting a purple number?)
 
 implement Broodlord reveal if possible
 
-checkmove needs to pe appended so that it blocks models from passing diagonally between a model and a wall(p.59)
-
-implement choosing a genstealer from an entrypoint
-implement GS moving onto the board from entrypoint 
+checkmove needs to pe appended so that it blocks models from passing diagonally between a model and a wall(p.59) 
 
 placebl needs to be changed so that the broodlord can be placed
 
@@ -43,4 +40,8 @@ implement Overwatch
 
 implement SM reveal
 
-shoot again has no ap restriction
+shoot again has no ap restriction(remove or fix)
+
+susf needs to be reset after the smTurn
+
+workaround for reset_clicked and reset_select to allow the shooting of all models in overwatch

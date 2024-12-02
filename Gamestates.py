@@ -26,7 +26,8 @@ class GameStateManager:     #class to manage interactions between gamestates and
                            "mlRollGS": MeleeDiceRollGS(self, self.game),
                            "smPlace": PlaceSM(self, self.game),
                            "shoot": Shoot(self, self.game),
-                           "shootflamer": ShootFlamer(self, self.game)}
+                           "shootflamer": ShootFlamer(self, self.game),
+                           "overwatch": Overwatch(self, self.game)}
         self.runThread = True   #depricated
         self.overwatchAction = None
 
@@ -1832,15 +1833,129 @@ class Overwatch:
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager = gameStateManager
         self.game = game
-        self.accept_image = pygame.image.load("Pictures/Tiles/Floor_1.png")
-        self.accept_button = Button(810, 600, self.accept_image, 1)
+        self.activate_image = pygame.image.load("Pictures/Tiles/Floor_1.png")
+        self.activate_button = Button(810, 600, self.activate_image, 1)
         self.dice_1 = Dice(10,10)
         self.dice_2 = Dice(110, 10)
         self.dice_3 = Dice(210,10)
 
+    def shoot_bolter(self, roll_1, roll_2, target, attacker):
+        attacker = attacker
+        defender = target
+
+        if attacker.susf:
+            roll_1 += 1
+            roll_2 += 1
+        else:
+            attacker.susf = True
+
+        if isinstance(defender, Door):
+            if roll_1 > 5 or roll_2 > 5:
+                logger.info(f"Hit with: {roll_1}, {roll_2}")
+                self.game.map.remove(target)
+                newTile = target.get_destroyed()
+                self.game.map.append(newTile)
+                self.game.clickedTile = newTile
+            else:
+                logger.info(f"Missed with: {roll_1}, {roll_2}")
+
+        else:
+            if defender.isBroodlord == False:
+                if roll_1 > 5 or roll_2 > 5:
+                    logger.info(f"Hit with: {roll_1}, {roll_2}")
+                    self.game.selectedTile.isOccupied = False
+                    self.game.gsModelList.remove(defender)
+                    self.game.selectedTile.occupand = None
+                    self.game.reset_select()
+                    self.game.reset_clicked()
+                else:
+                    logger.info(f"Missed with: {roll_1}, {roll_2}")
+
+            else:
+                if roll_1 > 5 and roll_2 > 5:
+                    logger.info(f"Hit with: {roll_1}, {roll_2}")
+                    self.game.selectedTile.isOccupied = False
+                    self.game.gsModelList.remove(defender)
+                    self.game.selectedTile.occupand = None
+                    self.game.reset_select()
+                    self.game.reset_clicked()
+                else:            
+                    logger.info(f"Missed with: {roll_1}, {roll_2}")
+
+        if roll_1 == roll_2:
+            attacker.jam = True
+
+    def shoot_ac(self, roll_1, roll_2, roll_3):
+        attacker = self.game.selectedModelModel
+        defender = self.game.clickedModel
+
+        if self.gameStateManager.freeShot:
+            self.gameStateManager.freeShot == False
+        else:
+            self.reduce_ap(1)
+        self.game.assaultCannonAmmo -= 1
+
+        if attacker.susf:
+            roll_1 += 1
+            roll_2 += 1
+            roll_3 += 1
+        else:
+            attacker.susf = True
+
+        if defender.isBroodlord == False:
+            if roll_1 > 4 or roll_2 > 4 or roll_3 > 4:
+                self.game.clickedTile.isOccupied = False
+                self.game.gsModelList.remove(defender)
+                self.game.clickedTile.occupand = None
+                self.gameStateManager.screen.fill('black')
+                self.gameStateManager.run_gamestate('smAction')
+            else:
+                self.gameStateManager.screen.fill('black')
+                self.gameStateManager.run_gamestate("smAction")
+
+        else:
+            if (roll_1 > 4 and roll_2 > 4) or (roll_1 > 4 and roll_3 > 4) or (roll_2 > 4 and roll_3 > 4):
+                self.game.clickedTile.isOccupied = False
+                self.game.gsModelList.remove(defender)
+                self.game.clickedTile.occupand = None
+                self.gameStateManager.screen.fill('black')
+                self.gameStateManager.run_gamestate('smAction')
+            else:            
+                self.gameStateManager.screen.fill('black')
+                self.gameStateManager.run_gamestate("smAction")
+
+        
+            
+    def shoot_ac_door(self,roll_1,roll_2, roll_3):
+        attacker = self.game.selectedModel
+        if self.gameStateManager.freeShot:
+            self.gameStateManager.freeShot == False
+        else:
+            self.reduce_ap(1)
+        self.game.assaultCannonAmmo -= 1
+
+        if attacker.susf:
+            roll_1 += 1
+            roll_2 += 1
+            roll_3 += 1
+        else:
+            attacker.susf = True
+
+        if roll_1 > 4 or roll_2 > 4 or roll_3 >4:
+            self.game.map.remove(self.game.clickedTile)
+            newTile = self.game.clickedTile.get_destroyed()
+            self.game.map.append(newTile)
+            self.game.clickedTile = newTile
+            self.gameStateManager.screen.fill('black')
+            self.gameStateManager.run_gamestate("smAction")
+        else:
+            self.gameStateManager.screen.fill('black')
+            self.gameStateManager.run_gamestate("smAction")
+
     def run(self):
         overwatchModel = None
         overwatchTile = None
+        selected = False
         roll_1 = 0
         roll_2 = 0
         roll_3 = 0
@@ -1849,6 +1964,13 @@ class Overwatch:
         else:
             overwatchlist = self.game.check_overwatch()
 
+        logger.debug(f"Overwatch Action: {self.gameStateManager.overwatchAction}")
+
+        for tile in self.game.map:
+            tile.render(self.gameStateManager.screen)
+        self.activate_button.draw(self.gameStateManager.screen)
+        pygame.display.flip()
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -1856,10 +1978,66 @@ class Overwatch:
                     sys.exit()  
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
+                    if self.activate_button.rect.collidepoint(pygame.mouse.get_pos()) and (selected == False):
                         if overwatchModel != None and overwatchTile != None:
-                            if self.game.selectedTile
+                            self.gameStateManager.screen.fill('black')
+                            if overwatchModel.weapon == "Assaultcannon":
+                                pass
+                            else:
+                                self.dice_1.roll_dice(self.gameStateManager.screen)
+                                roll_1 = self.dice_1.face
+                                self.dice_2.roll_dice(self.gameStateManager.screen)
+                                roll_2 = self.dice_2.face
+                                time.sleep(0.25)
 
+                                if self.gameStateManager.overwatchAction == "door":
+                                    if self.game.clickedTile in self.game.check_vision(overwatchModel, overwatchTile):
+                                        self.shoot_bolter(roll_1, roll_2, self.game.clickedTile, overwatchModel)
+                                        selected = True
+                                    
+                                    if self.game.selectedModel in self.game.check_vision(overwatchModel, overwatchTile):
+                                        if overwatchModel.jam == False:
+                                            if selected:
+                                                self.gameStateManager.screen.fill('black')
+                                                self.dice_1.roll_dice(self.gameStateManager.screen)
+                                                roll_1 = self.dice_1.face
+                                                self.dice_2.roll_dice(self.gameStateManager.screen)
+                                                roll_2 = self.dice_2.face
+                                                time.sleep(0.25)
+                                            self.shoot_bolter(roll_1, roll_2, self.game.selectedModel, overwatchModel)
+                                            self.gameStateManager.screen.fill('black')
+                                    for tile in self.game.map:
+                                        tile.render(self.gameStateManager.screen)
+                                    overwatchlist.remove(overwatchTile)
+                                    overwatchModel = None
+                                    overwatchTile = None
+
+                                
+                                else:  
+                                    if self.game.selectedTile in self.game.check_vision(overwatchModel, overwatchTile):
+                                        self.shoot_bolter(roll_1, roll_2, self.game.selectedModel, overwatchModel)
+                                        self.gameStateManager.screen.fill('black')
+                                        for tile in self.game.map:
+                                            tile.render(self.gameStateManager.screen) 
+                                        overwatchlist.remove(overwatchTile)
+                                        overwatchModel = None
+                                        overwatchTile = None
+
+                        if overwatchlist.__len__() == 0:
+                            self.gameStateManager.screen.fill('black')
+                            if self.game.selectedModel != None:
+                                self.gameStateManager.run_gamestate("gsAction")
+                            else:
+                                self.gameStateManager.run_gamestate("gsTurn")
+                        else:
+                            pygame.display.flip()
+
+                    else:
+                        for tile in self.game.map:
+                            if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
+                                if tile in overwatchlist:
+                                    overwatchTile = tile
+                                    overwatchModel = tile.occupand
 
 
 class ChooseBlip:
@@ -2059,7 +2237,9 @@ class gsAction:
 
         if (self.game.check_overwatch().__len__() != 0):
             logger.info(self.game.check_overwatch())
-            gameStateManager.overwatchAction = "move"
+            self.gameStateManager.overwatchAction = "move"
+            self.gameStateManager.screen.fill('black')
+            self.gameStateManager.run_gamestate("overwatch")
 
     def check_door(self):
         face = self.game.selectedModel.face
@@ -2166,8 +2346,11 @@ class gsAction:
                                 self.game.clickedTile.render(self.gameStateManager.screen)
                                 pygame.display.update(self.game.clickedTile.button.rect)
                                 if self.game.clickedTile.isOpen == False:
-                                    self.game.check_overwatch("door")
-                                    logger.info(self.game.check_overwatch("door"))
+                                    if self.game.check_overwatch("door").__len__() != 0:
+                                        logger.info(self.game.check_overwatch("door"))
+                                        self.gameStateManager.overwatchAction = "door"
+                                        self.gameStateManager.screen.fill('black')
+                                        self.gameStateManager.run_gamestate("overwatch")
 
                     elif self.turn_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if not isinstance(self.game.selectedTile, EntryPoint):
