@@ -191,7 +191,7 @@ data = {
     "startBlip": 2,
     "reinforcement" : 2,
     "smModelList" : smModelSaveList,
-    "broodLord": False
+    "broodLord": True
 }
 
 # File path to save the JSON file

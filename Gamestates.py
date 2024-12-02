@@ -172,7 +172,7 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
         logger.debug(f"Amount of free Entrypoints: {numb}")
         if numb == 0:
             logger.debug(f"Skipping blPlace since there are no free Entrypoints")
-            self.gameStateManager.run_gamestate('gsTurn')
+            self.endState()
         x = 0
         while x < self.BLAmount and x < numb:
             choice = random.randint(0, self.game.blipSack.__len__() - 1)
@@ -873,6 +873,8 @@ class smTurn:
         self.end_button = Button(810, 600, self.end_image, 1)
 
     def endState(self):
+        for model in self.game.smModelList:
+            model.susf = False
         self.game.reset_select()
         self.game.reset_clicked()
         self.gameStateManager.screen.fill("black")
@@ -1340,7 +1342,7 @@ class MeleeDiceRollSM:
                 winner = None
             else:
                 winner = attacker
-
+        logger.debug(f"{roll_1}, {roll_2}, {roll_3}, {roll_4}, {roll_5}")
         return winner  
 
     def loose(self):
@@ -1676,16 +1678,16 @@ class Shoot:
                                 if not self.game.clickedTile.isOpen:
                                     self.shoot_bolter_door(roll_1, roll_2)
 
-                    elif self.rollAgain_button.rect.collidepoint(pygame.mouse.get_pos()):
-                        if (self.game.selectedModel.AP + self.game.cp > 0) or self.gameStateManager.freeShot:
-                            if self.gameStateManager.freeShot == True:
-                                self.gameStateManager.freeShot = False
-                            else:
-                                self.reduce_ap(1)
-                            self.game.selectedModel.susf = True
-                            self.gameStateManager.screen.fill('black')
-                            pygame.display.flip()
-                            self.gameStateManager.run_gamestate('shoot')
+                    # elif self.rollAgain_button.rect.collidepoint(pygame.mouse.get_pos()):
+                    #     if (self.game.selectedModel.AP + self.game.cp > 0) or self.gameStateManager.freeShot:
+                    #         if self.gameStateManager.freeShot == True:
+                    #             self.gameStateManager.freeShot = False
+                    #         else:
+                    #             self.reduce_ap(1)
+                    #         self.game.selectedModel.susf = True
+                    #         self.gameStateManager.screen.fill('black')
+                    #         pygame.display.flip()
+                    #         self.gameStateManager.run_gamestate('shoot')
 
 class ShootFlamer:
     def __init__(self, gameStateManager, game) -> None:
@@ -2302,6 +2304,8 @@ class gsAction:
         pygame.display.flip()
 
         logger.info(f"Current gamestate: gsAction")
+        logger.debug(f"SelectedModel.AP: {self.game.selectedModel.AP}")
+        logger.debug(f"selectedModel.broodlord: {self.game.selectedModel.isBroodlord}")
 
         while True:
             for event in pygame.event.get():
@@ -2659,10 +2663,12 @@ class revealGS:
         self.right_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.accept_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.broodlord_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.left_button = Button(810, 400, self.left_image, 1)
         self.right_button = Button(810, 500, self.right_image, 1)
         self.accept_button = Button(810, 700, self.accept_image, 1)
         self.place_button = Button(810, 800, self.place_image, 1)
+        self.broodlord_button = Button(810, 100, self.broodlord_image, 1)
 
     def check_place(self, tile):
         if ((self.game.clickedTile.x == tile.x +1) or (self.game.clickedTile.x == tile.x -1) or (self.game.clickedTile.x == tile.x)) and ((self.game.clickedTile.y == tile.y +1) or (self.game.clickedTile.y == tile.y -1) or (self.game.cklickedTile.y == tile.y)):
@@ -2720,7 +2726,7 @@ class revealGS:
         print (self.game.selectedModel)
         if isinstance(self.game.selectedTile, EntryPoint):
             self.game.selectedTile.blips.remove(self.game.selectedModel)
-        #add Broodlord Button here
+
         self.game.blipReserve.append(self.game.selectedModel.count)
         self.game.blModelList.remove(self.game.selectedModel)
         self.game.selectedModel = gsList.pop(0)
@@ -2749,6 +2755,9 @@ class revealGS:
             self.right_button.draw(self.gameStateManager.screen)
             self.left_button.draw(self.gameStateManager.screen)
         self.accept_button.draw(self.gameStateManager.screen)
+        if self.game.broodLord:
+            if gsList.__len__() == 2:
+                self.broodlord_button.draw(self.gameStateManager.screen)
         
         pygame.display.flip()
 
@@ -2795,6 +2804,9 @@ class revealGS:
                         self.accept_button.draw(self.gameStateManager.screen)
                     if hasPlaced == False:
                         self.place_button.draw(self.gameStateManager.screen)
+                    if self.game.broodLord:
+                        if gsList.__len__() == 2:
+                            self.broodlord_button.draw(self.gameStateManager.screen)
                     
                     pygame.display.flip()
 
@@ -2860,6 +2872,15 @@ class revealGS:
                                 else:
                                     hasPlaced = False
                                     self.game.selectedModel = gsList.pop(0)
+
+                    elif self.broodlord_button.rect.collidepoint(pygame.mouse.get_pos()):    
+                        if self.game.broodLord:
+                            if gsList.__len__() == 2:
+                                self.game.selectedModel.isBroodlord = True
+                                self.game.broodLord = False
+                                gsList = []
+                                pygame.draw.rect(self.gameStateManager.screen, 'black', self.broodlord_button.rect)
+                                pygame.display.update(self.broodlord_button.rect)
 
                     else:
                         if hasPlaced == False:
@@ -3131,6 +3152,14 @@ class MeleeDiceRollDoorGS:
         self.accept_button = Button(410, 700, self.accept_image, 1)
 
     def melee_door(self, roll_1, roll_2, roll_3):
+        if self.game.selectedModel.isBroodlord == True:   
+            if (roll_1 > roll_2 and roll_2 > roll_3) or (roll_3 > roll_2 and roll_2 > roll_1):
+                roll_1 = roll_1 + roll_3
+            elif (roll_1 > roll_3 and roll_3 > roll_2) or (roll_2 > roll_3 and roll_3 > roll_1):
+                roll_1 = roll_1 + roll_2
+            elif (roll_2 > roll_1 and roll_1 > roll_3) or (roll_3 > roll_1 and roll_1 > roll_2):
+                roll_1 = roll_2 + roll_3
+
         if roll_1 > 5 or roll_2 > 5 or roll_3 > 5:
             return True
     
@@ -3146,6 +3175,7 @@ class MeleeDiceRollDoorGS:
         diceList.append(self.dice_3)
         
         self.accept_button.draw(self.gameStateManager.screen)
+        self.game.selectedModel.AP -= 1
         if self.game.selectedModel.AP != 0:
             self.rollAgain_button.draw(self.gameStateManager.screen)
 
@@ -3278,6 +3308,7 @@ class MeleeDiceRollGS:
             else:
                 winner = defender
 
+        logger.debug(f"{roll_1}, {roll_2}, {roll_3}, {roll_4}, {roll_5}")
         return winner  
 
     def loose(self):

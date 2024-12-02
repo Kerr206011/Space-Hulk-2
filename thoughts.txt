@@ -36,12 +36,4 @@ implement Psyker phase
 
 fix UI
 
-implement Overwatch
-
 implement SM reveal
-
-shoot again has no ap restriction(remove or fix)
-
-susf needs to be reset after the smTurn
-
-workaround for reset_clicked and reset_select to allow the shooting of all models in overwatch
