@@ -1849,8 +1849,6 @@ class Overwatch:
         else:
             attacker.susf = True
 
-        
-
         if isinstance(defender, Door):
             if roll_1 > 5 or roll_2 > 5:
                 logger.info(f"Hit with: {roll_1}, {roll_2}")
@@ -1887,14 +1885,9 @@ class Overwatch:
         if roll_1 == roll_2:
             attacker.jam = True
 
-    def shoot_ac(self, roll_1, roll_2, roll_3):
-        attacker = self.game.selectedModelModel
-        defender = self.game.clickedModel
-
-        if self.gameStateManager.freeShot:
-            self.gameStateManager.freeShot == False
-        else:
-            self.reduce_ap(1)
+    def shoot_ac(self, roll_1, roll_2, roll_3, target, attacker):
+        attacker = attacker
+        defender = target
         self.game.assaultCannonAmmo -= 1
 
         if attacker.susf:
@@ -1904,55 +1897,38 @@ class Overwatch:
         else:
             attacker.susf = True
 
-        if defender.isBroodlord == False:
-            if roll_1 > 4 or roll_2 > 4 or roll_3 > 4:
-                self.game.clickedTile.isOccupied = False
-                self.game.gsModelList.remove(defender)
-                self.game.clickedTile.occupand = None
-                self.gameStateManager.screen.fill('black')
-                self.gameStateManager.run_gamestate('smAction')
+        if isinstance(defender, Door):
+            if roll_1 > 4 or roll_2 > 4 or roll_3 >4:
+                logger.info(f"Hit with: {roll_1}, {roll_2}, {roll_3}")
+                self.game.map.remove(target)
+                newTile = target.get_destroyed()
+                self.game.map.append(newTile)
+                self.game.clickedTile = newTile
             else:
-                self.gameStateManager.screen.fill('black')
-                self.gameStateManager.run_gamestate("smAction")
+                logger.info(f"Missed with: {roll_1}, {roll_2}, {roll_3}")
 
-        else:
-            if (roll_1 > 4 and roll_2 > 4) or (roll_1 > 4 and roll_3 > 4) or (roll_2 > 4 and roll_3 > 4):
-                self.game.clickedTile.isOccupied = False
-                self.game.gsModelList.remove(defender)
-                self.game.clickedTile.occupand = None
-                self.gameStateManager.screen.fill('black')
-                self.gameStateManager.run_gamestate('smAction')
-            else:            
-                self.gameStateManager.screen.fill('black')
-                self.gameStateManager.run_gamestate("smAction")
+        elif isinstance(defender, Genestealer):
+            if defender.isBroodlord == False:
+                if roll_1 > 4 or roll_2 > 4 or roll_3 > 4:
+                    logger.info(f"Hit with: {roll_1}, {roll_2}, {roll_3}")
+                    self.game.selectedTile.isOccupied = False
+                    self.game.gsModelList.remove(defender)
+                    self.game.selectedTile.occupand = None
+                    self.game.reset_select()
+                    self.game.reset_clicked()
+                else:
+                    logger.info(f"Missed with: {roll_1}, {roll_2}, {roll_3}")
 
-        
-            
-    def shoot_ac_door(self,roll_1,roll_2, roll_3):
-        attacker = self.game.selectedModel
-        if self.gameStateManager.freeShot:
-            self.gameStateManager.freeShot == False
-        else:
-            self.reduce_ap(1)
-        self.game.assaultCannonAmmo -= 1
-
-        if attacker.susf:
-            roll_1 += 1
-            roll_2 += 1
-            roll_3 += 1
-        else:
-            attacker.susf = True
-
-        if roll_1 > 4 or roll_2 > 4 or roll_3 >4:
-            self.game.map.remove(self.game.clickedTile)
-            newTile = self.game.clickedTile.get_destroyed()
-            self.game.map.append(newTile)
-            self.game.clickedTile = newTile
-            self.gameStateManager.screen.fill('black')
-            self.gameStateManager.run_gamestate("smAction")
-        else:
-            self.gameStateManager.screen.fill('black')
-            self.gameStateManager.run_gamestate("smAction")
+            else:
+                if (roll_1 > 4 and roll_2 > 4) or (roll_1 > 4 and roll_3 > 4) or (roll_2 > 4 and roll_3 > 4):
+                    logger.info(f"Hit with: {roll_1}, {roll_2}, {roll_3}")
+                    self.game.selectedTile.isOccupied = False
+                    self.game.gsModelList.remove(defender)
+                    self.game.selectedTile.occupand = None
+                    self.game.reset_select()
+                    self.game.reset_clicked()
+                else:            
+                    logger.info(f"Missed with: {roll_1}, {roll_2}, {roll_3}")
 
     def run(self):
         overwatchModel = None
@@ -1984,7 +1960,48 @@ class Overwatch:
                         if overwatchModel != None and overwatchTile != None:
                             self.gameStateManager.screen.fill('black')
                             if overwatchModel.weapon == "Assaultcannon":
-                                pass
+                                self.dice_1.roll_dice(self.gameStateManager.screen)
+                                roll_1 = self.dice_1.face
+                                self.dice_2.roll_dice(self.gameStateManager.screen)
+                                roll_2 = self.dice_2.face
+                                self.dice_3.roll_dice(self.gameStateManager.screen)
+                                roll_3 = self.dice_3.face
+                                time.sleep(0.25)
+
+                                if self.gameStateManager.overwatchAction == "door":
+                                    if self.game.clickedTile in self.game.check_vision(overwatchModel, overwatchTile):
+                                        self.shoot_ac(roll_1, roll_2, roll_3, self.game.clickedTile, overwatchModel)
+                                        selected = True
+                                    
+                                    if self.game.selectedModel in self.game.check_vision(overwatchModel, overwatchTile):
+                                        if selected:
+                                            self.gameStateManager.screen.fill('black')
+                                            self.dice_1.roll_dice(self.gameStateManager.screen)
+                                            roll_1 = self.dice_1.face
+                                            self.dice_2.roll_dice(self.gameStateManager.screen)
+                                            roll_2 = self.dice_2.face
+                                            self.dice_3.roll_dice(self.gameStateManager.screen)
+                                            roll_3 = self.dice_3.face
+                                            time.sleep(0.25)
+                                        self.shoot_ac(roll_1, roll_2, roll_3, self.game.selectedModel, overwatchModel)
+                                        self.gameStateManager.screen.fill('black')
+                                    for tile in self.game.map:
+                                        tile.render(self.gameStateManager.screen)
+                                    self.activate_button.draw(self.gameStateManager.screen)
+                                    overwatchlist.remove(overwatchTile)
+                                    overwatchModel = None
+                                    overwatchTile = None
+
+                                
+                                else:  
+                                    self.shoot_ac(roll_1, roll_2, roll_3, self.game.selectedModel, overwatchModel)
+                                    self.gameStateManager.screen.fill('black')
+                                    for tile in self.game.map:
+                                        tile.render(self.gameStateManager.screen) 
+                                    self.activate_button.draw(self.gameStateManager.screen)
+                                    overwatchlist.remove(overwatchTile)
+                                    overwatchModel = None
+                                    overwatchTile = None
                             else:
                                 self.dice_1.roll_dice(self.gameStateManager.screen)
                                 roll_1 = self.dice_1.face
