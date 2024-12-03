@@ -37,3 +37,7 @@ implement Psyker phase
 fix UI
 
 implement SM reveal
+
+add oos Actions
+
+add overwatch/oos Actions to revealSM
