@@ -2920,6 +2920,11 @@ class revealSM:
                 if not self.game.clickedTile.isOccupied:
                     if not self.game.clickedTile.isBurning:
                         return True
+                    
+    def overwatch(self, target, attacker):
+        defender = target
+        attacker = attacker
+
                 
     def check_space(self, startTile):
         frSpace = []
@@ -2965,8 +2970,6 @@ class revealSM:
                 self.gameStateManager.run_gamestate('gsTurn')
 
         print (self.game.selectedModel)
-        if isinstance(self.game.selectedTile, EntryPoint):
-            self.game.selectedTile.blips.remove(self.game.selectedModel)
 
         self.game.blipReserve.append(self.game.selectedModel.count)
         self.game.blModelList.remove(self.game.selectedModel)
@@ -3050,7 +3053,7 @@ class revealSM:
                             self.broodlord_button.draw(self.gameStateManager.screen)
                     
                     pygame.display.flip()
-
+                    
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.left_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if isinstance(self.game.selectedTile, Tile):
