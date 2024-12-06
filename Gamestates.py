@@ -2924,7 +2924,6 @@ class revealSM:
     def overwatch(self, target, attacker):
         defender = target
         attacker = attacker
-
                 
     def check_space(self, startTile):
         frSpace = []
@@ -2948,60 +2947,17 @@ class revealSM:
         return frSpace
         
     def run(self):
-        gsList = []
-        freeTiles = self.check_space(self.game.selectedTile)
-        print(freeTiles)
-        hasPlaced = True
+
+        logger.info(f"Current Gamestate: SMreveal")
 
         a = 0
         while (a < self.game.selectedModel.count) and self.game.gsModelList.__len__() <= self.game.maxGS:
             a += 1
-            gsList.append(Genestealer())
-        print(gsList)
-        print(self.game.selectedModel.count)
-
-        if self.game.maxGS == self.game.gsModelList.__len__() - 1:
-            if self.game.broodLord == False or self.game.selectedmodel.count != 3:
-                self.game.blModelList.remove(self.game.selectedModel)
-                self.game.blipReserve.append(self.game.selectedModel.count)
-                self.game.reset_select()
-                self.game.reset_clicked()
-                self.gameStateManager.screen.fill('black')
-                self.gameStateManager.run_gamestate('gsTurn')
 
         print (self.game.selectedModel)
 
-        self.game.blipReserve.append(self.game.selectedModel.count)
-        self.game.blModelList.remove(self.game.selectedModel)
-        self.game.selectedModel = gsList.pop(0)
-        if isinstance(self.game.selectedTile, Tile):
-            self.game.selectedTile.occupand = self.game.selectedModel
-            self.game.gsModelList.append(self.game.selectedModel)
-
-        elif isinstance(self.game.selectedTile, EntryPoint):
-            self.game.selectedTile.genstealers.append(self.game.selectedModel)
-            self.game.gsModelList.append(self.game.selectedModel)
-            if self.game.selectedModel in self.game.gsModelList:
-                logger.debug(f"GS model = {self.game.selectedModel} in GSmodelList")
-            for model in gsList:
-                self.game.selectedTile.genstealers.append(model)
-                self.game.gsModelList.append(model)
-            print(self.game.selectedTile.genstealers)
-            self.game.reset_select()
-            self.game.reset_clicked()
-            self.gameStateManager.screen.fill('black')
-            self.gameStateManager.run_gamestate('gsTurn')
-
         for tile in self.game.map:
             tile.render(self.gameStateManager.screen)
-
-        if isinstance(self.game.selectedTile, Tile):
-            self.right_button.draw(self.gameStateManager.screen)
-            self.left_button.draw(self.gameStateManager.screen)
-        self.accept_button.draw(self.gameStateManager.screen)
-        if self.game.broodLord:
-            if gsList.__len__() == 2:
-                self.broodlord_button.draw(self.gameStateManager.screen)
         
         pygame.display.flip()
 
@@ -3040,104 +2996,11 @@ class revealSM:
 
                     for tile in self.game.map:
                         tile.render(self.gameStateManager.screen)
-
-                    if isinstance(self.game.selectedTile, Tile):
-                        self.right_button.draw(self.gameStateManager.screen)
-                        self.left_button.draw(self.gameStateManager.screen)
-                    if hasPlaced:
-                        self.accept_button.draw(self.gameStateManager.screen)
-                    if hasPlaced == False:
-                        self.place_button.draw(self.gameStateManager.screen)
-                    if self.game.broodLord:
-                        if gsList.__len__() == 2:
-                            self.broodlord_button.draw(self.gameStateManager.screen)
                     
                     pygame.display.flip()
                     
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.left_button.rect.collidepoint(pygame.mouse.get_pos()):
-                        if isinstance(self.game.selectedTile, Tile):
-                            if hasPlaced:
-                                self.game.turn_model(self.game.selectedModel, "left")
-                                pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
-                                self.game.selectedTile.render(self.gameStateManager.screen)
-                                pygame.display.update(self.game.selectedTile.button.rect)
-
-                    elif self.right_button.rect.collidepoint(pygame.mouse.get_pos()):
-                        if isinstance(self.game.selectedTile, Tile):
-                            if hasPlaced:
-                                self.game.turn_model(self.game.selectedModel, "right")
-                                pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
-                                self.game.selectedTile.render(self.gameStateManager.screen)
-                                pygame.display.update(self.game.selectedTile.button.rect)
-
-                    elif self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
-                        if gsList.__len__() == 0 or freeTiles.__len__() == 0:                           
-                            self.game.gsModelList.append(self.game.selectedModel)
-                            self.game.reset_select()
-                            self.game.reset_clicked()
-                            self.gameStateManager.screen.fill('black')
-                            self.gameStateManager.run_gamestate('gsTurn')
-                        else:
-                            hasPlaced = False  
-                            self.game.gsModelList.append(self.game.selectedModel)
-                            self.game.selectedModel = gsList.pop(0)
-                            if (self.game.selectedTile in freeTiles) and not (isinstance(self.game.selectedTile, EntryPoint)):
-                                freeTiles.remove(self.game.selectedTile)
-                            pygame.draw.rect(self.gameStateManager.screen,'black',self.accept_button.rect)
-                            self.place_button.draw(self.gameStateManager.screen)
-                            pygame.display.update(self.accept_button.rect)
-                            pygame.display.update(self.place_button.rect)
-
-                    elif self.place_button.rect.collidepoint(pygame.mouse.get_pos()):
-                        if hasPlaced == False:
-                            if isinstance(self.game.selectedTile, Tile):
-                                if self.game.selectedTile in freeTiles:
-                                    self.game.selectedTile.occupand = self.game.selectedModel
-                                    self.game.selectedTile.isOccupied = True
-                                    pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
-                                    self.game.selectedTile.render(self.gameStateManager.screen)
-                                    pygame.display.update(self.game.selectedTile.button.rect)
-                                    hasPlaced = True
-                                    self.accept_button.draw(self.gameStateManager.screen)
-                                    pygame.draw.rect(self.gameStateManager.screen, 'black', self.place_button.rect)
-                                    pygame.display.update(self.accept_button.rect)
-                                    pygame.display.update(self.place_button.rect)
-                                else:
-                                    print('select a valid tile')
-
-                            elif isinstance(self.game.selectedTile, EntryPoint):
-                                self.game.selectedTile.genstealers.append(self.game.selectedModel)
-                                if gsList.__len__() == 0 or freeTiles.__len__() == 0:
-                                    self.game.reset_select()
-                                    self.game.reset_clicked()
-                                    self.gameStateManager.screen.fill('black')
-                                    self.gameStateManager.run_gamestate('gsTurn')
-                                else:
-                                    hasPlaced = False
-                                    self.game.selectedModel = gsList.pop(0)
-
-                    elif self.broodlord_button.rect.collidepoint(pygame.mouse.get_pos()):    
-                        if self.game.broodLord:
-                            if gsList.__len__() == 2:
-                                self.game.selectedModel.isBroodlord = True
-                                self.game.broodLord = False
-                                gsList = []
-                                pygame.draw.rect(self.gameStateManager.screen, 'black', self.broodlord_button.rect)
-                                pygame.display.update(self.broodlord_button.rect)
-
-                    else:
-                        if hasPlaced == False:
-                            for tile in self.game.map:
-                                if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
-                                    if tile in self.game.check_full_vision():
-                                        print("Tile in vision")
-                                    if isinstance(tile, Tile) and (tile in freeTiles):
-                                        self.game.selectedTile = tile
-                                    elif isinstance(tile, EntryPoint) and (tile in freeTiles):
-                                        self.game.selectedTile = tile
-                                    else:
-                                        print('select a valid Tile(click)')
+                    pass
 
 
 class gsTurn:
