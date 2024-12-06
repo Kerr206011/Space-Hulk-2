@@ -41,3 +41,4 @@ implement SM reveal
 add oos Actions
 
 add overwatch/oos Actions to revealSM
+add overwatch to turn
