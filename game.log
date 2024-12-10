@@ -980,3 +980,7 @@
 2024-12-06 11:19:35,375 - DEBUG - Found 0 overwatching models!
 2024-12-06 11:19:37,045 - DEBUG - Reset ClickedModel and Tile to None
 2024-12-06 11:19:37,046 - DEBUG - Found 0 overwatching models!
+2024-12-10 21:02:49,790 - INFO - Levels/level_1.json
+2024-12-10 21:02:50,166 - INFO - Game initialized successfully.
+2024-12-10 21:02:50,226 - INFO - Initialized screen.
+2024-12-10 21:02:50,351 - DEBUG - Gamestate Main
