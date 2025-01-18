@@ -5,7 +5,7 @@ model.face can be shown with colored corner/arrow
 
 terminator weapon/loadout can be displayed by classsystem (GW 8th symbols)
 
-interact button only shown when door to interact with
+interact button only shown when door to interact with (now not always shown)
 
 Blips are only forced to lurk for one turn
 Blips can be revealed outside Entry Areas (List, blitting a purple number?)
@@ -49,7 +49,11 @@ add broodlord to sm reveal (1st model)
 add oos actions to sm reveal
 add entrypointreveal to Sm reveal
 
+add comments to methods
+
 reveal is only finished in Sm Action!!!
+
+should the turning be so that a full turn isn't possible? (for reveal purposes)
 
 ideas for Client server:
     clients have run() for gamestates, but they only log and send the clicks and have no internal logic

@@ -2183,6 +2183,15 @@ class gsAction:
         self.end_button = Button(810, 800, self.end_image, 1)
 
     def check_move(self):
+        """
+        Checks if the selected tile is available for movement
+
+        Args:
+            None
+
+        Returns:
+            boolean: True if viable, false if not
+        """
         inRange = False
         burning = False
         doorOpen = False
@@ -2214,6 +2223,16 @@ class gsAction:
             return False
 
     def calculate_movement_cost(self):
+        """
+        Calculates the cost for moving to the selected tile.
+        Game.selectedTile needs to be a viable tile for the nethod to work.
+
+        Args:
+            None
+
+        Returns:
+            int: Movementcost in actionpoints
+        """
         face = self.game.selectedModel.face
         if ((self.game.selectedTile.x - face[0] == self.game.clickedTile.x) and (face[0] != 0)) or ((self.game.selectedTile.y - face[1] == self.game.clickedTile.y) and (face[1] != 0)):
             return 2
@@ -2221,7 +2240,16 @@ class gsAction:
             return 1
             
     def move_model(self):
+        """
+        Moves a model on the Map.
+        Game.selectedTile and Game.selectedModel must be viable for the method to work.
 
+        Args:
+            None
+
+        Returns:
+            None
+        """
         if self.game.clickedTile.isBurning:
             self.gameStateManager.screen.fill('black')
             pygame.display.flip()
@@ -2290,6 +2318,15 @@ class gsAction:
             self.gameStateManager.run_gamestate("overwatch")
 
     def check_door(self):
+        """
+        Checks if the selected tile is a door and if the model is eligable to open it.
+
+        Args:
+            None
+
+        Returns:
+            boolean: True if viable, false if not
+        """
         face = self.game.selectedModel.face
         if isinstance(self.game.clickedTile, Door):
             if ((self.game.selectedTile.x + face[0] == self.game.clickedTile.x) and (face[0] != 0)) or ((self.game.selectedTile.y + face[1] == self.game.clickedTile.y) and (face[1] != 0)):
@@ -2304,6 +2341,15 @@ class gsAction:
             return False
         
     def check_melee(self):
+        """
+        Checks if the selected model has a closed door or an enemy model to their front.
+
+        Args:
+            None
+
+        Returns:
+            boolean
+        """
         if isinstance(self.game.clickedTile, Tile):
             if (self.game.selectedTile.x + self.game.selectedModel.face[0] == self.game.clickedTile.x) and (self.game.selectedTile.y + self.game.selectedModel.face[1] == self.game.clickedTile.y):
                 if self.game.clickedModel != None:
@@ -2313,8 +2359,32 @@ class gsAction:
                         return True
                 else: 
                     return False
+                
+    def check_reveal(self):
+        """
+        Method to check if an action triggered an involuntary reveal.
+        It also adds the seen models to the Gamestatemanager.revealList
+
+        Args:
+            None
+
+        Returns:
+            boolean: True if any models were seen
+        """
+
+        a = False
+        seenList = self.game.check_full_vision()
+        for tile in seenList:
+            if tile.occupand in self.game.blModelList:
+                self.gameStateManager.revealList.append((tile.occupand, tile))
+                a = True
+        
+        return a
 
     def run(self):
+        """
+        Main method of the gamestate.
+        """
         for tile in self.game.map:
             tile.render(self.gameStateManager.screen)
 
@@ -2332,6 +2402,10 @@ class gsAction:
         logger.info(f"Current gamestate: gsAction")
         logger.debug(f"SelectedModel.AP: {self.game.selectedModel.AP}")
         logger.debug(f"selectedModel.broodlord: {self.game.selectedModel.isBroodlord}")
+
+        if self.check_reveal():
+            self.gameStateManager.actionState = "gsAction"
+            self.gameStateManager.run_gamestate("revealSM")
 
         while True:
             for event in pygame.event.get():
@@ -2385,7 +2459,10 @@ class gsAction:
                         if self.check_move():
                             if self.calculate_movement_cost() <= (self.game.selectedModel.AP):
                                 self.game.selectedModel.AP -= self.calculate_movement_cost()
-                                self.move_model()       #add walking through flame
+                                self.move_model()
+                                if self.check_reveal():
+                                    self.gameStateManager.actionState = "gsAction"
+                                    self.gameStateManager.run_gamestate("revealSM")
                     
                     elif self.interact_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if self.check_door():
@@ -2401,6 +2478,9 @@ class gsAction:
                                         self.gameStateManager.overwatchAction = "door"
                                         self.gameStateManager.screen.fill('black')
                                         self.gameStateManager.run_gamestate("overwatch")
+                                if self.check_reveal():
+                                    self.gameStateManager.actionState = "gsAction"
+                                    self.gameStateManager.run_gamestate("revealSM")
 
                     elif self.turn_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if not isinstance(self.game.selectedTile, EntryPoint):
