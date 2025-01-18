@@ -43,6 +43,7 @@ class Game():
         self.clickedModel = None
         self.assaultCannonAmmo = 10 #Self explainatory
         self.assaultCannonReload = True 
+        self.psykerPhase = False
         self.flamerAmmo = 6
         self.psyPoints = 20
         self.broodLord = False

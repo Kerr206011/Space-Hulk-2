@@ -5,7 +5,7 @@ import pygame.docs
 
 class GameStateManager:     #class to manage interactions between gamestates and provide a shared game object and storage
     def __init__(self, game, screen) -> None:
-        self.game = game
+        self.game:Game = game
         self.screen = screen
         self.gamestates = {"smTurn": smTurn(self, self.game), 
                            "smAction": smAction(self, self.game), 
@@ -32,7 +32,7 @@ class GameStateManager:     #class to manage interactions between gamestates and
 
         self.overwatchAction = None
 
-        self.revealList = []
+        self.revealList = [] #list of touples (model, tile)
         self.actionState = None
 
         self.freeShot = False   #if sm has free shoot Action and doesn't need to pay the AP for shooting
@@ -49,8 +49,8 @@ class GameStateManager:     #class to manage interactions between gamestates and
 
 class BLstart:
     def __init__(self, gameStateManager, game) -> None:
-        self.game = game
-        self.gameStateManager = gameStateManager
+        self.game:Game = game
+        self.gameStateManager:GameStateManager = gameStateManager
         self.BLAmount = int
         self.blipList = []
         self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
@@ -159,8 +159,8 @@ class BLstart:
 
 class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
     def __init__(self, gameStateManager, game) -> None:
-        self.game = game
-        self.gameStateManager = gameStateManager
+        self.game:Game = game
+        self.gameStateManager:GameStateManager = gameStateManager
         self.BLAmount = int
         self.blipList = []
         self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
@@ -298,8 +298,8 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
 
 class PlaceSM:
     def __init__(self, gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.game:Game = game
         self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.place_button = Button(810, 500, self.place_image, 1)
@@ -439,8 +439,8 @@ class PlaceSM:
 
 class commandPhase:
     def __init__(self, gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.game:Game = game
         self.dice = Dice(800, 100)
         self.roll = int
         self.reroll_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
@@ -456,6 +456,7 @@ class commandPhase:
         logger.info("Current GameState: Command")
 
         reroll = False
+        self.game.psykerPhase = False
         for model in self.game.smModelList:
             model.AP = 4
             model.overwatch = False
@@ -546,8 +547,8 @@ class commandPhase:
 
 class smAction:
     def __init__(self, gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.game:Game = game
         self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.move_button = Button(810, 500, self.place_image, 1)
@@ -582,7 +583,19 @@ class smAction:
             return True
         else:
             return False 
+    
+    def check_reveal(self):
+        visionList = self.game.check_vision(self.game.selectedModel, self.game.selectedTile)
+
+        a = False
+
+        for tile in visionList:
+            if tile.occupand in self.game.blModelList:
+                a = True
+                self.gameStateManager.revealList.append((tile.occupand, tile))
         
+        return a
+
     def check_melee(self):
         if (self.game.selectedTile.x + self.game.selectedModel.face[0] == self.game.clickedTile.x) and (self.game.selectedTile.y + self.game.selectedModel.face[1] == self.game.clickedTile.y):
             if self.game.clickedModel != None:
@@ -704,6 +717,10 @@ class smAction:
 
         pygame.display.flip()
 
+        if self.check_reveal():
+            self.gameStateManager.actionState = "smAction"
+            self.gameStateManager.run_gamestate("revealSM")
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -762,6 +779,9 @@ class smAction:
                                 self.reduce_ap(self.calculate_movement_cost())
                                 self.move_model()       
                                 self.gameStateManager.freeShoot = True
+                                if self.check_reveal():
+                                    self.gameStateManager.actionState = "smAction"
+                                    self.gameStateManager.run_gamestate("revealSM")
                             print(self.game.check_full_vision())
                     
                     elif self.interact_button.rect.collidepoint(pygame.mouse.get_pos()):        #only render when door in proximity
@@ -778,6 +798,9 @@ class smAction:
                                 if not self.check_melee():
                                     pygame.draw.rect(self.gameStateManager.screen, 'black', self.melee_button.rect)
                                     pygame.display.update(self.melee_button.rect)
+                                if self.check_reveal():
+                                    self.gameStateManager.actionState = "smAction"
+                                    self.gameStateManager.run_gamestate("revealSM")
 
                     elif self.turn_button.rect.collidepoint(pygame.mouse.get_pos()):
                         self.gameStateManager.screen.fill('black')
@@ -868,8 +891,8 @@ class smAction:
 
 class smTurn:
     def __init__(self, gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.game:Game = game
         self.activate_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.end_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.activate_button = Button(810, 500, self.activate_image, 1)
@@ -962,8 +985,8 @@ class smTurn:
 
 class smTurning:
     def __init__(self, gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.game:Game = game
         self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.right_button = Button(810, 500, self.place_image, 1)
@@ -1138,8 +1161,8 @@ class smTurning:
 
 class MeleeDiceRollDoorSM:
     def __init__(self, gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.game:Game = game
         self.dice_1 = Dice(10,10)
         self.dice_2 = Dice(110, 10)
         self.rollAgain_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
@@ -1253,8 +1276,8 @@ class MeleeDiceRollDoorSM:
 
 class MeleeDiceRollSM:
     def __init__(self, gameStateManager, game) -> None:
-        self.game = game
-        self.gameStateManager = gameStateManager
+        self.game:Game = game
+        self.gameStateManager:GameStateManager = gameStateManager
         self.dice_1 = Dice(10, 10)
         self.dice_2 = Dice(110, 10)
         self.dice_3 = Dice(210, 10)
@@ -1474,8 +1497,8 @@ class MeleeDiceRollSM:
 
 class Shoot:
     def __init__(self, gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.game:Game = game
         self.dice_1 = Dice(10,10)
         self.dice_2 = Dice(110, 10)
         self.dice_3 = Dice(210, 10)
@@ -1492,7 +1515,7 @@ class Shoot:
             self.game.selectedModel.AP = 0
 
     def shoot_bolter(self, roll_1, roll_2):
-        attacker = self.game.selectedModelModel
+        attacker = self.game.selectedModel
         defender = self.game.clickedModel
 
         if self.gameStateManager.freeShot:
@@ -1693,8 +1716,8 @@ class Shoot:
 
 class ShootFlamer:
     def __init__(self, gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.game:Game = game
         self.dice = Dice(100,10)
         self.shoot_image = pygame.image.load("Pictures/Tiles/Floor_1.png")
         self.exit_image = pygame.image.load("Pictures/Tiles/Floor_1.png")
@@ -1835,8 +1858,8 @@ class ShootFlamer:
 
 class Overwatch:
     def __init__(self, gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.game:Game = game
         self.activate_image = pygame.image.load("Pictures/Tiles/Floor_1.png")
         self.activate_button = Button(810, 600, self.activate_image, 1)
         self.dice_1 = Dice(10,10)
@@ -2067,8 +2090,8 @@ class Overwatch:
 
 class ChooseBlip:
     def __init__(self, gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.game:Game = game
         self.activate_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.end_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.activate_button = Button(810, 500, self.activate_image, 1)
@@ -2146,8 +2169,8 @@ class ChooseBlip:
 
 class gsAction:
     def __init__(self, gameStateManager, game) -> None:
-        self.game = game
-        self.gameStateManager = gameStateManager
+        self.game:Game = game
+        self.gameStateManager:GameStateManager = gameStateManager
         self.move_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.interact_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.turn_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
@@ -2424,8 +2447,8 @@ class gsAction:
 
 class blAction:
     def __init__(self, gameStateManager, game) -> None:
-        self.game = game
-        self.gameStateManager = gameStateManager
+        self.game:Game = game
+        self.gameStateManager:GameStateManager = gameStateManager
         self.move_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.interact_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.reveal_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
@@ -2659,8 +2682,8 @@ class blAction:
 
 class revealGS:
     def __init__(self, gameStateManager, game) -> None:
-        self.game = game
-        self.gameStateManager = gameStateManager
+        self.game:Game = game
+        self.gameStateManager:GameStateManager = gameStateManager
 
         self.left_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.right_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
@@ -2899,13 +2922,18 @@ class revealGS:
                                         print('select a valid Tile(click)')
 
 
+""" 
+This class is used for converting Blips into Genstealers in the Spacemarine Turn.
+This is neccecary because there are seperate Rules for this, such as Overwatching and placing in line of sight.
+"""
 class revealSM:
-    def __init__(self, gameStateManager, game) -> None:
-        self.game = game
-        self.gameStateManager = gameStateManager
+    
+    def __init__(self, gameStateManager, game:Game) -> None:
+        self.game:Game = game
+        self.gameStateManager:GameStateManager = gameStateManager
 
         self.gsList = []
-        self.activated = False
+        self.activated = False  #Used to track if there was an oos action 
         self.returnState = None
         self.targetTile = None
         self.placeTile = None
@@ -2922,6 +2950,16 @@ class revealSM:
         self.broodlord_button = Button(810, 100, self.broodlord_image, 1)
 
     def check_place(self, tile):
+        """
+        Checks if the selected Tile is viable for placing a model.
+
+        Args:
+            tile (Tile): The tile that is checked.
+
+        Returns:
+            bool: True if the tile is viable
+        """
+
         if ((self.game.clickedTile.x == tile.x +1) or (self.game.clickedTile.x == tile.x -1) or (self.game.clickedTile.x == tile.x)) and ((self.game.clickedTile.y == tile.y +1) or (self.game.clickedTile.y == tile.y -1) or (self.game.cklickedTile.y == tile.y)):
             if isinstance(self.game.clickedTile, Tile):
                 if not self.game.clickedTile.isOccupied:
@@ -2929,10 +2967,20 @@ class revealSM:
                         return True
                     
     def generate_models(self, blip:Blip):
+        """
+        Generates Genstealer models from a Blip. Dependant on current number of Genstealers.
+
+        Args:
+            blip (Blip): The blip that needs to be converted
+
+        Returns:
+            None, adds the Genstealers to the Objects gsList
+        """
         a = 0
         while (a < blip.count) and self.game.gsModelList.__len__() <= self.game.maxGS:
             a += 1
             self.gsList.append(Genestealer())
+        self.game.blipReserve.append(blip.count)
         self.game.blModelList.remove(blip)
 
                     
@@ -2981,7 +3029,6 @@ class revealSM:
         logger.info(f"Current Gamestate: SMreveal")
         placed = False
         self.placeTile = None
-        freeTiles = self.check_space(self.targetTile)
 
         if self.activated == False:
             a = gameStateManager.revealList.pop(0)
@@ -3003,9 +3050,17 @@ class revealSM:
         
         freeTiles = self.check_space(self.targetTile)
 
+        self.gameStateManager.screen.fill('black')
+
         for tile in self.game.map:
             tile.render(self.gameStateManager.screen)
         
+        self.left_button.draw(self.gameStateManager.screen)
+        self.right_button.draw(self.gameStateManager.screen)
+        self.accept_button.draw(self.gameStateManager.screen)
+        if self.game.broodLord:
+            self.broodlord_button.draw(self.gameStateManager.screen)
+
         pygame.display.flip()
 
         while True:
@@ -3059,27 +3114,25 @@ class revealSM:
                         if isinstance(self.placeTile, Tile):
                             if placed:
                                 self.game.turn_model(placeModel, "right")
-                                pygame.draw.rect(self.gameStateManager.screen, 'black', self.placeTile.rect)
+                                pygame.draw.rect(self.gameStateManager.screen, 'black', self.placeTile.button.rect)
                                 self.placeTile.render(self.gameStateManager.screen)
                                 pygame.display.update(self.placeTile.button.rect)
 
                     elif self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
-                        if gsList.__len__() == 0 or freeTiles.__len__() == 0:                           
-                            self.game.gsModelList.append(self.game.selectedModel)
-                            self.game.reset_select()
-                            self.game.reset_clicked()
-                            self.gameStateManager.screen.fill('black')
-                            self.gameStateManager.run_gamestate('gsTurn')
-                        else:
-                            hasPlaced = False  
-                            self.game.gsModelList.append(self.game.selectedModel)
-                            self.game.selectedModel = gsList.pop(0)
-                            if (self.game.selectedTile in freeTiles) and not (isinstance(self.game.selectedTile, EntryPoint)):
-                                freeTiles.remove(self.game.selectedTile)
-                            pygame.draw.rect(self.gameStateManager.screen,'black',self.accept_button.rect)
-                            self.place_button.draw(self.gameStateManager.screen)
-                            pygame.display.update(self.accept_button.rect)
-                            pygame.display.update(self.place_button.rect)
+                        if placed:
+                            if self.gsList.__len__() == 0 or freeTiles.__len__() == 0:                           
+                                self.game.gsModelList.append(placeModel)
+                                self.end_phase()
+                            else:
+                                placed = False  
+                                self.game.gsModelList.append(placeModel)
+                                placeModel = self.gsList.pop(0)
+                                if (self.placeTile in freeTiles) and not (isinstance(self.placeTile, EntryPoint)):
+                                    freeTiles.remove(self.placeTile)
+                                pygame.draw.rect(self.gameStateManager.screen,'black',self.accept_button.rect)
+                                self.place_button.draw(self.gameStateManager.screen)
+                                pygame.display.update(self.accept_button.rect)
+                                pygame.display.update(self.place_button.rect)
 
                     elif self.place_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if placed == False:
@@ -3101,10 +3154,10 @@ class revealSM:
                             elif isinstance(self.game.selectedTile, EntryPoint):
                                 self.placeTile.genstealers.append(placeModel)
                                 if self.gsList.__len__() == 0 or freeTiles.__len__() == 0:
-                                    self.gameStateManager.run_gamestate('gsTurn')
+                                    self.end_phase()
                                 else:
-                                    hasPlaced = False
-                                    self.game.selectedModel = gsList.pop(0)
+                                    placed = False
+                                    placeModel = self.gsList.pop(0)
 
                     elif self.broodlord_button.rect.collidepoint(pygame.mouse.get_pos()):    
                         if self.game.broodLord:
@@ -3120,17 +3173,17 @@ class revealSM:
                             for tile in self.game.map:
                                 if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
                                     if isinstance(tile, Tile) and (tile in freeTiles):
-                                        placeTile = tile
+                                        self.placeTile = tile
                                     elif isinstance(tile, EntryPoint) and (tile in freeTiles):
-                                        placeTile = tile
+                                        self.placeTile = tile
                                     else:
                                         logger.info('select a valid Tile(click)')
 
 
 class gsTurn:
     def __init__(self, gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.game:Game = game
         self.activate_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.end_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.activate_button = Button(810, 500, self.activate_image, 1)
@@ -3220,8 +3273,8 @@ class gsTurn:
 
 class gsTurning:
     def __init__(self, gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.game:Game = game
         self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.right_button = Button(810, 500, self.place_image, 1)
@@ -3375,8 +3428,8 @@ class gsTurning:
 
 class MeleeDiceRollDoorGS:
     def __init__(self, gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.game:Game = game
         self.dice_1 = Dice(10,10)
         self.dice_2 = Dice(110, 10)
         self.dice_3 = Dice(210, 10)
@@ -3450,8 +3503,8 @@ class MeleeDiceRollDoorGS:
 
 class MeleeDiceRollGS:
     def __init__(self, gameStateManager, game) -> None:
-        self.game = game
-        self.gameStateManager = gameStateManager
+        self.game:Game = game
+        self.gameStateManager:GameStateManager = gameStateManager
         self.dice_1 = Dice(10, 10)
         self.dice_2 = Dice(110, 10)
         self.dice_3 = Dice(210, 10)
@@ -3688,8 +3741,8 @@ class MeleeDiceRollGS:
 
 class gamestateMain:
     def __init__(self,gameStateManager, game) -> None:
-        self.gameStateManager = gameStateManager
-        self.game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.game:Game = game
 
     def run(self):
         self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
@@ -3739,15 +3792,3 @@ gameStateManager = GameStateManager(game, screen)
 # game.clickedModel.face = (-1,0)
 # game.clickedModel.isBroodlord = True
 gameStateManager.run_gamestate("main")
-
-
-# for event in pygame.event.get():
-#                 if event.type == pygame.QUIT:
-#                     pygame.quit()
-#                     sys.exit()
-#             if self.place_button.draw(self.gameStateManager.screen):
-#                 game.move_model(self.gameStateManager.selectedModel, self.gameStateManager.selectedTile, self.gameStateManager.clickedTile)
-#                 self.gameStateManager.selectedTile = self.gameStateManager.clickedTile
-#                 self.gameStateManager.clickedTile = None
-#             if self.amount_button.draw(self.gameStateManager.screen):
-#                 game.turn_model(self.gameStateManager.selectedModel, "right")

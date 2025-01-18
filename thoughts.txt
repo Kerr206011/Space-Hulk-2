@@ -42,3 +42,15 @@ add oos Actions
 
 add overwatch/oos Actions to revealSM
 add overwatch to turn
+
+check shoot and freeshoot interactions very thoroughly
+
+add broodlord to sm reveal (1st model)
+add oos actions to sm reveal
+add entrypointreveal to Sm reveal
+
+reveal is only finished in Sm Action!!!
+
+ideas for Client server:
+    clients have run() for gamestates, but they only log and send the clicks and have no internal logic
+    server sends updates for the map, client displays it
