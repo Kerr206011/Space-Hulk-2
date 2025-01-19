@@ -728,7 +728,7 @@ class Game():
                     visionlist.append(tile)
         return visionlist
     
-    def check_overwatch(self, activationType = "normal"):
+    def check_overwatch(self, activationType = "normal", target = None):
         overwatchingModels = []
 
         if activationType == "door":
@@ -738,6 +738,16 @@ class Game():
                     if tile.isOccupied:
                         if tile.occupand in self.smModelList:
                             if self.selectedTile in self.check_vision(tile.occupand, tile) or self.clickedTile in self.check_vision(tile.occupand, tile):
+                                if tile.occupand.weapon != "Thunderhammer" and tile.occupand.weapon != "Lightningclaws" and tile.occupand.weapon != "Flamer":
+                                    if tile.occupand.overwatch and (not tile.occupand.jam) and not ((tile.occupand.weapon == "Assaultcannon") and (self.assaultCannonAmmo == 0)):
+                                        overwatchingModels.append(tile)
+
+        elif activationType == "reveal":
+            for tile in self.map:
+                if isinstance(tile, Tile):
+                    if tile.isOccupied:
+                        if tile.occupand in self.smModelList:
+                            if target in self.check_vision(tile.occupand, tile):
                                 if tile.occupand.weapon != "Thunderhammer" and tile.occupand.weapon != "Lightningclaws" and tile.occupand.weapon != "Flamer":
                                     if tile.occupand.overwatch and (not tile.occupand.jam) and not ((tile.occupand.weapon == "Assaultcannon") and (self.assaultCannonAmmo == 0)):
                                         overwatchingModels.append(tile)

@@ -7,14 +7,11 @@ terminator weapon/loadout can be displayed by classsystem (GW 8th symbols)
 
 interact button only shown when door to interact with (now not always shown)
 
-Blips are only forced to lurk for one turn
 Blips can be revealed outside Entry Areas (List, blitting a purple number?)
 
-implement Broodlord reveal if possible
+implement Broodlord reveal on entrypoint
 
 checkmove needs to pe appended so that it blocks models from passing diagonally between a model and a wall(p.59) 
-
-placebl needs to be changed so that the broodlord can be placed
 
 the initial placement of blips must be skippable for certain missions
 
@@ -28,7 +25,7 @@ add shoot button only after check_ranged()
 
 the entire map can be made individualistic, so that sections can be distinguished easely
 
-implement flamer burning one one side of the door
+implement flamer burning one one side of the door(perhaps pathfinding)
 
 implement Assaultcannon explosion and reload
 
@@ -36,24 +33,20 @@ implement Psyker phase
 
 fix UI
 
-implement SM reveal
-
 add oos Actions
 
 add overwatch/oos Actions to revealSM
-add overwatch to turn
 
 check shoot and freeshoot interactions very thoroughly
 
 add broodlord to sm reveal (1st model)
-add oos actions to sm reveal
 add entrypointreveal to Sm reveal
 
 add comments to methods
 
-reveal is only finished in Sm Action!!!
-
 should the turning be so that a full turn isn't possible? (for reveal purposes)
+
+complete the first map
 
 ideas for Client server:
     clients have run() for gamestates, but they only log and send the clicks and have no internal logic

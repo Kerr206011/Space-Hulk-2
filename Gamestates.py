@@ -33,7 +33,7 @@ class GameStateManager:     #class to manage interactions between gamestates and
         self.overwatchAction = None
 
         self.revealList = [] #list of touples (model, tile)
-        self.actionState = None
+        self.actionState = None #saves the current gamestate for out of sequence (oos) reveals
 
         self.freeShot = False   #if sm has free shoot Action and doesn't need to pay the AP for shooting
         self.freeTurn = False   #if gs has a free turn and doesn't need to expend AP for turning 90°
@@ -41,17 +41,34 @@ class GameStateManager:     #class to manage interactions between gamestates and
     def run_gamestate(self, gameState):     #method for executing the run methods of the individual gamestates saved in self.gamestates
         self.gamestates[gameState].run()
 
-    def refresh(self):
-        for tile in self.game.map:
-            tile.render(self.screen)
-        pygame.display.flip()
+    def check_wincondition(self):
+        gsWin = True
+        smWin = False
 
+        for model in self.game.smModelList:
+            if model.weapon == "Flamer":
+                gsWin = False
+
+        for tile in self.game.map:
+            if tile.isBurning and tile.sector == 15:
+                smWin = True
+
+        if smWin == True:
+            logger.info(f"Spacemarines win. \nCongratulations {self.game.player1}!")
+            self.run_gamestate("main")
+
+        elif gsWin == True:
+            logger.info(f"Genstealers win. \nCongratulations {self.game.player2}!")
+            self.run_gamestate("main")
 
 class BLstart:
+    """
+    Gamestate to place the first blips, before the first command phase.
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.game:Game = game
         self.gameStateManager:GameStateManager = gameStateManager
-        self.BLAmount = int
+        self.BLAmount:int
         self.blipList = []
         self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
@@ -157,7 +174,10 @@ class BLstart:
                                     logger.debug(f"Blips on clicked Tile: {tile.blips}")  
 
 
-class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
+class PlaceBL:     
+    """
+    Gamestate to place Blips during the reinforcement phase.
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.game:Game = game
         self.gameStateManager:GameStateManager = gameStateManager
@@ -297,6 +317,9 @@ class PlaceBL:     #Gamestate where the Blips are Placed(reinforcement phase)
 
 
 class PlaceSM:
+    """
+    Gamestate to place Space Marines during the setup of the game.
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager:GameStateManager = gameStateManager
         self.game:Game = game
@@ -436,8 +459,10 @@ class PlaceSM:
                                         self.game.selectedModel = tile.occupand
                                     
 
-
 class commandPhase:
+    """
+    Gamestate to reset the game after each turn.
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager:GameStateManager = gameStateManager
         self.game:Game = game
@@ -546,6 +571,9 @@ class commandPhase:
 
 
 class smAction:
+    """
+    Gamestate to manage the activation of a Spacemarine.
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager:GameStateManager = gameStateManager
         self.game:Game = game
@@ -561,6 +589,15 @@ class smAction:
         self.accept_button = Button(810, 800, self.amount_image, 1)
 
     def check_move(self):
+        """
+        Method to check if a selected tile is viable for movement.
+
+        Args:
+            None
+
+        Returns:
+            boolean: True if viable, false if not.
+        """
         direction = False
         burning = False
         doorOpen = False
@@ -585,6 +622,16 @@ class smAction:
             return False 
     
     def check_reveal(self):
+        """
+        Method to check if an action triggered an involuntary reveal.
+        Also adds the seen blips to the  gameStateManagers revealList.
+
+        Args:
+            None
+
+        Returns:
+            boolean: True if yes.
+        """
         visionList = self.game.check_vision(self.game.selectedModel, self.game.selectedTile)
 
         a = False
@@ -597,6 +644,15 @@ class smAction:
         return a
 
     def check_melee(self):
+        """
+        Method to check if there is a door or an enemy model to the front of the selected model.
+
+        Args:
+            None
+
+        Returns:
+            boolean: True if yes.
+        """
         if (self.game.selectedTile.x + self.game.selectedModel.face[0] == self.game.clickedTile.x) and (self.game.selectedTile.y + self.game.selectedModel.face[1] == self.game.clickedTile.y):
             if self.game.clickedModel != None:
                 return True
@@ -607,6 +663,15 @@ class smAction:
                 return False
             
     def check_ranged(self):
+        """
+        Method to check if a model can ranged attack a tile.
+
+        Args:
+            None
+
+        Returns:
+            boolean: True if viable, false if not.
+        """
         if isinstance(self.game.clickedTile,  Tile):
             if ((((self.game.clickedModel != None) and (self.game.clickedModel in self.game.gsModelList))  or (self.game.selectedModel.weapon == "Flamer") or (isinstance(self.game.clickedTile, Door) and self.game.selectedModel.weapon != "Flamer"))) and (self.game.clickedTile in game.check_vision(self.game.selectedModel, self.game.selectedTile)):
                 if self.game.selectedModel.weapon != "Lightningclaws" and self.game.selectedModel.weapon != "Thunderhammer":
@@ -890,6 +955,9 @@ class smAction:
           
 
 class smTurn:
+    """
+    Gamestate to manage the choosing and activating of a SM.
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager:GameStateManager = gameStateManager
         self.game:Game = game
@@ -984,6 +1052,9 @@ class smTurn:
 
 
 class smTurning:
+    """
+    Gamestate to manage the turning of a SM.
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager:GameStateManager = gameStateManager
         self.game:Game = game
@@ -1160,6 +1231,9 @@ class smTurning:
 
 
 class MeleeDiceRollDoorSM:
+    """
+    Gamestate to manage the melee attack of a SM against a closed door.
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager:GameStateManager = gameStateManager
         self.game:Game = game
@@ -1275,6 +1349,9 @@ class MeleeDiceRollDoorSM:
 
 
 class MeleeDiceRollSM:
+    """
+    Gamestate to manage the melee attack of a SM against a model to their front.
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.game:Game = game
         self.gameStateManager:GameStateManager = gameStateManager
@@ -1496,6 +1573,9 @@ class MeleeDiceRollSM:
 
 
 class Shoot:
+    """
+    Gamestate to manage the shooting of a SM (excluding flamer).
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager:GameStateManager = gameStateManager
         self.game:Game = game
@@ -1715,6 +1795,9 @@ class Shoot:
                     #         self.gameStateManager.run_gamestate('shoot')
 
 class ShootFlamer:
+    """
+    Gamestate to manage the shooting of a flamer.
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager:GameStateManager = gameStateManager
         self.game:Game = game
@@ -1857,6 +1940,9 @@ class ShootFlamer:
                                         logger.info(f"ClickedTile: {self.game.clickedTile}")
 
 class Overwatch:
+    """
+    Gamestate to manage overwatching.
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager:GameStateManager = gameStateManager
         self.game:Game = game
@@ -2089,6 +2175,9 @@ class Overwatch:
 
 
 class ChooseBlip:
+    """
+    Gamestate to manage the choosing and activating of a blip on an entrypoint.
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager:GameStateManager = gameStateManager
         self.game:Game = game
@@ -2166,8 +2255,10 @@ class ChooseBlip:
                                 print(self.game.selectedModel.AP)
                             
 
-
 class gsAction:
+    """
+    Gamestate to manage the activation of a Genstealer.
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.game:Game = game
         self.gameStateManager:GameStateManager = gameStateManager
@@ -2526,6 +2617,9 @@ class gsAction:
 
 
 class blAction:
+    """
+    Gamestate to manage the activation of a blip.
+    """
     def __init__(self, gameStateManager, game) -> None:
         self.game:Game = game
         self.gameStateManager:GameStateManager = gameStateManager
@@ -2655,6 +2749,27 @@ class blAction:
             
             self.game.reset_clicked()
 
+    def check_reveal(self):
+        """
+        Method to check if an action triggered an involuntary reveal.
+        It also adds the seen models to the Gamestatemanager.revealList
+
+        Args:
+            None
+
+        Returns:
+            boolean: True if any models were seen
+        """
+
+        a = False
+        seenList = self.game.check_full_vision()
+        for tile in seenList:
+            if tile.occupand in self.game.blModelList:
+                self.gameStateManager.revealList.append((tile.occupand, tile))
+                a = True
+        
+        return a
+
     def run(self):
         
         for tile in self.game.map:
@@ -2736,6 +2851,9 @@ class blAction:
                                 pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.clickedTile.button.rect)
                                 self.game.clickedTile.render(self.gameStateManager.screen)
                                 pygame.display.update(self.game.clickedTile.button.rect)
+                                if self.check_reveal():
+                                    self.gameStateManager.actionState = "blAction"
+                                    self.gameStateManager.run_gamestate("revealSM")
 
                     elif self.reveal_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if self.game.selectedModel.AP == 6:
@@ -3082,10 +3200,101 @@ class revealSM:
                 self.gameStateManager.run_gamestate("gsAction")
             else:
                 self.gameStateManager.run_gamestate("gsTurn")
-                    
-    def overwatch(self, target:Genestealer, attacker:SpaceMarine):
-        defender = target
+
+        elif self.returnState == "blAction":
+            if self.game.selectedModel in self.game.blModelList:
+                self.gameStateManager.run_gamestate("blAction")
+            else:
+                self.gameStateManager.run_gamestate("gsTurn")
+
+    def shoot_bolter(self, roll_1, roll_2, target, attacker, targetTile):
         attacker = attacker
+        defender = target
+
+        if attacker.susf:
+            roll_1 += 1
+            roll_2 += 1
+
+        if isinstance(defender, Genestealer):
+            if defender.isBroodlord == False:
+                if roll_1 > 5 or roll_2 > 5:
+                    logger.info(f"Hit with: {roll_1}, {roll_2}")
+                    targetTile.isOccupied = False
+                    self.game.gsModelList.remove(defender)
+                    targetTile.occupand = None
+                else:
+                    logger.info(f"Missed with: {roll_1}, {roll_2}")
+
+            else:
+                if roll_1 > 5 and roll_2 > 5:
+                    logger.info(f"Hit with: {roll_1}, {roll_2}")
+                    targetTile.isOccupied = False
+                    self.game.gsModelList.remove(defender)
+                    targetTile.occupand = None
+                else:            
+                    logger.info(f"Missed with: {roll_1}, {roll_2}")
+
+        if roll_1 == roll_2:
+            logger.debug(f"Model {attacker} has jammed!")
+            attacker.jam = True
+
+    def shoot_ac(self, roll_1, roll_2, roll_3, target, attacker, targetTile):
+        attacker = attacker
+        defender = target
+        self.game.assaultCannonAmmo -= 1
+
+        if attacker.susf:
+            roll_1 += 1
+            roll_2 += 1
+            roll_3 += 1
+
+        if isinstance(defender, Genestealer):
+            if defender.isBroodlord == False:
+                if roll_1 > 4 or roll_2 > 4 or roll_3 > 4:
+                    logger.info(f"Hit with: {roll_1}, {roll_2}, {roll_3}")
+                    targetTile.isOccupied = False
+                    self.game.gsModelList.remove(defender)
+                    targetTile.occupand = None
+                else:
+                    logger.info(f"Missed with: {roll_1}, {roll_2}, {roll_3}")
+
+            else:
+                if (roll_1 > 4 and roll_2 > 4) or (roll_1 > 4 and roll_3 > 4) or (roll_2 > 4 and roll_3 > 4):
+                    logger.info(f"Hit with: {roll_1}, {roll_2}, {roll_3}")
+                    targetTile.isOccupied = False
+                    self.game.gsModelList.remove(defender)
+                    targetTile.occupand = None
+                else:            
+                    logger.info(f"Missed with: {roll_1}, {roll_2}, {roll_3}")
+                    
+    def overwatch(self, target:Genestealer, targetTile:Tile):
+        overwatchList = self.game.check_overwatch("reveal", targetTile)
+        dice_1 = Dice(10, 10)
+        dice_2 = Dice(110, 10)
+        dice_3 = Dice(210, 10)
+
+        while overwatchList.__len__() > 0:
+            overwatchTile = overwatchList.pop(0)
+            overwatchModel = overwatchTile.occupand
+
+            dice_1.roll_dice(self.gameStateManager.screen)
+            roll_1 = dice_1.face
+            dice_2.roll_dice(self.gameStateManager.screen)
+            roll_2 = dice_2.face
+            
+            if overwatchModel.weapon == "Assaultcannon":
+                dice_3.roll_dice(self.gameStateManager.screen)
+                roll_3 = dice_3.face
+
+                self.shoot_ac(roll_1, roll_2, roll_3, target, overwatchModel, targetTile)
+
+            else:
+                self.shoot_bolter(roll_1, roll_2, target, overwatchModel, targetTile)
+
+            pygame.draw.rect(self.gameStateManager.screen, 'black', dice_1.rect)
+            pygame.draw.rect(self.gameStateManager.screen, 'black', dice_2.rect)
+            pygame.draw.rect(self.gameStateManager.screen, 'black', dice_3.rect)
+            pygame.display.flip()
                 
     def check_space(self, startTile):
         frSpace = []
@@ -3200,6 +3409,9 @@ class revealSM:
 
                     elif self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if placed:
+                            self.overwatch(placeModel, self.placeTile)
+                            freeTiles = self.check_space(self.targetTile)
+
                             if self.gsList.__len__() == 0 or freeTiles.__len__() == 0:                           
                                 self.game.gsModelList.append(placeModel)
                                 self.end_phase()
