@@ -50,8 +50,9 @@ class GameStateManager:     #class to manage interactions between gamestates and
                 gsWin = False
 
         for tile in self.game.map:
-            if tile.isBurning and tile.sector == 15:
-                smWin = True
+            if isinstance(tile, Tile):
+                if tile.isBurning and tile.sector == 15:
+                    smWin = True
 
         if smWin == True:
             logger.info(f"Spacemarines win. \nCongratulations {self.game.player1}!")
@@ -1455,6 +1456,7 @@ class MeleeDiceRollSM:
         self.game.reset_select()
         self.game.reset_clicked()
         self.gameStateManager.screen.fill('black')
+        self.gameStateManager.check_wincondition()
         self.gameStateManager.run_gamestate("smTurn")
 
     def win(self):
@@ -1922,9 +1924,11 @@ class ShootFlamer:
                                 self.gameStateManager.screen.fill('black')
                                 self.game.reset_clicked()
                                 if self.game.selectedModel in self.game.smModelList:
+                                    self.gameStateManager.check_wincondition()
                                     self.gameStateManager.run_gamestate('smAction')
                                 else:
                                     self.game.reset_select()
+                                    self.gameStateManager.check_wincondition()
                                     self.gameStateManager.run_gamestate('smTurn')
 
                     elif self.exit_button.rect.collidepoint(pygame.mouse.get_pos()):
@@ -3906,6 +3910,7 @@ class MeleeDiceRollGS:
         self.game.clickedTile.occupand = None
         self.game.reset_clicked()
         self.gameStateManager.screen.fill('black')
+        self.gameStateManager.check_wincondition()
         self.gameStateManager.run_gamestate('gsAction')
 
     def adjust_facing(self):
