@@ -46,8 +46,9 @@ class GameStateManager:     #class to manage interactions between gamestates and
         smWin = False
 
         for model in self.game.smModelList:
-            if model.weapon == "Flamer":
-                gsWin = False
+            if self.game.flamerAmmo > 0:
+                if model.weapon == "Flamer":
+                    gsWin = False
 
         for tile in self.game.map:
             if isinstance(tile, Tile):
