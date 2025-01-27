@@ -2212,6 +2212,174 @@ class OutOfSequence:
         self.accept_button = Button(810, 800, self.amount_image, 1)
         self.reload_button = Button(810, 900, self.amount_image, 1)
 
+    def check_move(self):
+        """
+        Method to check if a selected tile is viable for movement.
+
+        Args:
+            None
+
+        Returns:
+            boolean: True if viable, false if not.
+        """
+        direction = False
+        burning = False
+        doorOpen = False
+        occupied = False
+        if isinstance(self.game.clickedTile, Tile):
+            if (((self.game.clickedTile.x == self.game.selectedTile.x + self.game.selectedModel.face[0]) or (self.game.clickedTile.x == self.game.selectedTile.x - self.game.selectedModel.face[0])) and self.game.selectedModel.face[0] != 0) or (((self.game.clickedTile.y == self.game.selectedTile.y + self.game.selectedModel.face[1]) or (self.game.clickedTile.y == self.game.selectedTile.y - self.game.selectedModel.face[1])) and self.game.selectedModel.face[1] != 0):
+                direction = True
+            if (self.game.clickedTile.isBurning == False) or (self.game.selectedTile.isBurning == True):
+                burning = True
+            if (self.game.clickedTile.isOccupied == False) or (isinstance(self.game.clickedTile.occupand, Item)):
+                occupied = True
+            if isinstance(self.game.clickedTile, Door):
+                if self.game.clickedTile.isOpen:
+                    doorOpen = True
+            else:
+                doorOpen = True
+
+
+        if direction and burning and doorOpen and occupied:
+            return True
+        else:
+            return False 
+    
+    def check_reveal(self):
+        """
+        Method to check if an action triggered an involuntary reveal.
+        Also adds the seen blips to the  gameStateManagers revealList.
+
+        Args:
+            None
+
+        Returns:
+            boolean: True if yes.
+        """
+        visionList = self.game.check_vision(self.game.selectedModel, self.game.selectedTile)
+
+        a = False
+
+        for tile in visionList:
+            if tile.occupand in self.game.blModelList:
+                a = True
+                self.gameStateManager.revealList.append((tile.occupand, tile))
+        
+        return a
+
+    def check_melee(self):
+        """
+        Method to check if there is a door or an enemy model to the front of the selected model.
+
+        Args:
+            None
+
+        Returns:
+            boolean: True if yes.
+        """
+        if (self.game.selectedTile.x + self.game.selectedModel.face[0] == self.game.clickedTile.x) and (self.game.selectedTile.y + self.game.selectedModel.face[1] == self.game.clickedTile.y):
+            if self.game.clickedModel != None:
+                return True
+            elif(isinstance(self.game.clickedTile, Door)):
+                if self.game.clickedTile.isOpen == False:
+                    return True
+            else: 
+                return False
+            
+    def check_ranged(self):
+        """
+        Method to check if a model can ranged attack a tile.
+
+        Args:
+            None
+
+        Returns:
+            boolean: True if viable, false if not.
+        """
+        if isinstance(self.game.clickedTile,  Tile):
+            if ((((self.game.clickedModel != None) and (self.game.clickedModel in self.game.gsModelList))  or (self.game.selectedModel.weapon == "Flamer") or (isinstance(self.game.clickedTile, Door) and self.game.selectedModel.weapon != "Flamer"))) and (self.game.clickedTile in game.check_vision(self.game.selectedModel, self.game.selectedTile)):
+                if self.game.selectedModel.weapon != "Lightningclaws" and self.game.selectedModel.weapon != "Thunderhammer":
+                    return True
+            else:
+                logger.debug(f"check_ranged error")
+        else:
+            logger.debug(f"ClickedTile is None!")
+
+        return False
+            
+    def check_door(self):
+        face = self.game.selectedModel.face
+        if isinstance(self.game.clickedTile, Door):
+            if ((self.game.selectedTile.x + face[0] == self.game.clickedTile.x) and (face[0] != 0)) or ((self.game.selectedTile.y + face[1] == self.game.clickedTile.y) and (face[1] != 0)):
+                logger.info(f"Door")
+                for tile in self.game.map:
+                    if ((tile.x + 1 == self.game.clickedTile.x) or (tile.x - 1 == self.game.clickedTile.x) or (tile.x == self.game.clickedTile.x)) and ((tile.y + 1 == self.game.clickedTile.y) or (tile.y - 1 == self.game.clickedTile.y) or (tile.y == self.game.clickedTile.y)):
+                        if isinstance(tile, Tile):
+                            if tile.isBurning:
+                                return False
+                return True
+        else:
+            return False
+        
+    def calculate_movement_cost(self):
+        if ((self.game.clickedTile.x == self.game.selectedTile.x + self.game.selectedModel.face[0]) and (self.game.selectedModel.face[0] != 0)) or ((self.game.clickedTile.y == self.game.selectedTile.y + self.game.selectedModel.face[1]) and (self.game.selectedModel.face[1] != 0)):
+            return 1
+        else:
+            return 2
+
+    def move_model(self):
+
+        if self.game.clickedTile.isBurning:
+            self.gameStateManager.screen.fill('black')
+            pygame.display.flip()
+            dice = Dice(100, 10)
+            dice.roll_dice(self.gameStateManager.screen)
+            result = dice.face
+            logger.debug(f"Flamerroll: {result}")
+            if result == 1:
+                for tile in self.game.map:
+                    tile.render(self.gameStateManager.screen)
+
+                self.move_button.draw(self.gameStateManager.screen)
+                self.turn_button.draw(self.gameStateManager.screen)
+                self.guard_button.draw(self.gameStateManager.screen)
+                if self.game.clickedTile != None:
+                    if self.check_melee():
+                        self.melee_button.draw(self.gameStateManager.screen)
+                self.shoot_button.draw(self.gameStateManager.screen)
+                self.accept_button.draw(self.gameStateManager.screen)
+                if self.check_door():
+                    self.interact_button.draw(self.gameStateManager.screen)
+                # self.overwatch_button.draw(self.gameStateManager.screen)
+
+                pygame.display.flip()
+
+            else:
+                self.game.selectedTile.isOccupied = False
+                self.game.selectedTile.occupand = None
+                self.game.smModelList.remove(self.game.selectedModel)
+                self.game.reset_select()
+                self.game.reset_clicked()
+                self.gameStateManager.screen.fill('black')
+                self.gameStateManager.run_gamestate('smTurn')
+
+        self.game.clickedTile.occupand = self.game.selectedModel
+        self.game.selectedTile.isOccupied = False
+        self.game.selectedTile.occupand = None
+        self.game.clickedTile.isOccupied = True
+        pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
+        pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.clickedTile.button.rect)
+        self.game.selectedTile.render(self.gameStateManager.screen)
+        self.game.clickedTile.render(self.gameStateManager.screen)
+        pygame.display.update(self.game.clickedTile.button.rect)
+        pygame.display.update(self.game.selectedTile.button.rect)
+        self.game.selectedTile = self.game.clickedTile
+        self.game.reset_clicked()
+        self.gameStateManager.freeShot = True
+        self.game.selectedModel.guard = False
+        self.game.selectedModel.overwatch = False
+        self.game.selectedModel.susf = False
+
     def reload(self, model:SpaceMarine):
 
         if model.weapon == "Assaultcannon":
@@ -2490,37 +2658,69 @@ class OutOfSequence:
                     pygame.display.flip()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    
+                    if activeModel != None:
+                        if self.reload_button.rect.collidepoint(pygame.mouse.get_pos()):
+                            self.reload()
 
-                    if self.reload_button.rect.collidepoint(pygame.mouse.get_pos()):
-                        self.reload()
+                        elif self.shoot_button.rect.collidepoint(pygame.mouse.get_pos()):
+                            if activeModel.weapon != "Flamer" and activeModel.weapon != "Thunderhammer" and activeModel.weapon != "Lightningclaws":
+                                self.dice_1.roll_dice(self.gameStateManager.screen)
+                                roll_1 = self.dice_1.face
+                                self.dice_2.roll_dice(self.gameStateManager.screen)
+                                roll_2 = self.dice_2.face
+                                if activeModel.weapon == "Assaultcannon":
+                                    self.dice_3.roll_dice(self.gameStateManager.screen)
+                                    roll_3 = self.dice_3.face
+                                    if targetModel == None:
+                                        self.shoot_ac(roll_1, roll_2, roll_3, targetTile, activeModel)
+                                    else:
+                                        self.shoot_ac(roll_1, roll_2, roll_3, targetModel, activeModel)
+                                
+                                elif targetModel == None:
+                                    self.shoot_bolter(roll_1, roll_2, targetTile, activeModel)
 
-                    elif self.shoot_button.rect.collidepoint(pygame.mouse.get_pos()):
-                        if activeModel.weapon != "Flamer" and activeModel.weapon != "Thunderhammer" and activeModel.weapon != "Lightningclaws":
-                            self.dice_1.roll_dice(self.gameStateManager.screen)
-                            roll_1 = self.dice_1.face
-                            self.dice_2.roll_dice(self.gameStateManager.screen)
-                            roll_2 = self.dice_2.face
-                            if activeModel.weapon == "Assaultcannon":
-                                self.dice_3.roll_dice(self.gameStateManager.screen)
-                                roll_3 = self.dice_3.face
-                                if targetModel == None:
-                                    self.shoot_ac(roll_1, roll_2, roll_3, targetTile, activeModel)
                                 else:
-                                    self.shoot_ac(roll_1, roll_2, roll_3, targetModel, activeModel)
+                                    self.shoot_bolter(roll_1, roll_2, targetModel, activeModel)
                             
-                            elif targetModel == None:
-                                self.shoot_bolter(roll_1, roll_2, targetTile, activeModel)
+                            elif activeModel.weapon == "Flamer":
+                                burningSector = targetTile.sector
+                                for tile in self.game.map:
+                                    if isinstance(tile, Tile):
+                                        if tile.sector == burningSector:
+                                            self.shoot_flamer(tile, self.dice_1)
+                                self.gameStateManager.check_wincondition()
 
-                            else:
-                                self.shoot_bolter(roll_1, roll_2, targetModel, activeModel)
-                        
-                        elif activeModel.weapon == "Flamer":
-                            burningSector = targetTile.sector
-                            for tile in self.game.map:
-                                if isinstance(tile, Tile):
-                                    if tile.sector == burningSector:
-                                        self.shoot_flamer(tile, self.dice_1)
-                            self.gameStateManager.check_wincondition()
+                    
+                        elif activeModel.weapon != "Lightningclaws" and activeModel.weapon != "Thunderhammer" and activeModel.weapon != "Flamer":
+                            if self.overwatch_button.rect.collidepoint(pygame.mouse.get_pos()):
+                                activeModel.overwatch = True
+                                activeModel.guard = False
+                                activeModel.susf = False
+                                self.end_phase()
+
+                        elif self.guard_button.rect.collidepoint(pygame.mouse.get_pos()):
+                            activeModel.guard = True
+                            activeModel.overwatch = False
+                            activeModel.susf = False
+                            self.end_phase
+
+                    else:
+                        for tile in self.game.map:
+                            if isinstance(tile,Tile):
+                                if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
+                                    if tile.isOccupied:
+                                        if tile.occupand in self.game.gsModelList:
+                                            targetModel = tile.occupand
+                                            targetTile = tile
+                                        elif tile.occupand in self.game.smModelList:
+                                            activeModel = tile.occupand
+                                            activeTile = tile
+                                        else:
+                                            targetTile = tile
+
+                                    else:
+                                        targetTile = tile
                             
 
 class ChooseBlip:

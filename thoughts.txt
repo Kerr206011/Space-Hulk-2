@@ -51,7 +51,7 @@ integrate oos and smplace
 should the turning be so that a full turn isn't possible? (for reveal purposes)
 
 oos actions:
-    shoot, melee, overwatch, guard, move, turn, door, 
+    melee, move, turn, door, 
 
 reload(dd to normal activation)
 
@@ -60,6 +60,8 @@ added a shade method to gameStateManager for shoding to opaque black
 add ac explosion
 
 add method to center the action (move all tiles so that the actiontile is in the center of the screen)
+add animations for all the actions (including the dice)
+add highlight for selected/clicked
 
 go through the code and add the blips to the plip-RESERVE whenever they are destroyed
 
