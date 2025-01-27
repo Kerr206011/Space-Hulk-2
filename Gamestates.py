@@ -3303,6 +3303,22 @@ class blAction:
                 a = True
         
         return a
+    
+    def get_button_positions(self):
+        pos = self.game.selectedTile.button.rect.topleft
+
+        a = (pos[0], pos[1] + 50)
+        b = (pos[0] + 50, pos[1])
+        c = (pos[0], pos[1] - 50)
+        d = (pos[0]-50, pos[1])
+        return [a,b,c,d]
+    
+    def adjust_buttons(self):
+        positions = self.get_button_positions()
+        self.move_button.rect.topleft = positions[0]
+        self.interact_button.rect.topleft = positions[1]
+        self.reveal_button.rect.topleft = positions[2]
+        self.end_button.rect.topleft = positions[3]
 
     def run(self):
         

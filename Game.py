@@ -37,10 +37,10 @@ class Game():
         self.level = int    #Integer to save the levelnumber, important for saving and loading
         self.startBlip = int    #Amount of blips given at the start of the game
         self.reinforcement = int    #Amount of blips given each round
-        self.selectedTile = None    #Saved tiles/models. Most of the time for internal logic
-        self.clickedTile = None
-        self.selectedModel = None
-        self.clickedModel = None
+        self.selectedTile:Tile = None    #Saved tiles/models. Most of the time for internal logic
+        self.clickedTile:Tile = None
+        self.selectedModel:Model = None
+        self.clickedModel:Model = None
         self.assaultCannonAmmo = 10 #Self explainatory
         self.assaultCannonReload = True 
         self.psykerPhase = False

@@ -1,0 +1,129 @@
+2025-01-27 09:58:29,431 - INFO - Levels/level_1.json
+2025-01-27 09:58:30,385 - INFO - Game initialized successfully.
+2025-01-27 09:58:30,502 - INFO - Initialized screen.
+2025-01-27 09:58:30,759 - DEBUG - Gamestate Main
+2025-01-27 09:58:32,220 - INFO - Levels/level_1.json
+2025-01-27 09:58:32,369 - INFO - Current GameState: placeSM
+2025-01-27 09:59:04,900 - DEBUG - Reset selectedModel and Tile to None
+2025-01-27 09:59:04,901 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-27 09:59:04,902 - DEBUG - Chosen position in blipSack: 10
+2025-01-27 09:59:04,903 - DEBUG - Chosen position in blipSack: 9
+2025-01-27 09:59:04,909 - INFO - Current GameState: blStart
+2025-01-27 09:59:06,438 - DEBUG - Blips on clicked Tile: []
+2025-01-27 09:59:07,607 - DEBUG - Current Bliplist: [2]
+2025-01-27 09:59:07,608 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x00000175D1D3E450>]
+2025-01-27 09:59:07,847 - DEBUG - Current Bliplist: []
+2025-01-27 09:59:07,848 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x00000175D1D3E450>, <Models.Blip object at 0x00000175D1D3E420>]
+2025-01-27 09:59:07,848 - DEBUG - Reset selectedModel and Tile to None
+2025-01-27 09:59:07,849 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-27 09:59:07,850 - INFO - Current GameState: Command
+2025-01-27 09:59:07,851 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x00000175D1D19160> present
+2025-01-27 09:59:07,851 - DEBUG - Reroll of CP: True
+2025-01-27 09:59:12,452 - DEBUG - CP: 5
+2025-01-27 09:59:13,403 - DEBUG - Reset selectedModel and Tile to None
+2025-01-27 09:59:13,404 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-27 09:59:13,405 - DEBUG - Amount of free Entrypoints: 16
+2025-01-27 09:59:13,406 - DEBUG - Chosen position in blipSack: 10
+2025-01-27 09:59:13,407 - DEBUG - Chosen position in blipSack: 18
+2025-01-27 09:59:13,414 - INFO - Current GameState: blStart
+2025-01-27 09:59:15,009 - DEBUG - Blips on clicked Tile: []
+2025-01-27 09:59:16,254 - DEBUG - Current Bliplist: [3]
+2025-01-27 09:59:16,254 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x00000175D1D3E480>]
+2025-01-27 09:59:16,489 - DEBUG - Current Bliplist: []
+2025-01-27 09:59:16,490 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x00000175D1D3E480>, <Models.Blip object at 0x00000175D1D3E5A0>]
+2025-01-27 09:59:16,493 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,495 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,500 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,506 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,510 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,514 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,520 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,524 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,526 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,530 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,535 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,539 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,541 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,544 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,548 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,552 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,555 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,557 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,560 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,565 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,569 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,571 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,575 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,578 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,585 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,588 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,591 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,595 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,601 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,606 - INFO - TargetTile not within 6.
+2025-01-27 09:59:16,606 - DEBUG - Reset selectedModel and Tile to None
+2025-01-27 09:59:16,607 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-27 09:59:29,332 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-27 09:59:29,338 - DEBUG - GS model = <Models.Genestealer object at 0x00000175D1D3E780> in GSmodelList
+2025-01-27 09:59:29,339 - DEBUG - Reset selectedModel and Tile to None
+2025-01-27 09:59:29,340 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-27 09:59:35,376 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4646, in <module>
+    gameStateManager.run_gamestate("main")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 42, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4625, in run
+    self.gameStateManager.run_gamestate("smPlace")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 42, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 447, in run
+    self.endState()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 374, in endState
+    self.gameStateManager.run_gamestate('gsStart')
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 42, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 178, in run
+    self.endState()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 116, in endState
+    self.gameStateManager.run_gamestate("command")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 42, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 580, in run
+    self.endState()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 488, in endState
+    self.gameStateManager.run_gamestate('smTurn')
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 42, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 1051, in run
+    self.endState()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 985, in endState
+    self.gameStateManager.run_gamestate('gsPlace')
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 42, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 320, in run
+    self.endState()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 257, in endState
+    self.gameStateManager.run_gamestate('gsTurn')
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 42, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4113, in run
+    self.gameStateManager.run_gamestate('blSelect')
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 42, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 2763, in run
+    self.gameStateManager.run_gamestate("blAction")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 42, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 3421, in run
+    self.gameStateManager.run_gamestate('reveal')
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 42, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 3532, in run
+    self.gameStateManager.run_gamestate('gsTurn')
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 42, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4118, in run
+    if isinstance(tile, EntryPoint) or isinstance(tile.occupand, Genestealer) or isinstance(tile.occupand, Blip):
+                                                  ^^^^^^^^^^^^^
+AttributeError: 'Wall' object has no attribute 'occupand'
