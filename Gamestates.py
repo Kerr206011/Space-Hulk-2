@@ -41,6 +41,14 @@ class GameStateManager:     #class to manage interactions between gamestates and
     def run_gamestate(self, gameState):     #method for executing the run methods of the individual gamestates saved in self.gamestates
         self.gamestates[gameState].run()
 
+    def shade(self):
+        overlay = pygame.Surface((self.screen.get_width(), self.screen.get_height()), pygame.SRCALPHA)
+        overlay.fill((255, 255, 255, 128))  # Gray color with 50% opacity
+
+        # Draw the overlay on the screen
+        screen.blit(overlay, (0, 0))
+        pygame.display.update()
+
     def check_wincondition(self):
         gsWin = True
         smWin = False
@@ -1839,7 +1847,7 @@ class ShootFlamer:
         target.change_picture(target.burningPictureFilePath)
 
     def run(self):
-        logger.info(f"Current Gamestate: smShoot")
+        logger.info(f"Current Gamestate: smShootFlamer")
         notDoor = True
         
         for tile in self.game.map:
@@ -2178,6 +2186,342 @@ class Overwatch:
                                     overwatchTile = tile
                                     overwatchModel = tile.occupand
 
+
+class OutOfSequence:
+    """
+    Gamestate to manage the oos activataion of Spacemarines.
+    """
+
+    def __init__(self, game, gameStateManager):
+        self.game:Game = game
+        self.gameStateManager:GameStateManager = gameStateManager
+        self.dice_1 = Dice(10, 10)
+        self.dice_2 = Dice(110, 10)
+        self.dice_3 = Dice(210, 10)
+        self.dice_4 = Dice(410, 10)
+        self.dice_5 = Dice(510, 10)
+        self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.move_button = Button(810, 500, self.place_image, 1)
+        self.turn_button = Button(810, 600, self.amount_image, 1)
+        self.shoot_button = Button(810, 700, self.amount_image, 1)
+        self.interact_button = Button(810, 400, self.amount_image, 1)
+        self.melee_button = Button(810, 300, self.amount_image, 1)
+        self.overwatch_button = Button(810, 200, self.amount_image, 1)
+        self.guard_button = Button(810, 100, self.amount_image, 1)
+        self.accept_button = Button(810, 800, self.amount_image, 1)
+        self.reload_button = Button(810, 900, self.amount_image, 1)
+
+    def reload(self, model:SpaceMarine):
+
+        if model.weapon == "Assaultcannon":
+            self.game.assaultCannonReload = False
+            self.game.assaultCannonAmmo = 10
+            self.end_phase()
+        
+        elif model.weapon == "Chainfist" or model.weapon == "Axe" or model.weapon == "Bolter" or model.weapon == "Powersword":
+            model.jam == False
+            self.end_phase()
+
+        else:
+            logger.error(f"Tried reload on non reloadable weapon!")
+
+
+    def melee_model(self, roll_1, roll_2, roll_3, roll_4, roll_5, attacker, defender, psypoints = 0):
+        attacker = attacker
+        defender = defender
+        facing = self.game.is_facing(attacker,defender)
+
+        if attacker.weapon == "Thunderhammer":
+            roll_3 = 0
+            roll_4 += 2
+        if attacker.weapon == "Powersword":
+            roll_4 += 1
+        if attacker.weapon == "Lightningclaws":
+            if roll_4 > roll_5:
+                roll_4 +=1
+            else:
+                roll_5 +=1
+        if attacker.weapon == "Axe":
+            roll_4 +=1
+            roll_4 += psypoints
+
+        if defender.isBroodlord and facing:
+            if attacker.weapon != "Thunderhammer":
+                if (roll_1 > roll_2 and roll_2 > roll_3) or (roll_3 > roll_2 and roll_2 > roll_1):
+                    roll_1 = roll_1 + roll_3
+                elif (roll_1 > roll_3 and roll_3 > roll_2) or (roll_2 > roll_3 and roll_3 > roll_1):
+                    roll_1 = roll_1 + roll_2
+                elif (roll_2 > roll_1 and roll_1 > roll_3) or (roll_3 > roll_1 and roll_1 > roll_2):
+                    roll_1 = roll_2 + roll_3
+            else:
+                roll_1 = roll_1 + roll_2
+
+
+        if attacker.weapon == "Thunderhammer":
+            if roll_1 > roll_4 or roll_2 > roll_4:
+                winner = defender
+            elif roll_1 == roll_4 or roll_2 == roll_4:
+                winner = None
+            else:
+                winner = attacker
+        
+        elif attacker.weapon == "Powersword":
+            if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                winner = defender
+            elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                winner = None
+            else:
+                winner = attacker
+
+        elif attacker.weapon == "Lightningclaws":
+            defenderRoll = max(roll_1,roll_2,roll_3)
+            attackerRoll = max(roll_4,roll_5)
+
+            if defenderRoll > attackerRoll:
+                return defender
+            elif attackerRoll > defenderRoll:
+                return attacker
+            else:
+                return None
+
+        elif attacker.weapon == "Axe":
+            if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                winner = defender
+            elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                winner = None
+            else:
+                winner = attacker
+        
+        else:
+            if roll_1 > roll_4 or roll_2 > roll_4 or roll_3 > roll_4:
+                winner = defender
+            elif roll_1 == roll_4 or roll_2 == roll_4 or roll_3 == roll_4:
+                winner = None
+            else:
+                winner = attacker
+        logger.debug(f"{roll_1}, {roll_2}, {roll_3}, {roll_4}, {roll_5}")
+        return winner
+    
+    def shoot_bolter(self, roll_1, roll_2, target, attacker):
+        attacker = attacker
+        defender = target
+
+        if attacker.susf:
+            roll_1 += 1
+            roll_2 += 1
+        else:
+            attacker.susf = True
+
+        if isinstance(defender, Door):
+            if roll_1 > 5 or roll_2 > 5:
+                logger.info(f"Hit with: {roll_1}, {roll_2}")
+                self.game.map.remove(target)
+                newTile = target.get_destroyed()
+                self.game.map.append(newTile)
+            else:
+                logger.info(f"Missed with: {roll_1}, {roll_2}")
+
+        elif isinstance(defender, Genestealer):
+            if defender.isBroodlord == False:
+                if roll_1 > 5 or roll_2 > 5:
+                    logger.info(f"Hit with: {roll_1}, {roll_2}")
+                    self.game.selectedTile.isOccupied = False
+                    self.game.gsModelList.remove(defender)
+                    self.game.selectedTile.occupand = None
+                else:
+                    logger.info(f"Missed with: {roll_1}, {roll_2}")
+
+            else:
+                if roll_1 > 5 and roll_2 > 5:
+                    logger.info(f"Hit with: {roll_1}, {roll_2}")
+                    self.game.selectedTile.isOccupied = False
+                    self.game.gsModelList.remove(defender)
+                    self.game.selectedTile.occupand = None
+                else:            
+                    logger.info(f"Missed with: {roll_1}, {roll_2}")
+
+    def shoot_ac(self, roll_1, roll_2, roll_3, target, attacker):
+        attacker = attacker
+        defender = target
+        self.game.assaultCannonAmmo -= 1
+
+        if attacker.susf:
+            roll_1 += 1
+            roll_2 += 1
+            roll_3 += 1
+        else:
+            attacker.susf = True
+
+        if isinstance(defender, Door):
+            if roll_1 > 4 or roll_2 > 4 or roll_3 >4:
+                logger.info(f"Hit with: {roll_1}, {roll_2}, {roll_3}")
+                self.game.map.remove(target)
+                newTile = target.get_destroyed()
+                self.game.map.append(newTile)
+            else:
+                logger.info(f"Missed with: {roll_1}, {roll_2}, {roll_3}")
+
+        elif isinstance(defender, Genestealer):
+            if defender.isBroodlord == False:
+                if roll_1 > 4 or roll_2 > 4 or roll_3 > 4:
+                    logger.info(f"Hit with: {roll_1}, {roll_2}, {roll_3}")
+                    self.game.selectedTile.isOccupied = False
+                    self.game.gsModelList.remove(defender)
+                    self.game.selectedTile.occupand = None
+                else:
+                    logger.info(f"Missed with: {roll_1}, {roll_2}, {roll_3}")
+
+            else:
+                if (roll_1 > 4 and roll_2 > 4) or (roll_1 > 4 and roll_3 > 4) or (roll_2 > 4 and roll_3 > 4):
+                    logger.info(f"Hit with: {roll_1}, {roll_2}, {roll_3}")
+                    self.game.selectedTile.isOccupied = False
+                    self.game.gsModelList.remove(defender)
+                    self.game.selectedTile.occupand = None
+                else:            
+                    logger.info(f"Missed with: {roll_1}, {roll_2}, {roll_3}")
+
+    def shoot_flamer(self, target, dice):
+        target.isBurning = True
+        save = 0
+        if target.isOccupied:
+            #add method to highlight the target
+            dice.roll_dice(self.gameStateManager.screen)
+            save = dice.face
+            logger.info(f"Flamerroll: {save}")
+            if save == 1:
+                pass
+            else:
+                target.isOccupied = False
+                if target.occupand in self.game.smModelList:
+                    self.game.smModelList.remove(target.occupand)
+                elif target.occupand in self.game.gsModelList:
+                    self.game.gsMoelList.remove(target.occupand)
+                elif target.occupand in self.game.blModelList:
+                    self.game.blModelList.remove(target.occupand)
+                target.occupand = None
+
+        target.change_picture(target.burningPictureFilePath)
+    
+    def loose(self, model, tile):
+        model = model
+        self.game.smModelList.remove(model)
+        tile.isOccupied = False
+        tile.occupand = None
+        self.gameStateManager.screen.fill('black')
+        self.gameStateManager.check_wincondition()
+        self.end_phase()
+
+    def win(self, model, tile):
+        self.game.gsModelList.remove(model)
+        tile.isOccupied = False
+        tile.occupand = None
+        self.gameStateManager.screen.fill('black')
+        self.end_phase()
+
+    def adjust_facing(self, attacker, defender):
+        attacker = attacker
+        defender = defender
+        wantedFace = (attacker.face[0] * (-1), attacker.face[1] * (-1))
+
+        while defender.face != wantedFace:
+            game.turn_model(defender, "left")
+
+    def end_phase(self):
+        if self.game.selectedModel != None:
+            if isinstance(self.game.selectedModel, Genestealer):
+                self.gameStateManager.run_gamestate("gsAction")
+            elif isinstance(self.game.selectedModel, Blip):
+                self.gameStateManager.run_gamestate("blAction")
+            else:
+                logger.critical(f"Logic error in choosing returnstate from oos!")
+
+        else:
+            self.gameStateManager.run_gamestate("gsTurn")
+
+    def run(self):
+
+        activeModel:SpaceMarine = None
+        activeTile:Tile = None
+        targetModel:Genestealer = None
+        targetTile:Tile = None
+
+        for tile in self.game.map:
+            tile.render(self.gameStateManager.screen)
+
+        pygame.display.flip()
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_s:
+                        for tile in self.game.map:
+                            tile.scroll((0, -1))
+                        print(self.game.map[0].y)
+                        print(self.game.map[0].graphicsY)
+
+                    if event.key == pygame.K_w:
+                        for tile in self.game.map:
+                            tile.scroll((0, 1))
+                        print(self.game.map[0].y)
+                        print(self.game.map[0].graphicsY)
+
+                    if event.key == pygame.K_a:
+                        for tile in self.game.map:
+                            tile.scroll((1, 0))
+                        print(self.game.map[0].x)
+                        print(self.game.map[0].graphicsX)
+
+                    if event.key == pygame.K_d:
+                        for tile in self.game.map:
+                            tile.scroll((-1, 0))
+                        print(self.game.map[0].x)
+                        print(self.game.map[0].graphicsX)
+
+                    self.gameStateManager.screen.fill("black")
+
+                    for tile in self.game.map:
+                        tile.render(self.gameStateManager.screen)
+                    
+                    pygame.display.flip()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+
+                    if self.reload_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.reload()
+
+                    elif self.shoot_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        if activeModel.weapon != "Flamer" and activeModel.weapon != "Thunderhammer" and activeModel.weapon != "Lightningclaws":
+                            self.dice_1.roll_dice(self.gameStateManager.screen)
+                            roll_1 = self.dice_1.face
+                            self.dice_2.roll_dice(self.gameStateManager.screen)
+                            roll_2 = self.dice_2.face
+                            if activeModel.weapon == "Assaultcannon":
+                                self.dice_3.roll_dice(self.gameStateManager.screen)
+                                roll_3 = self.dice_3.face
+                                if targetModel == None:
+                                    self.shoot_ac(roll_1, roll_2, roll_3, targetTile, activeModel)
+                                else:
+                                    self.shoot_ac(roll_1, roll_2, roll_3, targetModel, activeModel)
+                            
+                            elif targetModel == None:
+                                self.shoot_bolter(roll_1, roll_2, targetTile, activeModel)
+
+                            else:
+                                self.shoot_bolter(roll_1, roll_2, targetModel, activeModel)
+                        
+                        elif activeModel.weapon == "Flamer":
+                            burningSector = targetTile.sector
+                            for tile in self.game.map:
+                                if isinstance(tile, Tile):
+                                    if tile.sector == burningSector:
+                                        self.shoot_flamer(tile, self.dice_1)
+                            self.gameStateManager.check_wincondition()
+                            
 
 class ChooseBlip:
     """
@@ -4063,7 +4407,7 @@ class gamestateMain:
                 sys.exit()
             
             if self.load_button.draw(self.gameStateManager.screen):
-                pass
+                self.gameStateManager.shade()
 
             if self.startNew_button.draw(self.gameStateManager.screen):
                 self.game.load_level("level_1")

@@ -20,6 +20,7 @@ implement visual distinction for Guard/Overwatch/Jam
 certain buttons don't appear/disappear
 
 sustained Fire needs to be processed on every gs individually
+    -> change susf to a model and compare
 
 add shoot button only after check_ranged()
 
@@ -32,6 +33,7 @@ implement Assaultcannon explosion and reload
 implement Psyker phase 
 
 fix UI
+    use shade method and local button icons (circle menu)
 
 add oos Actions
 
@@ -44,9 +46,22 @@ add entrypointreveal to Sm reveal
 
 add comments to methods
 
+integrate oos and smplace
+
 should the turning be so that a full turn isn't possible? (for reveal purposes)
 
-complete the first map
+oos actions:
+    shoot, melee, overwatch, guard, move, turn, door, 
+
+reload(dd to normal activation)
+
+added a shade method to gameStateManager for shoding to opaque black
+
+add ac explosion
+
+add method to center the action (move all tiles so that the actiontile is in the center of the screen)
+
+go through the code and add the blips to the plip-RESERVE whenever they are destroyed
 
 ideas for Client server:
     clients have run() for gamestates, but they only log and send the clicks and have no internal logic
