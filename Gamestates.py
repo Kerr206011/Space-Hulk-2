@@ -2256,7 +2256,7 @@ class OutOfSequence:
         Returns:
             boolean: True if yes.
         """
-        visionList = self.game.check_vision(self.game.selectedModel, self.game.selectedTile)
+        visionList = self.game.check_full_vision()
 
         a = False
 
@@ -2267,7 +2267,7 @@ class OutOfSequence:
         
         return a
 
-    def check_melee(self):
+    def check_melee(self, tile:Tile, model:SpaceMarine, targetTile:Tile, targetModel:Genestealer):
         """
         Method to check if there is a door or an enemy model to the front of the selected model.
 
@@ -2277,16 +2277,16 @@ class OutOfSequence:
         Returns:
             boolean: True if yes.
         """
-        if (self.game.selectedTile.x + self.game.selectedModel.face[0] == self.game.clickedTile.x) and (self.game.selectedTile.y + self.game.selectedModel.face[1] == self.game.clickedTile.y):
-            if self.game.clickedModel != None:
+        if (tile.x + model.face[0] == targetTile.x) and (tile.y + model.face[1] == targetTile.y):
+            if targetModel != None:
                 return True
-            elif(isinstance(self.game.clickedTile, Door)):
-                if self.game.clickedTile.isOpen == False:
+            elif(isinstance(targetTile, Door)):
+                if targetTile.isOpen == False:
                     return True
             else: 
                 return False
             
-    def check_ranged(self):
+    def check_ranged(self, tile:Tile, model:SpaceMarine, targetTile:Tile, targetModel:Genestealer):
         """
         Method to check if a model can ranged attack a tile.
 
@@ -2296,9 +2296,9 @@ class OutOfSequence:
         Returns:
             boolean: True if viable, false if not.
         """
-        if isinstance(self.game.clickedTile,  Tile):
-            if ((((self.game.clickedModel != None) and (self.game.clickedModel in self.game.gsModelList))  or (self.game.selectedModel.weapon == "Flamer") or (isinstance(self.game.clickedTile, Door) and self.game.selectedModel.weapon != "Flamer"))) and (self.game.clickedTile in game.check_vision(self.game.selectedModel, self.game.selectedTile)):
-                if self.game.selectedModel.weapon != "Lightningclaws" and self.game.selectedModel.weapon != "Thunderhammer":
+        if isinstance(targetTile, Tile):
+            if ((((targetModel != None) and (targetModel in self.game.gsModelList))  or (model.weapon == "Flamer") or (isinstance(targetTile, Door) and model.weapon != "Flamer"))) and (targetTile in game.check_vision(model, tile)):
+                if model.weapon != "Lightningclaws" and model.weapon != "Thunderhammer":
                     return True
             else:
                 logger.debug(f"check_ranged error")
@@ -2307,13 +2307,13 @@ class OutOfSequence:
 
         return False
             
-    def check_door(self):
-        face = self.game.selectedModel.face
-        if isinstance(self.game.clickedTile, Door):
-            if ((self.game.selectedTile.x + face[0] == self.game.clickedTile.x) and (face[0] != 0)) or ((self.game.selectedTile.y + face[1] == self.game.clickedTile.y) and (face[1] != 0)):
+    def check_door(self, tile:Tile, model:SpaceMarine, targetTile:Tile):
+        face = model.face
+        if isinstance(targetTile, Door):
+            if ((tile.x + face[0] == targetTile.x) and (face[0] != 0)) or ((tile.y + face[1] == targetTile.y) and (face[1] != 0)):
                 logger.info(f"Door")
-                for tile in self.game.map:
-                    if ((tile.x + 1 == self.game.clickedTile.x) or (tile.x - 1 == self.game.clickedTile.x) or (tile.x == self.game.clickedTile.x)) and ((tile.y + 1 == self.game.clickedTile.y) or (tile.y - 1 == self.game.clickedTile.y) or (tile.y == self.game.clickedTile.y)):
+                for tiles in self.game.map:
+                    if ((tiles.x + 1 == targetTile.x) or (tiles.x - 1 == targetTile.x) or (tiles.x == targetTile.x)) and ((tiles.y + 1 == targetTile.y) or (tiles.y - 1 == targetTile.y) or (tiles.y == targetTile.y)):
                         if isinstance(tile, Tile):
                             if tile.isBurning:
                                 return False
@@ -2321,16 +2321,16 @@ class OutOfSequence:
         else:
             return False
         
-    def calculate_movement_cost(self):
-        if ((self.game.clickedTile.x == self.game.selectedTile.x + self.game.selectedModel.face[0]) and (self.game.selectedModel.face[0] != 0)) or ((self.game.clickedTile.y == self.game.selectedTile.y + self.game.selectedModel.face[1]) and (self.game.selectedModel.face[1] != 0)):
+    def calculate_movement_cost(self, tile:Tile, model:SpaceMarine, targetTile:Tile):
+        if ((targetTile.x == tile.x + model.face[0]) and (model.face[0] != 0)) or ((targetTile.y == tile.y + model.face[1]) and (model.face[1] != 0)):
             return 1
         else:
             return 2
 
-    def move_model(self):
+    def move_model(self, tile:Tile, model:SpaceMarine, targetTile:Tile):
 
-        if self.game.clickedTile.isBurning:
-            self.gameStateManager.screen.fill('black')
+        if targetTile.isBurning:
+            self.gameStateManager.shade()
             pygame.display.flip()
             dice = Dice(100, 10)
             dice.roll_dice(self.gameStateManager.screen)
@@ -2340,45 +2340,28 @@ class OutOfSequence:
                 for tile in self.game.map:
                     tile.render(self.gameStateManager.screen)
 
-                self.move_button.draw(self.gameStateManager.screen)
-                self.turn_button.draw(self.gameStateManager.screen)
-                self.guard_button.draw(self.gameStateManager.screen)
-                if self.game.clickedTile != None:
-                    if self.check_melee():
-                        self.melee_button.draw(self.gameStateManager.screen)
-                self.shoot_button.draw(self.gameStateManager.screen)
-                self.accept_button.draw(self.gameStateManager.screen)
-                if self.check_door():
-                    self.interact_button.draw(self.gameStateManager.screen)
-                # self.overwatch_button.draw(self.gameStateManager.screen)
-
                 pygame.display.flip()
 
             else:
-                self.game.selectedTile.isOccupied = False
-                self.game.selectedTile.occupand = None
-                self.game.smModelList.remove(self.game.selectedModel)
-                self.game.reset_select()
-                self.game.reset_clicked()
+                tile.isOccupied = False
+                tile.occupand = None
+                self.game.smModelList.remove(model)
                 self.gameStateManager.screen.fill('black')
-                self.gameStateManager.run_gamestate('smTurn')
+                self.end_phase()
 
-        self.game.clickedTile.occupand = self.game.selectedModel
-        self.game.selectedTile.isOccupied = False
-        self.game.selectedTile.occupand = None
-        self.game.clickedTile.isOccupied = True
-        pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.selectedTile.button.rect)
-        pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.clickedTile.button.rect)
-        self.game.selectedTile.render(self.gameStateManager.screen)
-        self.game.clickedTile.render(self.gameStateManager.screen)
-        pygame.display.update(self.game.clickedTile.button.rect)
-        pygame.display.update(self.game.selectedTile.button.rect)
-        self.game.selectedTile = self.game.clickedTile
-        self.game.reset_clicked()
-        self.gameStateManager.freeShot = True
-        self.game.selectedModel.guard = False
-        self.game.selectedModel.overwatch = False
-        self.game.selectedModel.susf = False
+        targetTile.occupand = self.game.selectedModel
+        tile.isOccupied = False
+        tile.occupand = None
+        targetTile.isOccupied = True
+        pygame.draw.rect(self.gameStateManager.screen, 'black', tile.button.rect)
+        pygame.draw.rect(self.gameStateManager.screen, 'black', targetTile.button.rect)
+        tile.render(self.gameStateManager.screen)
+        targetTile.render(self.gameStateManager.screen)
+        pygame.display.update(targetTile.button.rect)
+        pygame.display.update(tile.button.rect)
+        model.guard = False
+        model.overwatch = False
+        model.susf = False
 
     def reload(self, model:SpaceMarine):
 
@@ -2596,6 +2579,8 @@ class OutOfSequence:
             game.turn_model(defender, "left")
 
     def end_phase(self):
+        if self.check_reveal():
+            self.gameStateManager.run_gamestate("revealSM")
         if self.game.selectedModel != None:
             if isinstance(self.game.selectedModel, Genestealer):
                 self.gameStateManager.run_gamestate("gsAction")
