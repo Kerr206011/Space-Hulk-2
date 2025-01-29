@@ -4609,6 +4609,8 @@ class gamestateMain:
             
             if self.load_button.draw(self.gameStateManager.screen):
                 self.gameStateManager.shade()
+                center = (self.gameStateManager.screen.get_width()/2, self.gameStateManager.screen.get_height()/2)
+                print(center)
 
             if self.startNew_button.draw(self.gameStateManager.screen):
                 self.game.load_level("level_1")

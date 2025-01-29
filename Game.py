@@ -782,7 +782,29 @@ class Game():
                 return True
         logger.info(f"TargetTile not within {maxDist}.")
         return False
+    
+    def center_tile(self, tile:Tile, screen):
+        screen.fill('black')
 
-game = Game()
-game.load_level("level_1")
-print(game.map)
+        ofs_x = 0
+        ofs_y = 0
+
+        center_x = screen.get_width()/2
+        center_y = screen.get_height()/2
+
+        org_pos_x = tile.graphicsX * tile.graphicOFS
+        org_pos_y = tile.graphicsY * tile.graphicOFS
+
+        ofs_x = (center_x - org_pos_x) / tile.graphicOFS
+        ofs_y = (center_y - org_pos_y) / tile.graphicOFS
+
+        for tile in self.map:
+            tile.scroll((ofs_x, ofs_y))
+            tile.render(screen)
+        
+        pygame.display.flip()
+
+
+# game = Game()
+# game.load_level("level_1")
+# print(game.map)

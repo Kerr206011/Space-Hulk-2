@@ -127,3 +127,129 @@ Traceback (most recent call last):
     if isinstance(tile, EntryPoint) or isinstance(tile.occupand, Genestealer) or isinstance(tile.occupand, Blip):
                                                   ^^^^^^^^^^^^^
 AttributeError: 'Wall' object has no attribute 'occupand'
+2025-01-28 19:21:41,840 - INFO - Levels/level_1.json
+2025-01-28 19:21:42,576 - INFO - Game initialized successfully.
+2025-01-28 19:21:42,652 - INFO - Initialized screen.
+2025-01-28 19:21:42,775 - DEBUG - Gamestate Main
+2025-01-28 19:27:11,464 - INFO - Game initialized successfully.
+2025-01-28 19:27:11,504 - INFO - Initialized screen.
+2025-01-28 19:27:11,583 - DEBUG - Gamestate Main
+2025-01-28 19:27:13,604 - INFO - Levels/level_1.json
+2025-01-28 19:27:13,700 - INFO - Current GameState: placeSM
+2025-01-28 19:27:24,345 - DEBUG - Reset selectedModel and Tile to None
+2025-01-28 19:27:24,345 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-28 19:27:24,345 - DEBUG - Chosen position in blipSack: 5
+2025-01-28 19:27:24,346 - DEBUG - Chosen position in blipSack: 13
+2025-01-28 19:27:24,350 - INFO - Current GameState: blStart
+2025-01-28 19:27:26,151 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:27:33,356 - DEBUG - Current Bliplist: [3]
+2025-01-28 19:27:33,357 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001F9B3678FE0>]
+2025-01-28 19:27:33,895 - DEBUG - Current Bliplist: []
+2025-01-28 19:27:33,896 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001F9B3678FE0>, <Models.Blip object at 0x000001F9B3679010>]
+2025-01-28 19:27:33,896 - DEBUG - Reset selectedModel and Tile to None
+2025-01-28 19:27:33,896 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-28 19:27:33,897 - INFO - Current GameState: Command
+2025-01-28 19:27:33,898 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x000001F9B366C4D0> present
+2025-01-28 19:27:33,898 - DEBUG - Reroll of CP: True
+2025-01-28 19:27:36,679 - DEBUG - CP: 4
+2025-01-28 19:28:06,963 - INFO - Game initialized successfully.
+2025-01-28 19:28:07,029 - INFO - Initialized screen.
+2025-01-28 19:28:07,099 - DEBUG - Gamestate Main
+2025-01-28 19:28:08,632 - INFO - Levels/level_1.json
+2025-01-28 19:28:08,723 - INFO - Current GameState: placeSM
+2025-01-28 19:28:18,113 - DEBUG - Reset selectedModel and Tile to None
+2025-01-28 19:28:18,113 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-28 19:28:18,113 - DEBUG - Chosen position in blipSack: 16
+2025-01-28 19:28:18,113 - DEBUG - Chosen position in blipSack: 8
+2025-01-28 19:28:18,116 - INFO - Current GameState: blStart
+2025-01-28 19:28:20,372 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:28:28,424 - DEBUG - Current Bliplist: [1]
+2025-01-28 19:28:28,424 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000021A8DEEA090>]
+2025-01-28 19:28:28,607 - DEBUG - Current Bliplist: []
+2025-01-28 19:28:28,608 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000021A8DEEA090>, <Models.Blip object at 0x0000021A8DEE9310>]
+2025-01-28 19:28:28,608 - DEBUG - Reset selectedModel and Tile to None
+2025-01-28 19:28:28,608 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-28 19:28:28,608 - INFO - Current GameState: Command
+2025-01-28 19:28:28,610 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x0000021A8DEDC4D0> present
+2025-01-28 19:28:28,610 - DEBUG - Reroll of CP: True
+2025-01-28 19:28:29,807 - DEBUG - CP: 2
+2025-01-28 19:30:23,924 - INFO - Game initialized successfully.
+2025-01-28 19:30:23,992 - INFO - Initialized screen.
+2025-01-28 19:30:24,060 - DEBUG - Gamestate Main
+2025-01-28 19:30:24,865 - INFO - Levels/level_1.json
+2025-01-28 19:30:24,954 - INFO - Current GameState: placeSM
+2025-01-28 19:30:34,088 - DEBUG - Reset selectedModel and Tile to None
+2025-01-28 19:30:34,088 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-28 19:30:34,090 - DEBUG - Chosen position in blipSack: 2
+2025-01-28 19:30:34,090 - DEBUG - Chosen position in blipSack: 19
+2025-01-28 19:30:34,094 - INFO - Current GameState: blStart
+2025-01-28 19:30:35,743 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:32:19,575 - INFO - Game initialized successfully.
+2025-01-28 19:32:19,646 - INFO - Initialized screen.
+2025-01-28 19:32:19,718 - DEBUG - Gamestate Main
+2025-01-28 19:32:20,897 - INFO - Levels/level_1.json
+2025-01-28 19:32:20,990 - INFO - Current GameState: placeSM
+2025-01-28 19:32:30,617 - DEBUG - Reset selectedModel and Tile to None
+2025-01-28 19:32:30,617 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-28 19:32:30,618 - DEBUG - Chosen position in blipSack: 13
+2025-01-28 19:32:30,618 - DEBUG - Chosen position in blipSack: 1
+2025-01-28 19:32:30,622 - INFO - Current GameState: blStart
+2025-01-28 19:32:31,667 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:32:41,688 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:33:36,909 - INFO - Game initialized successfully.
+2025-01-28 19:33:36,975 - INFO - Initialized screen.
+2025-01-28 19:33:37,044 - DEBUG - Gamestate Main
+2025-01-28 19:33:38,456 - INFO - Levels/level_1.json
+2025-01-28 19:33:38,530 - INFO - Current GameState: placeSM
+2025-01-28 19:33:49,997 - DEBUG - Reset selectedModel and Tile to None
+2025-01-28 19:33:49,998 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-28 19:33:49,998 - DEBUG - Chosen position in blipSack: 16
+2025-01-28 19:33:49,999 - DEBUG - Chosen position in blipSack: 15
+2025-01-28 19:33:50,002 - INFO - Current GameState: blStart
+2025-01-28 19:33:51,468 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:33:55,571 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:37:53,741 - INFO - Game initialized successfully.
+2025-01-28 19:37:53,807 - INFO - Initialized screen.
+2025-01-28 19:37:53,886 - DEBUG - Gamestate Main
+2025-01-28 19:37:54,674 - INFO - Levels/level_1.json
+2025-01-28 19:37:54,750 - INFO - Current GameState: placeSM
+2025-01-28 19:38:02,787 - DEBUG - Reset selectedModel and Tile to None
+2025-01-28 19:38:02,788 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-28 19:38:02,789 - DEBUG - Chosen position in blipSack: 21
+2025-01-28 19:38:02,789 - DEBUG - Chosen position in blipSack: 12
+2025-01-28 19:38:02,798 - INFO - Current GameState: blStart
+2025-01-28 19:38:03,527 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:38:06,495 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:38:19,539 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:38:25,688 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:46:58,480 - INFO - Game initialized successfully.
+2025-01-28 19:46:58,548 - INFO - Initialized screen.
+2025-01-28 19:46:58,635 - DEBUG - Gamestate Main
+2025-01-28 19:46:59,529 - INFO - Levels/level_1.json
+2025-01-28 19:46:59,667 - INFO - Current GameState: placeSM
+2025-01-28 19:47:08,945 - DEBUG - Reset selectedModel and Tile to None
+2025-01-28 19:47:08,945 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-28 19:47:08,946 - DEBUG - Chosen position in blipSack: 14
+2025-01-28 19:47:08,947 - DEBUG - Chosen position in blipSack: 0
+2025-01-28 19:47:08,950 - INFO - Current GameState: blStart
+2025-01-28 19:47:09,860 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:47:34,029 - INFO - Game initialized successfully.
+2025-01-28 19:47:34,098 - INFO - Initialized screen.
+2025-01-28 19:47:34,162 - DEBUG - Gamestate Main
+2025-01-28 19:47:35,058 - INFO - Levels/level_1.json
+2025-01-28 19:47:35,131 - INFO - Current GameState: placeSM
+2025-01-28 19:47:44,089 - DEBUG - Reset selectedModel and Tile to None
+2025-01-28 19:47:44,089 - DEBUG - Reset ClickedModel and Tile to None
+2025-01-28 19:47:44,090 - DEBUG - Chosen position in blipSack: 20
+2025-01-28 19:47:44,090 - DEBUG - Chosen position in blipSack: 15
+2025-01-28 19:47:44,094 - INFO - Current GameState: blStart
+2025-01-28 19:47:45,832 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:47:47,368 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:47:49,460 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:47:49,940 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:47:50,595 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:47:51,464 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:47:54,777 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:47:55,812 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:47:59,713 - DEBUG - Blips on clicked Tile: []
+2025-01-28 19:48:02,285 - DEBUG - Blips on clicked Tile: []

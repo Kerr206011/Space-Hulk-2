@@ -163,3 +163,36 @@ class Dice:
         self.prev_mouse_state = mouse_state
 
         return action
+
+class ActionField:
+
+    def __init__(self, width, height, top, left):
+        self.slots = []
+        self.rect = pygame.Rect(left, top, width, height)
+        self.color = 'blue'
+        self.fields = []
+
+    def align(self, pos):
+        self.rect.topleft = pos
+
+    def align_buttons(self, buttons:list[Button]):
+        """
+        Method to add Buttons to the Actionbar and distribute them.
+
+        Args:
+            buttons: list[Button]
+
+        Returns:
+            None.
+        """
+        i = 0
+        for button in buttons:
+            button.rect.topleft = self.slots[i]
+            self.fields.append(button)
+            i +=1
+
+    def render(self, screen):
+        pygame.draw.rect(screen, self.color, self.rect)
+        for button in self.fields:
+            button.draw(screen)
+        pygame.display.flip()
