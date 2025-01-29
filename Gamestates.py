@@ -2212,7 +2212,7 @@ class OutOfSequence:
         self.accept_button = Button(810, 800, self.amount_image, 1)
         self.reload_button = Button(810, 900, self.amount_image, 1)
 
-    def check_move(self):
+    def check_move(self, tile:Tile, model:SpaceMarine, target):
         """
         Method to check if a selected tile is viable for movement.
 
@@ -2226,15 +2226,15 @@ class OutOfSequence:
         burning = False
         doorOpen = False
         occupied = False
-        if isinstance(self.game.clickedTile, Tile):
-            if (((self.game.clickedTile.x == self.game.selectedTile.x + self.game.selectedModel.face[0]) or (self.game.clickedTile.x == self.game.selectedTile.x - self.game.selectedModel.face[0])) and self.game.selectedModel.face[0] != 0) or (((self.game.clickedTile.y == self.game.selectedTile.y + self.game.selectedModel.face[1]) or (self.game.clickedTile.y == self.game.selectedTile.y - self.game.selectedModel.face[1])) and self.game.selectedModel.face[1] != 0):
+        if isinstance(target, Tile):
+            if (((target.x == tile.x + model.face[0]) or (target.x == tile.x - model.face[0])) and model.face[0] != 0) or (((target.y == tile.y + model.face[1]) or (target.y == tile.y - model.face[1])) and model.face[1] != 0):
                 direction = True
-            if (self.game.clickedTile.isBurning == False) or (self.game.selectedTile.isBurning == True):
+            if (target.isBurning == False) or (tile.isBurning == True):
                 burning = True
-            if (self.game.clickedTile.isOccupied == False) or (isinstance(self.game.clickedTile.occupand, Item)):
+            if (target.isOccupied == False) or (isinstance(target.occupand, Item)):
                 occupied = True
-            if isinstance(self.game.clickedTile, Door):
-                if self.game.clickedTile.isOpen:
+            if isinstance(target, Door):
+                if target.isOpen:
                     doorOpen = True
             else:
                 doorOpen = True
@@ -2349,7 +2349,7 @@ class OutOfSequence:
                 self.gameStateManager.screen.fill('black')
                 self.end_phase()
 
-        targetTile.occupand = self.game.selectedModel
+        targetTile.occupand = model
         tile.isOccupied = False
         tile.occupand = None
         targetTile.isOccupied = True
@@ -2689,6 +2689,14 @@ class OutOfSequence:
                             activeModel.overwatch = False
                             activeModel.susf = False
                             self.end_phase
+
+                        elif self.move_button.rect.collidepoint(pygame.mouse.get_pos()):
+                            if self.check_move(activeTile, activeModel, targetTile):
+                                self.move_model(activeTile, activeModel, targetTile)
+                            else:
+                                logger.info(f"Tile {targetTile} not eligable to be moved on!")
+
+                        elif 
 
                     else:
                         for tile in self.game.map:
