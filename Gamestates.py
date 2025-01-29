@@ -7,6 +7,8 @@ class GameStateManager:     #class to manage interactions between gamestates and
     def __init__(self, game, screen) -> None:
         self.game:Game = game
         self.screen = screen
+        self.scale = 0.7
+        self.actionBar:ActionField = ActionField(self.screen.get_width(), 60, self.screen.get_height() - (200), 0)
         self.gamestates = {"smTurn": smTurn(self, self.game), 
                            "smAction": smAction(self, self.game), 
                            "gsAction": gsAction(self, self.game),
@@ -37,6 +39,17 @@ class GameStateManager:     #class to manage interactions between gamestates and
 
         self.freeShot = False   #if sm has free shoot Action and doesn't need to pay the AP for shooting
         self.freeTurn = False   #if gs has a free turn and doesn't need to expend AP for turning 90°
+
+    def create_slots(self):
+        # slot_amnt = self.screen.get_width() / 60
+        i = 0
+        slot = 30
+        while slot <= self.screen.get_width() - 60:
+            self.actionBar.slots.append((slot, (self.actionBar.rect.top - (self.actionBar.rect.bottom / 2))))
+            slot += 60
+            i += 1
+        print(i)
+
 
     def run_gamestate(self, gameState):     #method for executing the run methods of the individual gamestates saved in self.gamestates
         self.gamestates[gameState].run()
@@ -339,6 +352,7 @@ class PlaceSM:
         self.right_button = Button(810, 600, self.amount_image, 1)
         self.left_button = Button(810, 700, self.amount_image, 1)
         self.accept_button = Button(810, 800, self.amount_image, 1)
+        self.actionBar:ActionField = self.gameStateManager.actionBar
 
     def placeModel(self):
         if isinstance(self.game.selectedTile, ControlledArea):
@@ -379,9 +393,9 @@ class PlaceSM:
         for tile in self.game.map:
             tile.render(self.gameStateManager.screen)
 
-        self.place_button.draw(self.gameStateManager.screen)
-        self.right_button.draw(self.gameStateManager.screen)
-        self.left_button.draw(self.gameStateManager.screen)
+        self.actionBar.align_buttons([self.left_button, self.right_button, self.place_button, self.accept_button])
+
+        self.actionBar.render(self.gameStateManager.screen)
 
         pygame.display.flip()
 
@@ -2204,6 +2218,9 @@ class OutOfSequence:
         self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.move_button = Button(810, 500, self.place_image, 1)
         self.turn_button = Button(810, 600, self.amount_image, 1)
+        self.turn_left_button = Button(810, 100, self.amount_image, 1)
+        self.turn_right_button = Button(810, 200, self.amount_image, 1)
+        self.turn_exit_button = Button(810, 300, self.amount_image, 1)
         self.shoot_button = Button(810, 700, self.amount_image, 1)
         self.interact_button = Button(810, 400, self.amount_image, 1)
         self.melee_button = Button(810, 300, self.amount_image, 1)
@@ -2594,6 +2611,9 @@ class OutOfSequence:
 
     def run(self):
 
+        turn = False
+        melee = False
+
         activeModel:SpaceMarine = None
         activeTile:Tile = None
         targetModel:Genestealer = None
@@ -2601,6 +2621,16 @@ class OutOfSequence:
 
         for tile in self.game.map:
             tile.render(self.gameStateManager.screen)
+
+        self.move_button.draw(self.gameStateManager.screen)
+        self.turn_button.draw(self.gameStateManager.screen)
+        self.shoot_button.draw(self.gameStateManager.screen)
+        self.interact_button.draw(self.gameStateManager.screen)
+        self.melee_button.draw(self.gameStateManager.screen)
+        self.overwatch_button.draw(self.gameStateManager.screen)
+        self.guard_button.draw(self.gameStateManager.screen)
+        self.accept_button.draw(self.gameStateManager.screen)
+        self.reload_button.draw(self.gameStateManager.screen)
 
         pygame.display.flip()
 
@@ -2639,64 +2669,122 @@ class OutOfSequence:
 
                     for tile in self.game.map:
                         tile.render(self.gameStateManager.screen)
+
+                    self.move_button.draw(self.gameStateManager.screen)
+                    self.turn_button.draw(self.gameStateManager.screen)
+                    self.shoot_button.draw(self.gameStateManager.screen)
+                    self.interact_button.draw(self.gameStateManager.screen)
+                    self.melee_button.draw(self.gameStateManager.screen)
+                    self.overwatch_button.draw(self.gameStateManager.screen)
+                    self.guard_button.draw(self.gameStateManager.screen)
+                    self.accept_button.draw(self.gameStateManager.screen)
+                    self.reload_button.draw(self.gameStateManager.screen)
                     
                     pygame.display.flip()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     
                     if activeModel != None:
-                        if self.reload_button.rect.collidepoint(pygame.mouse.get_pos()):
-                            self.reload()
+                        if turn == False:
+                            if self.reload_button.rect.collidepoint(pygame.mouse.get_pos()):
+                                self.reload()
 
-                        elif self.shoot_button.rect.collidepoint(pygame.mouse.get_pos()):
-                            if activeModel.weapon != "Flamer" and activeModel.weapon != "Thunderhammer" and activeModel.weapon != "Lightningclaws":
-                                self.dice_1.roll_dice(self.gameStateManager.screen)
-                                roll_1 = self.dice_1.face
-                                self.dice_2.roll_dice(self.gameStateManager.screen)
-                                roll_2 = self.dice_2.face
-                                if activeModel.weapon == "Assaultcannon":
-                                    self.dice_3.roll_dice(self.gameStateManager.screen)
-                                    roll_3 = self.dice_3.face
-                                    if targetModel == None:
-                                        self.shoot_ac(roll_1, roll_2, roll_3, targetTile, activeModel)
-                                    else:
-                                        self.shoot_ac(roll_1, roll_2, roll_3, targetModel, activeModel)
-                                
-                                elif targetModel == None:
-                                    self.shoot_bolter(roll_1, roll_2, targetTile, activeModel)
+                            elif self.shoot_button.rect.collidepoint(pygame.mouse.get_pos()):
+                                if self.check_ranged(activeTile, activeModel, targetTile, targetModel):
+                                    if activeModel.weapon != "Flamer" and activeModel.weapon != "Thunderhammer" and activeModel.weapon != "Lightningclaws":
+                                        self.dice_1.roll_dice(self.gameStateManager.screen)
+                                        roll_1 = self.dice_1.face
+                                        self.dice_2.roll_dice(self.gameStateManager.screen)
+                                        roll_2 = self.dice_2.face
+                                        if activeModel.weapon == "Assaultcannon":
+                                            self.dice_3.roll_dice(self.gameStateManager.screen)
+                                            roll_3 = self.dice_3.face
+                                            if targetModel == None:
+                                                self.shoot_ac(roll_1, roll_2, roll_3, targetTile, activeModel)
+                                            else:
+                                                self.shoot_ac(roll_1, roll_2, roll_3, targetModel, activeModel)
+                                        
+                                        elif targetModel == None:
+                                            self.shoot_bolter(roll_1, roll_2, targetTile, activeModel)
 
-                                else:
-                                    self.shoot_bolter(roll_1, roll_2, targetModel, activeModel)
-                            
-                            elif activeModel.weapon == "Flamer":
-                                burningSector = targetTile.sector
-                                for tile in self.game.map:
-                                    if isinstance(tile, Tile):
-                                        if tile.sector == burningSector:
-                                            self.shoot_flamer(tile, self.dice_1)
-                                self.gameStateManager.check_wincondition()
+                                        else:
+                                            self.shoot_bolter(roll_1, roll_2, targetModel, activeModel)
+                                    
+                                    elif activeModel.weapon == "Flamer":
+                                        burningSector = targetTile.sector
+                                        for tile in self.game.map:
+                                            if isinstance(tile, Tile):
+                                                if tile.sector == burningSector:
+                                                    self.shoot_flamer(tile, self.dice_1)
+                                        self.gameStateManager.check_wincondition()
 
-                    
-                        elif activeModel.weapon != "Lightningclaws" and activeModel.weapon != "Thunderhammer" and activeModel.weapon != "Flamer":
-                            if self.overwatch_button.rect.collidepoint(pygame.mouse.get_pos()):
-                                activeModel.overwatch = True
-                                activeModel.guard = False
+                        
+                            elif activeModel.weapon != "Lightningclaws" and activeModel.weapon != "Thunderhammer" and activeModel.weapon != "Flamer":
+                                if self.overwatch_button.rect.collidepoint(pygame.mouse.get_pos()):
+                                    activeModel.overwatch = True
+                                    activeModel.guard = False
+                                    activeModel.susf = False
+                                    self.end_phase()
+
+                            elif self.guard_button.rect.collidepoint(pygame.mouse.get_pos()):
+                                activeModel.guard = True
+                                activeModel.overwatch = False
                                 activeModel.susf = False
                                 self.end_phase()
 
-                        elif self.guard_button.rect.collidepoint(pygame.mouse.get_pos()):
-                            activeModel.guard = True
-                            activeModel.overwatch = False
-                            activeModel.susf = False
-                            self.end_phase
+                            elif self.move_button.rect.collidepoint(pygame.mouse.get_pos()):
+                                if self.check_move(activeTile, activeModel, targetTile):
+                                    if self.calculate_movement_cost(activeTile, activeModel, targetTile) <= self.game.cp:
+                                        self.game.cp -= self.calculate_movement_cost(activeTile, activeModel, targetTile)
+                                        self.move_model(activeTile, activeModel, targetTile)
+                                else:
+                                    logger.info(f"Tile {targetTile} not eligable to be moved on!")
 
-                        elif self.move_button.rect.collidepoint(pygame.mouse.get_pos()):
-                            if self.check_move(activeTile, activeModel, targetTile):
-                                self.move_model(activeTile, activeModel, targetTile)
-                            else:
-                                logger.info(f"Tile {targetTile} not eligable to be moved on!")
+                            elif self.turn_button.rect.collidepoint(pygame.mouse.get_pos()):
+                                turn = True
+                                self.gameStateManager.screen.fill('black')
+                                self.turn_exit_button.draw(self.gameStateManager.screen)
+                                self.turn_left_button.draw(self.gameStateManager.screen)
+                                self.turn_right_button.draw(self.gameStateManager.screen)
+                                
+                                for tile in self.game.map:
+                                    tile.render(self.gameStateManager.screen)
+                                
+                                pygame.display.flip()
 
-                        elif 
+                            elif self.interact_button.rect.collidepoint(pygame.mouse.get_pos()):
+                                if self.check_door(activeTile, activeModel, targetTile):
+                                    self.game.interact_door(targetTile)
+                                    self.end_phase()
+
+                            elif self.melee_button.rect.collidepoint(pygame.mouse.get_pos()):
+                                if self.check_melee(activeTile, activeModel, targetTile, targetModel):
+                                    pass
+
+                        else:
+
+                            if self.turn_exit_button.rect.collidepoint(pygame.mouse.get_pos()):
+                                turn = False
+                                self.gameStateManager.screen.fill('black')
+                                self.move_button.draw(self.gameStateManager.screen)
+                                self.turn_button.draw(self.gameStateManager.screen)
+                                self.shoot_button.draw(self.gameStateManager.screen)
+                                self.interact_button.draw(self.gameStateManager.screen)
+                                self.melee_button.draw(self.gameStateManager.screen)
+                                self.overwatch_button.draw(self.gameStateManager.screen)
+                                self.guard_button.draw(self.gameStateManager.screen)
+                                self.accept_button.draw(self.gameStateManager.screen)
+                                self.reload_button.draw(self.gameStateManager.screen)
+
+                                pygame.display.flip()
+
+                            elif self.turn_left_button.rect.collidepoint(pygame.mouse.get_pos()):
+                                self.game.turn_model(activeModel, "left")
+                                self.end_phase()
+
+                            elif self.turn_left_button.rect.collidepoint(pygame.mouse.get_pos()):
+                                self.game.turn_model(activeModel, "right")
+                                self.end_phase()
 
                     else:
                         for tile in self.game.map:
@@ -4604,6 +4692,8 @@ class gamestateMain:
         self.exit_button = Button(810, 800, self.amount_image, 1)
 
         logger.debug("Gamestate Main")
+
+        self.gameStateManager.create_slots()
 
         while True:
             for event in pygame.event.get():

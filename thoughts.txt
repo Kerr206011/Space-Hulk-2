@@ -51,7 +51,8 @@ integrate oos and smplace
 should the turning be so that a full turn isn't possible? (for reveal purposes)
 
 oos actions:
-    melee, move, turn, door, 
+add cost
+    melee, end
 
 reload(add to normal activation)
 

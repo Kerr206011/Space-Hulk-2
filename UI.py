@@ -187,9 +187,12 @@ class ActionField:
         """
         i = 0
         for button in buttons:
-            button.rect.topleft = self.slots[i]
+            button.rect.center = self.slots[i]
             self.fields.append(button)
             i +=1
+
+    def clear(self):
+        self.fields = []
 
     def render(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)

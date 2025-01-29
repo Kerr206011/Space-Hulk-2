@@ -253,3 +253,103 @@ AttributeError: 'Wall' object has no attribute 'occupand'
 2025-01-28 19:47:55,812 - DEBUG - Blips on clicked Tile: []
 2025-01-28 19:47:59,713 - DEBUG - Blips on clicked Tile: []
 2025-01-28 19:48:02,285 - DEBUG - Blips on clicked Tile: []
+2025-01-29 16:58:57,974 - INFO - Game initialized successfully.
+2025-01-29 16:58:58,062 - INFO - Initialized screen.
+2025-01-29 16:58:58,188 - DEBUG - Gamestate Main
+2025-01-29 17:10:37,399 - INFO - Game initialized successfully.
+2025-01-29 17:10:37,516 - INFO - Initialized screen.
+2025-01-29 17:10:37,576 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4729, in <module>
+    gameStateManager = GameStateManager(game, screen)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 30, in __init__
+    "smPlace": PlaceSM(self, self.game),
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 354, in __init__
+    self.actionBar.align_buttons(self.left_button, self.right_button, self.place_button, self.accept_button)
+TypeError: ActionField.align_buttons() takes 2 positional arguments but 5 were given
+2025-01-29 17:11:00,172 - INFO - Game initialized successfully.
+2025-01-29 17:11:00,266 - INFO - Initialized screen.
+2025-01-29 17:11:00,332 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4729, in <module>
+    gameStateManager = GameStateManager(game, screen)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 30, in __init__
+    "smPlace": PlaceSM(self, self.game),
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 354, in __init__
+    self.actionBar.align_buttons([self.left_button, self.right_button, self.place_button, self.accept_button])
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\UI.py", line 190, in align_buttons
+    button.rect.center = self.slots[i]
+                         ~~~~~~~~~~^^^
+IndexError: list index out of range
+2025-01-29 17:13:19,948 - INFO - Game initialized successfully.
+2025-01-29 17:13:20,047 - INFO - Initialized screen.
+2025-01-29 17:13:20,108 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4729, in <module>
+    gameStateManager = GameStateManager(game, screen)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 30, in __init__
+    "smPlace": PlaceSM(self, self.game),
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 354, in __init__
+    self.actionBar.align_buttons([self.left_button, self.right_button, self.place_button, self.accept_button])
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\UI.py", line 190, in align_buttons
+    button.rect.center = self.slots[i]
+                         ~~~~~~~~~~^^^
+IndexError: list index out of range
+2025-01-29 17:13:31,600 - INFO - Game initialized successfully.
+2025-01-29 17:13:31,684 - INFO - Initialized screen.
+2025-01-29 17:13:31,746 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4730, in <module>
+    gameStateManager = GameStateManager(game, screen)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 30, in __init__
+    "smPlace": PlaceSM(self, self.game),
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 355, in __init__
+    self.actionBar.align_buttons([self.left_button, self.right_button, self.place_button, self.accept_button])
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\UI.py", line 190, in align_buttons
+    button.rect.center = self.slots[i]
+                         ~~~~~~~~~~^^^
+IndexError: list index out of range
+2025-01-29 17:14:42,789 - INFO - Game initialized successfully.
+2025-01-29 17:14:42,871 - INFO - Initialized screen.
+2025-01-29 17:14:42,943 - DEBUG - Gamestate Main
+2025-01-29 17:15:16,445 - INFO - Game initialized successfully.
+2025-01-29 17:15:16,489 - INFO - Initialized screen.
+2025-01-29 17:15:16,582 - DEBUG - Gamestate Main
+2025-01-29 17:17:06,060 - INFO - Game initialized successfully.
+2025-01-29 17:17:06,185 - INFO - Initialized screen.
+2025-01-29 17:17:06,268 - DEBUG - Gamestate Main
+2025-01-29 17:17:06,275 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4737, in <module>
+    gameStateManager.run_gamestate("main")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 55, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4696, in run
+    self.gameStateManager.create_slots()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 50, in create_slots
+    i += 1
+    ^
+UnboundLocalError: cannot access local variable 'i' where it is not associated with a value
+2025-01-29 17:17:15,426 - INFO - Game initialized successfully.
+2025-01-29 17:17:15,516 - INFO - Initialized screen.
+2025-01-29 17:17:15,590 - DEBUG - Gamestate Main
+2025-01-29 17:17:16,666 - INFO - Levels/level_1.json
+2025-01-29 17:17:16,805 - INFO - Current GameState: placeSM
+2025-01-29 17:20:28,570 - INFO - Game initialized successfully.
+2025-01-29 17:20:28,609 - INFO - Initialized screen.
+2025-01-29 17:20:28,685 - DEBUG - Gamestate Main
+2025-01-29 17:20:30,482 - INFO - Levels/level_1.json
+2025-01-29 17:20:30,570 - INFO - Current GameState: placeSM
+2025-01-29 17:21:49,929 - INFO - Game initialized successfully.
+2025-01-29 17:21:50,063 - INFO - Initialized screen.
+2025-01-29 17:21:50,148 - DEBUG - Gamestate Main
+2025-01-29 17:21:51,024 - INFO - Levels/level_1.json
+2025-01-29 17:21:51,112 - INFO - Current GameState: placeSM
