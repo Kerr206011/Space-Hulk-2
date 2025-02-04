@@ -353,3 +353,116 @@ UnboundLocalError: cannot access local variable 'i' where it is not associated w
 2025-01-29 17:21:50,148 - DEBUG - Gamestate Main
 2025-01-29 17:21:51,024 - INFO - Levels/level_1.json
 2025-01-29 17:21:51,112 - INFO - Current GameState: placeSM
+2025-01-31 15:27:54,883 - INFO - Game initialized successfully.
+2025-01-31 15:27:54,889 - INFO - Initialized screen.
+2025-01-31 15:27:55,279 - DEBUG - Gamestate Main
+2025-01-31 15:27:55,281 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4735, in <module>
+    gameStateManager.run_gamestate("main")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 55, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4696, in run
+    self.gameStateManager.create_slots()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 48, in create_slots
+    self.actionBar.slots.append((slot, (self.actionBar.rect.top - (self.actionBar.rect.bottom / 2))))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'append'
+2025-01-31 15:31:23,287 - INFO - Game initialized successfully.
+2025-01-31 15:31:23,288 - INFO - Initialized screen.
+2025-01-31 15:31:23,590 - DEBUG - Gamestate Main
+2025-01-31 15:31:26,831 - INFO - Levels/level_1.json
+2025-01-31 15:31:27,115 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4730, in <module>
+    gameStateManager.run_gamestate("main")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 50, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4711, in run
+    self.gameStateManager.run_gamestate("smPlace")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 50, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 393, in run
+    self.actionBar.render(self.gameStateManager.screen)
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\UI.py", line 198, in render
+    button.rect.center = self.slots[i]
+    ^^^^^^^^^^^^^^^^^^
+TypeError: invalid rect assignment
+2025-01-31 15:36:49,811 - INFO - Game initialized successfully.
+2025-01-31 15:36:49,813 - INFO - Initialized screen.
+2025-01-31 15:36:50,104 - DEBUG - Gamestate Main
+2025-01-31 15:36:56,846 - INFO - Levels/level_1.json
+2025-01-31 15:36:57,040 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4730, in <module>
+    gameStateManager.run_gamestate("main")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 50, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4711, in run
+    self.gameStateManager.run_gamestate("smPlace")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 50, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 393, in run
+    self.actionBar.render(self.gameStateManager.screen)
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\UI.py", line 198, in render
+    button.rect.topleft = self.slots[i]
+    ^^^^^^^^^^^^^^^^^^^
+TypeError: invalid rect assignment
+2025-01-31 15:37:11,544 - INFO - Game initialized successfully.
+2025-01-31 15:37:11,546 - INFO - Initialized screen.
+2025-01-31 15:37:11,890 - DEBUG - Gamestate Main
+2025-01-31 15:37:14,426 - INFO - Levels/level_1.json
+2025-01-31 15:37:14,586 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4730, in <module>
+    gameStateManager.run_gamestate("main")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 50, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4711, in run
+    self.gameStateManager.run_gamestate("smPlace")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 50, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 393, in run
+    self.actionBar.render(self.gameStateManager.screen)
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\UI.py", line 198, in render
+    button.rect.topleft = self.slots[i]
+    ^^^^^^^^^^^^^^^^^^^
+TypeError: invalid rect assignment
+2025-01-31 15:37:35,530 - INFO - Game initialized successfully.
+2025-01-31 15:37:35,533 - INFO - Initialized screen.
+2025-01-31 15:37:35,843 - DEBUG - Gamestate Main
+2025-01-31 15:38:56,782 - INFO - Game initialized successfully.
+2025-01-31 15:38:56,784 - INFO - Initialized screen.
+2025-01-31 15:38:57,134 - DEBUG - Gamestate Main
+2025-01-31 15:38:58,134 - INFO - Levels/level_1.json
+2025-01-31 15:38:58,325 - INFO - Current GameState: placeSM
+2025-01-31 15:40:54,114 - INFO - Game initialized successfully.
+2025-01-31 15:40:54,116 - INFO - Initialized screen.
+2025-01-31 15:40:54,408 - DEBUG - Gamestate Main
+2025-01-31 15:40:56,001 - INFO - Levels/level_1.json
+2025-01-31 15:40:56,188 - INFO - Current GameState: placeSM
+2025-01-31 15:41:30,530 - INFO - Game initialized successfully.
+2025-01-31 15:41:30,531 - INFO - Initialized screen.
+2025-01-31 15:41:30,834 - DEBUG - Gamestate Main
+2025-01-31 15:41:31,659 - INFO - Levels/level_1.json
+2025-01-31 15:41:31,858 - INFO - Current GameState: placeSM
+2025-01-31 15:41:53,759 - INFO - Game initialized successfully.
+2025-01-31 15:41:53,760 - INFO - Initialized screen.
+2025-01-31 15:41:54,080 - DEBUG - Gamestate Main
+2025-01-31 15:41:55,306 - INFO - Levels/level_1.json
+2025-01-31 15:41:55,493 - INFO - Current GameState: placeSM
+2025-01-31 15:42:24,549 - INFO - Game initialized successfully.
+2025-01-31 15:42:24,550 - INFO - Initialized screen.
+2025-01-31 15:42:24,848 - DEBUG - Gamestate Main
+2025-01-31 15:42:26,509 - INFO - Levels/level_1.json
+2025-01-31 15:42:26,699 - INFO - Current GameState: placeSM
+2025-01-31 15:42:37,369 - INFO - Game initialized successfully.
+2025-01-31 15:42:37,369 - INFO - Initialized screen.
+2025-01-31 15:42:37,662 - DEBUG - Gamestate Main
+2025-01-31 15:42:39,038 - INFO - Levels/level_1.json
+2025-01-31 15:42:39,237 - INFO - Current GameState: placeSM
+2025-01-31 15:42:48,733 - INFO - Game initialized successfully.
+2025-01-31 15:42:48,734 - INFO - Initialized screen.
+2025-01-31 15:42:49,063 - DEBUG - Gamestate Main
+2025-01-31 15:42:49,789 - INFO - Levels/level_1.json
+2025-01-31 15:42:49,933 - INFO - Current GameState: placeSM

@@ -177,7 +177,7 @@ class ActionField:
 
     def align_buttons(self, buttons:list[Button]):
         """
-        Method to add Buttons to the Actionbar and distribute them.
+        Method to add Buttons to the Actionbar.
 
         Args:
             buttons: list[Button]
@@ -185,17 +185,17 @@ class ActionField:
         Returns:
             None.
         """
-        i = 0
         for button in buttons:
-            button.rect.center = self.slots[i]
             self.fields.append(button)
-            i +=1
 
     def clear(self):
         self.fields = []
 
     def render(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
+        i = 0
         for button in self.fields:
+            button.rect.topleft = (self.slots[i], self.rect.top + 10) 
             button.draw(screen)
+            i+= 1
         pygame.display.flip()

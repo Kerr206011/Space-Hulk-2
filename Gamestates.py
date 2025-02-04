@@ -4,11 +4,11 @@ from Game import *
 import pygame.docs 
 
 class GameStateManager:     #class to manage interactions between gamestates and provide a shared game object and storage
-    def __init__(self, game, screen) -> None:
+    def __init__(self, game) -> None:
         self.game:Game = game
-        self.screen = screen
-        self.scale = 0.7
-        self.actionBar:ActionField = ActionField(self.screen.get_width(), 60, self.screen.get_height() - (200), 0)
+        self.screen = screen = pygame.display.set_mode((900, 900), pygame.DOUBLEBUF)
+        self.resolution = (900,900)
+        self.actionBar:ActionField = ActionField(self.resolution[0], 400, self.resolution[1] - (150), 0)
         self.gamestates = {"smTurn": smTurn(self, self.game), 
                            "smAction": smAction(self, self.game), 
                            "gsAction": gsAction(self, self.game),
@@ -41,14 +41,8 @@ class GameStateManager:     #class to manage interactions between gamestates and
         self.freeTurn = False   #if gs has a free turn and doesn't need to expend AP for turning 90°
 
     def create_slots(self):
-        # slot_amnt = self.screen.get_width() / 60
-        i = 0
-        slot = 30
-        while slot <= self.screen.get_width() - 60:
-            self.actionBar.slots.append((slot, (self.actionBar.rect.top - (self.actionBar.rect.bottom / 2))))
-            slot += 60
-            i += 1
-        print(i)
+        if self.resolution == (900,900):
+            self.actionBar.slots = [10, 70, 130, 190, 250, 310, 370, 430, 490, 550, 610, 770, 830, 890]
 
 
     def run_gamestate(self, gameState):     #method for executing the run methods of the individual gamestates saved in self.gamestates
@@ -59,7 +53,7 @@ class GameStateManager:     #class to manage interactions between gamestates and
         overlay.fill((255, 255, 255, 128))  # Gray color with 50% opacity
 
         # Draw the overlay on the screen
-        screen.blit(overlay, (0, 0))
+        self.screen.blit(overlay, (0, 0))
         pygame.display.update()
 
     def check_wincondition(self):
@@ -4726,10 +4720,8 @@ logger.info("Game initialized successfully.")
 # game.map.append(entry)
 # game.map.append(wall)
 
-screen = screen = pygame.display.set_mode((900, 900), pygame.DOUBLEBUF)
-screen.fill("black")
 logger.info("Initialized screen.")
-gameStateManager = GameStateManager(game, screen)
+gameStateManager = GameStateManager(game)
 # game.selectedModel = game.smModelList[0]
 # game.clickedModel = game.gsModelList[0]
 # game.clickedModel.face = (-1,0)
