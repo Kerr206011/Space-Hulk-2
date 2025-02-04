@@ -65,7 +65,12 @@ go through the code and add the blips to the plip-RESERVE whenever they are dest
 
 change movement. so that the model in question can be moved x tiles (perhaps a snapping rect to show where it would go and how much it would cost)
 
+edit button showing so that the actionbar can display only certain buttons
+
 add better reusability for the actionbar slots
+
+add use for the amount button in BLStart and BLplace
+
 ideas for Client server:
     clients have run() for gamestates, but they only log and send the clicks and have no internal logic
     server sends updates for the map, client displays it

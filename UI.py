@@ -188,6 +188,12 @@ class ActionField:
         for button in buttons:
             self.fields.append(button)
 
+    def add_button(self, button):
+        self.fields.append(button)
+
+    def remove_button(self, button):
+        self.fields.remove(button)
+
     def clear(self):
         self.fields = []
 

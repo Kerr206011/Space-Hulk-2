@@ -90,7 +90,8 @@ class BLstart:
         self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.place_button = Button(810, 500, self.place_image, 1)
-        self.amount_button = Button(810, 600, self.amount_image, 1)
+        self.amount_button = Button(810, 600, self.amount_image, 1)       
+        self.actionBar:ActionField = self.gameStateManager.actionBar
 
     def take_blips(self):
         x = 0
@@ -119,6 +120,7 @@ class BLstart:
     def endState(self):
         self.game.reset_select()
         self.game.reset_clicked()
+        self.actionBar.clear()
         self.gameStateManager.screen.fill("black")
         self.gameStateManager.run_gamestate("command")
         
@@ -128,9 +130,9 @@ class BLstart:
 
         for tile in self.game.map:
             tile.render(self.gameStateManager.screen)
-        
-        self.place_button.draw(self.gameStateManager.screen)
-        self.amount_button.draw(self.gameStateManager.screen)
+
+        self.actionBar.align_buttons([self.place_button, self.amount_button])
+        self.actionBar.render(self.gameStateManager.screen)
 
         pygame.display.flip()
 
@@ -172,8 +174,7 @@ class BLstart:
                     for tile in self.game.map:
                         tile.render(self.gameStateManager.screen)
 
-                    self.place_button.draw(self.gameStateManager.screen)
-                    self.amount_button.draw(self.gameStateManager.screen)
+                    self.actionBar.render(self.gameStateManager.screen)
 
                     pygame.display.flip()
 
@@ -204,6 +205,7 @@ class PlaceBL:
         self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.place_button = Button(810, 500, self.place_image, 1)
         self.amount_button = Button(810, 600, self.amount_image, 1)
+        self.actionBar:ActionField = self.gameStateManager.actionBar
 
     def take_blips(self):
         numb = 0
@@ -260,6 +262,7 @@ class PlaceBL:
                                             gs.lurking = True
         self.game.reset_select()
         self.game.reset_clicked()
+        self.actionBar.clear()
         self.gameStateManager.screen.fill("black")
         self.gameStateManager.run_gamestate('gsTurn')
 
@@ -271,8 +274,8 @@ class PlaceBL:
         for tile in self.game.map:
             tile.render(self.gameStateManager.screen)
         
-        self.place_button.draw(self.gameStateManager.screen)
-        self.amount_button.draw(self.gameStateManager.screen)
+        self.actionBar.align_buttons([self.place_button, self.amount_button])
+        self.actionBar.render(self.gameStateManager.screen)
 
         pygame.display.flip()
 
@@ -314,8 +317,7 @@ class PlaceBL:
                     for tile in self.game.map:
                         tile.render(self.gameStateManager.screen)
 
-                    self.place_button.draw(self.gameStateManager.screen)
-                    self.amount_button.draw(self.gameStateManager.screen)
+                    self.actionBar.render(self.gameStateManager.screen)
 
                     pygame.display.flip()
 
@@ -364,11 +366,11 @@ class PlaceSM:
         
         if self.smList.__len__() == 0:
             self.gameStateManager.screen.fill('black')
-            self.accept_button.draw(self.gameStateManager.screen)
             for tile in self.game.map:
                 tile.render(self.gameStateManager.screen)
-            self.right_button.draw(self.gameStateManager.screen)
-            self.left_button.draw(self.gameStateManager.screen)
+            self.actionBar.clear()
+            self.actionBar.align_buttons([self.left_button, self.right_button, self.accept_button])
+            self.actionBar.render(self.gameStateManager.screen)
             pygame.display.flip()
 
     def endState(self):
@@ -378,6 +380,7 @@ class PlaceSM:
                 self.game.map.remove(tile)
         self.game.reset_select()
         self.game.reset_clicked()
+        self.actionBar.clear()
         self.gameStateManager.screen.fill("black")
         self.gameStateManager.run_gamestate('gsStart')
 
@@ -387,7 +390,7 @@ class PlaceSM:
         for tile in self.game.map:
             tile.render(self.gameStateManager.screen)
 
-        self.actionBar.align_buttons([self.left_button, self.right_button, self.place_button, self.accept_button])
+        self.actionBar.align_buttons([self.left_button, self.right_button, self.place_button])
 
         self.actionBar.render(self.gameStateManager.screen)
 
@@ -432,13 +435,7 @@ class PlaceSM:
                     for tile in self.game.map:
                         tile.render(self.gameStateManager.screen)
 
-                    self.right_button.draw(self.gameStateManager.screen)
-                    self.left_button.draw(self.gameStateManager.screen)
-                    
-                    if self.smList.__len__() > 0:   
-                        self.place_button.draw(self.gameStateManager.screen)
-                    else:
-                        self.accept_button.draw(self.gameStateManager.screen)
+                    self.actionBar.render(self.gameStateManager.screen)
                     pygame.display.flip()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -490,8 +487,10 @@ class commandPhase:
         self.accept_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.reroll_button = Button(810, 500, self.reroll_image, 1)
         self.accept_button = Button(810, 600, self.accept_image, 1)
+        self.actionBar:ActionField = self.gameStateManager.actionBar
 
     def endState(self):
+        self.actionBar.clear()
         self.gameStateManager.screen.fill("black")
         self.gameStateManager.run_gamestate('smTurn')
 
@@ -519,9 +518,13 @@ class commandPhase:
                     tile.change_picture(tile.picturePath)
             tile.render(self.gameStateManager.screen)
 
-        self.accept_button.draw(self.gameStateManager.screen)
+        
         if reroll:
-            self.reroll_button.draw(self.gameStateManager.screen)
+            self.actionBar.align_buttons([self.reroll_button, self.accept_button])
+        else:
+            self.actionBar.align_buttons([self.accept_button])
+
+        self.actionBar.render(self.gameStateManager.screen)
 
         pygame.display.flip()
                 
@@ -566,8 +569,7 @@ class commandPhase:
                     for tile in self.game.map:
                         tile.render(self.gameStateManager.screen)
 
-                    self.reroll_button.draw(self.gameStateManager.screen)
-                    self.accept_button.draw(self.gameStateManager.screen)
+                    self.actionBar.render(self.gameStateManager.screen)
 
                     self.dice.show_result(self.gameStateManager.screen)
                     
@@ -579,8 +581,8 @@ class commandPhase:
                             self.dice.roll_dice(self.gameStateManager.screen)
                             self.roll = self.dice.face
                             reroll = False
-                            pygame.draw.rect(self.gameStateManager.screen, 'black', self.reroll_button.rect)
-                            pygame.display.update(self.reroll_button.rect)
+                            self.actionBar.clear()
+                            self.actionBar.align_buttons([self.accept_button])
 
                     if self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
                         self.game.cp = self.roll
@@ -605,6 +607,7 @@ class smAction:
         self.overwatch_button = Button(810, 200, self.amount_image, 1)
         self.guard_button = Button(810, 100, self.amount_image, 1)
         self.accept_button = Button(810, 800, self.amount_image, 1)
+        self.actionBar:ActionField = self.gameStateManager.actionBar
 
     def check_move(self):
         """
@@ -783,20 +786,19 @@ class smAction:
             
     def run(self):
         logger.info("Current GameState: smAction")
+
         for tile in self.game.map:
             tile.render(self.gameStateManager.screen)
 
-        self.move_button.draw(self.gameStateManager.screen)
-        self.turn_button.draw(self.gameStateManager.screen)
-        self.guard_button.draw(self.gameStateManager.screen)
+        self.actionBar.align_buttons([self.move_button, self.turn_button, self.shoot_button,self.guard_button, self.overwatch_button])
         if self.game.clickedTile != None:
             if self.check_melee():
-                self.melee_button.draw(self.gameStateManager.screen)
-        self.shoot_button.draw(self.gameStateManager.screen)
-        self.accept_button.draw(self.gameStateManager.screen)
+                self.actionBar.add_button(self.melee_button)
         if self.check_door():
-            self.interact_button.draw(self.gameStateManager.screen)
-        self.overwatch_button.draw(self.gameStateManager.screen)
+            self.actionBar.add_button(self.interact_button)
+        self.actionBar.add_button(self.accept_button)
+
+        self.actionBar.render(self.gameStateManager.screen)
 
         pygame.display.flip()
 
