@@ -87,7 +87,7 @@ class BLstart:
         self.gameStateManager:GameStateManager = gameStateManager
         self.BLAmount:int
         self.blipList = []
-        self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.place_image = pygame.image.load('Pictures/Buttons/place.png')
         self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.place_button = Button(810, 500, self.place_image, 1)
         self.amount_button = Button(810, 600, self.amount_image, 1)       
@@ -201,7 +201,7 @@ class PlaceBL:
         self.gameStateManager:GameStateManager = gameStateManager
         self.BLAmount = int
         self.blipList = []
-        self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+        self.place_image = pygame.image.load('Pictures/Buttons/place.png')
         self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
         self.place_button = Button(810, 500, self.place_image, 1)
         self.amount_button = Button(810, 600, self.amount_image, 1)
@@ -342,12 +342,16 @@ class PlaceSM:
     def __init__(self, gameStateManager, game) -> None:
         self.gameStateManager:GameStateManager = gameStateManager
         self.game:Game = game
-        self.place_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
-        self.amount_image = pygame.image.load('Pictures/Tiles/Floor_1.png')
+
+        self.place_image = pygame.image.load('Pictures/Buttons/Place.png')
+        self.right_image = pygame.image.load('Pictures/Buttons/Right.png')
+        self.left_image = pygame.image.load('Pictures/Buttons/Left.png')
+        self.accept_image = pygame.image.load('Pictures/Buttons/Accept.png')
         self.place_button = Button(810, 500, self.place_image, 1)
-        self.right_button = Button(810, 600, self.amount_image, 1)
-        self.left_button = Button(810, 700, self.amount_image, 1)
-        self.accept_button = Button(810, 800, self.amount_image, 1)
+        self.right_button = Button(810, 600, self.right_image, 1)
+        self.left_button = Button(810, 700, self.left_image, 1)
+        self.accept_button = Button(810, 800, self.accept_image, 1)
+
         self.actionBar:ActionField = self.gameStateManager.actionBar
 
     def placeModel(self):
@@ -705,6 +709,15 @@ class smAction:
         return False
             
     def check_door(self):
+        """
+        Method to check if a model has a door in front of it.
+
+        Args:
+            None
+
+        Returns:
+            boolean: True if yes, false if not.
+        """
         face = self.game.selectedModel.face
         if isinstance(self.game.clickedTile, Door):
             if ((self.game.selectedTile.x + face[0] == self.game.clickedTile.x) and (face[0] != 0)) or ((self.game.selectedTile.y + face[1] == self.game.clickedTile.y) and (face[1] != 0)):
@@ -734,7 +747,8 @@ class smAction:
     def move_model(self):
 
         if self.game.clickedTile.isBurning:
-            self.gameStateManager.screen.fill('black')
+            self.game.center_tile(self.game.clickedTile, self.gameStateManager.screen)
+            self.gameStateManager.shade()
             pygame.display.flip()
             dice = Dice(100, 10)
             dice.roll_dice(self.gameStateManager.screen)
@@ -744,17 +758,19 @@ class smAction:
                 for tile in self.game.map:
                     tile.render(self.gameStateManager.screen)
 
-                self.move_button.draw(self.gameStateManager.screen)
-                self.turn_button.draw(self.gameStateManager.screen)
-                self.guard_button.draw(self.gameStateManager.screen)
                 if self.game.clickedTile != None:
                     if self.check_melee():
-                        self.melee_button.draw(self.gameStateManager.screen)
-                self.shoot_button.draw(self.gameStateManager.screen)
-                self.accept_button.draw(self.gameStateManager.screen)
+                        if self.melee_button not in self.actionBar.fields:
+                            self.melee_button.draw(self.gameStateManager.screen)
+                    elif self.melee_button in self.actionBar.fields:
+                        self.actionBar.remove_button(self.melee_button)
                 if self.check_door():
-                    self.interact_button.draw(self.gameStateManager.screen)
-                # self.overwatch_button.draw(self.gameStateManager.screen)
+                    if self.interact_button not in self.actionBar.fields:
+                        self.actionBar.add_button(self.interact_button)
+                elif self.interact_button in self.actionBar.fields:
+                    self.actionBar.remove_button(self.interact_button)
+
+                self.actionBar.render(self.gameStateManager.screen)
 
                 pygame.display.flip()
 
@@ -764,6 +780,7 @@ class smAction:
                 self.game.smModelList.remove(self.game.selectedModel)
                 self.game.reset_select()
                 self.game.reset_clicked()
+                self.actionBar.clear()
                 self.gameStateManager.screen.fill('black')
                 self.gameStateManager.run_gamestate('smTurn')
 
@@ -803,6 +820,7 @@ class smAction:
         pygame.display.flip()
 
         if self.check_reveal():
+            self.actionBar.clear()
             self.gameStateManager.actionState = "smAction"
             self.gameStateManager.run_gamestate("revealSM")
 
@@ -842,17 +860,7 @@ class smAction:
                     for tile in self.game.map:
                         tile.render(self.gameStateManager.screen)
 
-                    self.move_button.draw(self.gameStateManager.screen)
-                    self.turn_button.draw(self.gameStateManager.screen)
-                    self.guard_button.draw(self.gameStateManager.screen)
-                    if self.game.clickedTile != None:
-                        if self.check_melee():
-                            self.melee_button.draw(self.gameStateManager.screen)
-                    self.shoot_button.draw(self.gameStateManager.screen)
-                    self.accept_button.draw(self.gameStateManager.screen)
-                    if self.check_door():
-                        self.interact_button.draw(self.gameStateManager.screen)
-                    self.overwatch_button.draw(self.gameStateManager.screen)
+                    self.actionBar.render(self.gameStateManager.screen)
                     
                     pygame.display.flip()
 
@@ -865,6 +873,7 @@ class smAction:
                                 self.move_model()       
                                 self.gameStateManager.freeShoot = True
                                 if self.check_reveal():
+                                    self.actionBar.clear()
                                     self.gameStateManager.actionState = "smAction"
                                     self.gameStateManager.run_gamestate("revealSM")
                             print(self.game.check_full_vision())
@@ -880,14 +889,20 @@ class smAction:
                                 pygame.draw.rect(self.gameStateManager.screen, 'black', self.game.clickedTile.button.rect)
                                 self.game.clickedTile.render(self.gameStateManager.screen)
                                 pygame.display.update(self.game.clickedTile.button.rect)
+
                                 if not self.check_melee():
-                                    pygame.draw.rect(self.gameStateManager.screen, 'black', self.melee_button.rect)
-                                    pygame.display.update(self.melee_button.rect)
+                                    if self.melee_button in self.actionBar.fields:
+                                        self.actionBar.remove_button(self.melee_button)
+                                        self.actionBar.render(self.gameStateManager.screen)
+                                        pygame.display.flip()
+
                                 if self.check_reveal():
+                                    self.actionBar.clear()
                                     self.gameStateManager.actionState = "smAction"
                                     self.gameStateManager.run_gamestate("revealSM")
 
                     elif self.turn_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.actionBar.clear()
                         self.gameStateManager.screen.fill('black')
                         self.gameStateManager.run_gamestate("smTurning")
 
@@ -910,6 +925,7 @@ class smAction:
                         self.game.selectedModel.susf = False
                         self.game.reset_select()
                         self.game.reset_clicked()
+                        self.actionBar.clear()
                         self.gameStateManager.screen.fill("black")
                         self.gameStateManager.run_gamestate("smTurn")
 
@@ -919,13 +935,15 @@ class smAction:
                                 self.reduce_ap(1)
                                 if self.check_melee():
                                     if self.game.clickedTile.isOccupied == False:
-                                        self.gameStateManager.screen.fill("Black")  #replace with semi Transparent blit
+                                        self.gameStateManager.shade()
+                                        self.actionBar.clear()
                                         self.game.selectedModel.guard = False
                                         self.game.selectedModel.overwatch = False
                                         self.game.selectedModel.susf = False
                                         self.gameStateManager.run_gamestate("mlRollDoorSM")                                   
                                     else:
-                                        self.gameStateManager.screen.fill('black')                                    
+                                        self.gameStateManager.shade()    
+                                        self.actionBar.clear()                              
                                         self.game.selectedModel.guard = False
                                         self.game.selectedModel.overwatch = False
                                         self.game.selectedModel.susf = False
@@ -937,9 +955,12 @@ class smAction:
                                 pass
                             elif (self.game.selectedModel.weapon == "Flamer") and (self.game.selectedModel.AP + self.game.cp > 1) and (self.game.flamerAmmo != 0) and (self.game.check_path(self.game.selectedTile, self.game.clickedTile, 12)):
                                 self.gameStateManager.screen.fill('black')
+                                self.actionBar.clear()
+                                pygame.display.flip()
                                 self.gameStateManager.run_gamestate('shootflamer')
                             elif ((self.game.selectedModel.weapon != "Flamer") and ((self.game.selectedModel.AP + self.game.cp > 0) or (self.gameStateManager.freeShot))):
                                 self.gameStateManager.screen.fill('black')
+                                self.actionBar.clear()
                                 pygame.display.flip()
                                 self.gameStateManager.run_gamestate('shoot')
 
@@ -952,26 +973,23 @@ class smAction:
                                         if self.check_door():
                                             if tile.isOpen == False:
                                                 if self.check_melee():
-                                                    pygame.draw.rect(self.gameStateManager.screen, 'black', self.melee_button.rect)
-                                                    self.melee_button.draw(self.gameStateManager.screen)
-                                                    pygame.display.update(self.melee_button.rect)
-                                                pygame.draw.rect(self.gameStateManager.screen, 'black', self.interact_button.rect)
-                                                self.interact_button.draw(self.gameStateManager.screen)
-                                                pygame.display.update(self.interact_button.rect)
-                                        else:
-                                            pygame.draw.rect(self.gameStateManager.screen, 'black', self.melee_button.rect)
-                                            pygame.display.update(self.melee_button.rect)
-                                            pygame.draw.rect(self.gameStateManager.screen, 'black', self.interact_button.rect)
-                                            pygame.display.update(self.interact_button.rect)
+                                                    if self.melee_button not in self.actionBar.fields:
+                                                        self.actionBar.add_button(self.melee_button)
+                                            if self.interact_button not in self.actionBar.fields:
+                                                self.actionBar.add_button(self.interact_button)
+
+                                        elif self.interact_button in self.actionBar.fields:
+                                            self.actionBar.remove_button(self.interact_button)
 
                                         print(tile)
                                         if tile.isOccupied:
                                             if isinstance(tile.occupand, Genestealer):
                                                 self.game.clickedModel = tile.occupand
                                                 if self.check_melee():
-                                                    pygame.draw.rect(self.gameStateManager.screen, 'black', self.melee_button.rect)
-                                                    self.melee_button.draw(self.gameStateManager.screen)
-                                                    pygame.display.update(self.melee_button.rect)
+                                                    if self.melee_button not in self.actionBar.fields:
+                                                            self.actionBar.add_button(self.melee_button)
+
+                                        self.actionBar.render(self.gameStateManager.screen)
           
 
 class smTurn:

@@ -289,3 +289,136 @@ Traceback (most recent call last):
     button.rect.topleft = (self.slots[i], self.rect.top + 10)
                           ~~~~~~~~~~^^^
 IndexError: list index out of range
+2025-02-04 14:11:05,852 - INFO - Game initialized successfully.
+2025-02-04 14:11:05,853 - INFO - Initialized screen.
+2025-02-04 14:11:06,000 - DEBUG - Gamestate Main
+2025-02-04 14:11:06,969 - INFO - Levels/level_1.json
+2025-02-04 14:11:07,055 - INFO - Current GameState: placeSM
+2025-02-04 14:11:19,504 - DEBUG - Reset selectedModel and Tile to None
+2025-02-04 14:11:19,504 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-04 14:11:19,505 - DEBUG - Chosen position in blipSack: 9
+2025-02-04 14:11:19,505 - DEBUG - Chosen position in blipSack: 14
+2025-02-04 14:11:19,509 - INFO - Current GameState: blStart
+2025-02-04 15:43:13,177 - INFO - Game initialized successfully.
+2025-02-04 15:43:13,177 - INFO - Initialized screen.
+2025-02-04 15:43:13,368 - DEBUG - Gamestate Main
+2025-02-04 15:43:14,670 - INFO - Levels/level_1.json
+2025-02-04 15:43:14,782 - INFO - Current GameState: placeSM
+2025-02-04 15:43:22,694 - DEBUG - Reset selectedModel and Tile to None
+2025-02-04 15:43:22,694 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-04 15:43:22,694 - DEBUG - Chosen position in blipSack: 21
+2025-02-04 15:43:22,695 - DEBUG - Chosen position in blipSack: 15
+2025-02-04 15:43:22,700 - INFO - Current GameState: blStart
+2025-02-04 15:43:24,189 - DEBUG - Blips on clicked Tile: []
+2025-02-04 15:43:25,533 - DEBUG - Current Bliplist: [3]
+2025-02-04 15:43:25,533 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000022A68683E60>]
+2025-02-04 15:43:25,709 - DEBUG - Current Bliplist: []
+2025-02-04 15:43:25,710 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000022A68683E60>, <Models.Blip object at 0x0000022A68683EC0>]
+2025-02-04 15:43:25,710 - DEBUG - Reset selectedModel and Tile to None
+2025-02-04 15:43:25,710 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-04 15:43:25,710 - INFO - Current GameState: Command
+2025-02-04 15:43:25,711 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x0000022A68683B60> present
+2025-02-04 15:43:25,711 - DEBUG - Reroll of CP: True
+2025-02-04 15:44:09,448 - DEBUG - CP: 6
+2025-02-04 15:44:11,977 - INFO - Current GameState: smAction
+2025-02-04 15:44:13,569 - INFO - Door
+2025-02-04 15:44:18,209 - INFO - Current GameState: smAction
+2025-02-04 15:44:18,212 - INFO - Door
+2025-02-04 15:44:19,477 - DEBUG - Reset selectedModel and Tile to None
+2025-02-04 15:44:19,477 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-04 15:44:24,573 - DEBUG - Reset selectedModel and Tile to None
+2025-02-04 15:44:24,573 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-04 15:44:24,573 - DEBUG - Amount of free Entrypoints: 16
+2025-02-04 15:44:24,574 - DEBUG - Chosen position in blipSack: 19
+2025-02-04 15:44:24,574 - DEBUG - Chosen position in blipSack: 1
+2025-02-04 15:44:24,579 - INFO - Current GameState: blStart
+2025-02-04 15:44:27,181 - DEBUG - Blips on clicked Tile: [<Models.Blip object at 0x0000022A68683E60>, <Models.Blip object at 0x0000022A68683EC0>]
+2025-02-04 15:44:28,209 - DEBUG - Current Bliplist: [1]
+2025-02-04 15:44:28,210 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000022A68683E60>, <Models.Blip object at 0x0000022A68683EC0>, <Models.Blip object at 0x0000022A68681370>]
+2025-02-04 15:44:30,513 - DEBUG - Blips on clicked Tile: []
+2025-02-04 15:44:31,297 - DEBUG - Current Bliplist: []
+2025-02-04 15:44:31,298 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000022A686813A0>]
+2025-02-04 15:44:31,300 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,301 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,303 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,305 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,307 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,309 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,311 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,313 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,315 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,318 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,320 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,322 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,323 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,325 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,327 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,329 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,331 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,335 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,339 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,340 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,342 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,344 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,346 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,349 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,354 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,355 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,358 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,363 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,368 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,372 - INFO - TargetTile not within 6.
+2025-02-04 15:44:31,373 - DEBUG - Reset selectedModel and Tile to None
+2025-02-04 15:44:31,373 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-04 15:44:32,680 - DEBUG - Reset selectedModel and Tile to None
+2025-02-04 15:44:32,681 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-04 15:44:32,681 - INFO - Current GameState: Command
+2025-02-04 15:44:32,681 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x0000022A68683B60> present
+2025-02-04 15:44:32,682 - DEBUG - Reroll of CP: True
+2025-02-04 15:44:35,717 - DEBUG - CP: 5
+2025-02-04 15:44:37,798 - INFO - Current GameState: smAction
+2025-02-04 15:44:39,341 - INFO - Door
+2025-02-04 15:44:42,368 - DEBUG - Reset selectedModel and Tile to None
+2025-02-04 15:44:42,369 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-04 15:44:44,421 - DEBUG - Reset selectedModel and Tile to None
+2025-02-04 15:44:44,421 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-04 15:44:44,421 - DEBUG - Amount of free Entrypoints: 14
+2025-02-04 15:44:44,422 - DEBUG - Chosen position in blipSack: 8
+2025-02-04 15:44:44,422 - DEBUG - Chosen position in blipSack: 10
+2025-02-04 15:44:44,427 - INFO - Current GameState: blStart
+2025-02-04 17:45:25,190 - INFO - Game initialized successfully.
+2025-02-04 17:45:25,190 - INFO - Initialized screen.
+2025-02-04 17:45:25,333 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4744, in <module>
+    gameStateManager = GameStateManager(game)
+                       ^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 30, in __init__
+    "smPlace": PlaceSM(self, self.game),
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 348, in __init__
+    self.left_image = pygame.image.load('Pictures/Buttons/Left')
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: No file 'Pictures/Buttons/Left' found in working directory 'C:\Users\Kathrin\Documents\GitHub\Space-Hulk-2'.
+2025-02-04 17:45:34,499 - INFO - Game initialized successfully.
+2025-02-04 17:45:34,500 - INFO - Initialized screen.
+2025-02-04 17:45:34,666 - DEBUG - Gamestate Main
+2025-02-04 17:45:38,656 - INFO - Levels/level_1.json
+2025-02-04 17:45:38,735 - INFO - Current GameState: placeSM
+2025-02-04 17:45:56,247 - DEBUG - Reset selectedModel and Tile to None
+2025-02-04 17:45:56,248 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-04 17:45:56,248 - DEBUG - Chosen position in blipSack: 19
+2025-02-04 17:45:56,249 - DEBUG - Chosen position in blipSack: 3
+2025-02-04 17:45:56,252 - INFO - Current GameState: blStart
+2025-02-04 17:45:57,750 - DEBUG - Blips on clicked Tile: []
+2025-02-04 17:45:58,462 - DEBUG - Current Bliplist: [1]
+2025-02-04 17:45:58,462 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001E59E37DAC0>]
+2025-02-04 17:45:58,822 - DEBUG - Current Bliplist: []
+2025-02-04 17:45:58,823 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001E59E37DAC0>, <Models.Blip object at 0x000001E59E37DAF0>]
+2025-02-04 17:45:58,823 - DEBUG - Reset selectedModel and Tile to None
+2025-02-04 17:45:58,823 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-04 17:45:58,824 - INFO - Current GameState: Command
+2025-02-04 17:45:58,824 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x000001E59E3646B0> present
+2025-02-04 17:45:58,825 - DEBUG - Reroll of CP: True
+2025-02-04 17:46:01,814 - DEBUG - CP: 4
+2025-02-04 17:46:04,128 - INFO - Current GameState: smAction
