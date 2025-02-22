@@ -4,12 +4,13 @@ import threading
 # Server setup
 HOST = '127.0.0.1'  # Change to your public IP for Internet play
 PORT = 5000
+threadingBool = True
 
 # Store connected clients
 clients = []
 
 def handle_client(client_socket):
-    while True:
+    while threadingBool:
         try:
             data = client_socket.recv(1024)  # Receive data
             if not data:
@@ -31,6 +32,7 @@ def start_server():
     while True:
         cmd = input("Enter Command: ")
         if cmd == "quit":
+            threadingBool = False
             threading.Thread.join()
             break
         client_socket, addr = server.accept()
