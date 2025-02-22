@@ -29,6 +29,10 @@ def start_server():
     server.listen(5)
     print(f"Server listening on {HOST}:{PORT}")
     while True:
+        cmd = input("Enter Command: ")
+        if cmd == "quit":
+            threading.Thread.join()
+            break
         client_socket, addr = server.accept()
         print(f"Client connected: {addr}")
         clients.append(client_socket)
