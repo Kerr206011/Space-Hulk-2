@@ -33,7 +33,6 @@ def start_server():
         cmd = input("Enter Command: ")
         if cmd == "quit":
             threadingBool = False
-            threading.Thread.join()
             break
         client_socket, addr = server.accept()
         print(f"Client connected: {addr}")
