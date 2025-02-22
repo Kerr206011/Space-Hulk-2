@@ -422,3 +422,25 @@ FileNotFoundError: No file 'Pictures/Buttons/Left' found in working directory 'C
 2025-02-04 17:45:58,825 - DEBUG - Reroll of CP: True
 2025-02-04 17:46:01,814 - DEBUG - CP: 4
 2025-02-04 17:46:04,128 - INFO - Current GameState: smAction
+2025-02-05 17:42:26,145 - INFO - Game initialized successfully.
+2025-02-05 17:42:26,145 - INFO - Initialized screen.
+2025-02-05 17:42:26,575 - DEBUG - Gamestate Main
+2025-02-05 17:42:53,810 - INFO - Levels/level_1.json
+2025-02-05 17:42:54,038 - INFO - Current GameState: placeSM
+2025-02-05 17:43:06,411 - DEBUG - Reset selectedModel and Tile to None
+2025-02-05 17:43:06,412 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-05 17:43:06,413 - DEBUG - Chosen position in blipSack: 7
+2025-02-05 17:43:06,414 - DEBUG - Chosen position in blipSack: 10
+2025-02-05 17:43:06,419 - INFO - Current GameState: blStart
+2025-02-05 17:43:07,933 - DEBUG - Blips on clicked Tile: []
+2025-02-05 17:43:08,686 - DEBUG - Current Bliplist: [2]
+2025-02-05 17:43:08,686 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000022C957E09E0>]
+2025-02-05 17:43:08,929 - DEBUG - Current Bliplist: []
+2025-02-05 17:43:08,929 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000022C957E09E0>, <Models.Blip object at 0x0000022C95A77EF0>]
+2025-02-05 17:43:08,930 - DEBUG - Reset selectedModel and Tile to None
+2025-02-05 17:43:08,930 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-05 17:43:08,930 - INFO - Current GameState: Command
+2025-02-05 17:43:08,931 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x0000022C95A5AB10> present
+2025-02-05 17:43:08,931 - DEBUG - Reroll of CP: True
+2025-02-05 17:43:15,033 - DEBUG - CP: 1
+2025-02-05 17:43:18,013 - INFO - Current GameState: smAction
