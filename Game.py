@@ -50,51 +50,89 @@ class Game():
         self.maxGS = 23 #including Broodlord as he is classified as a Genstealer
         self.reuseBlips = -1
 
-    def make_save(self):
+    def make_save(self, name):
+        # perhaps split into autosave and manualsave
+        """
+        Method that makes a .json savefile. Right now many of the parameters are depricated, but that may change if i decide to 
+        add saving during the round.
+
+        Args:
+            name: String
+
+        Returns:
+            None
+        """
         saveMap = []
         smSaveList = []
         gsSaveList = []
         blSaveList = []
         burningTiles = []
+        lurkers = []
+        
+        
         for tile in self.map:
             if isinstance(tile, Door):
-                saveMap.append(((tile.x, tile.y), "door", tile.picturePath, tile.sector, tile.pictureClosedPath, tile.isOpen))
+                saveMap.append(((tile.x, tile.y), "door", tile.picturePath, tile.sector, tile.pictureClosedPath, tile.isOpen, tile.burningPictureFilePath))
             elif isinstance(tile, Wall):
                 saveMap.append(((tile.x, tile.y), "wall", tile.picturePath))
             elif isinstance(tile, EntryPoint):
-                saveMap.append(((tile.x, tile.y), "entry", tile.picturePath))
+                saveMap.append(((tile.x, tile.y), "entry", tile.picturePath, tile.face))
+                if tile.blips.__len__() != 0:
+                    for blip in tile.blips:
+                        lurkers.append(("bl",(tile.x, tile.y), blip.count, blip.lurking))
+                if tile.genstealers.__len__() != 0:
+                    lurkers.append(("gs", (tile.x, tile.y), tile.genstealers.__len__()))
             elif isinstance(tile, ControlledArea):
-                saveMap.append(((tile.x, tile.y), "control", tile.picturePath, tile.sector))
+                saveMap.append(((tile.x, tile.y), "control", tile.picturePath, tile.sector, tile.burningPictureFilePath))
             elif isinstance(tile, Tile):
-                saveMap.append(((tile.x, tile.y), "tile", tile.picturePath, tile.sector))
+                saveMap.append(((tile.x, tile.y), "tile", tile.picturePath, tile.sector, tile.burningPictureFilePath))
 
-            if tile.isOccupied:
-                if isinstance(tile.occupand, SpaceMarine):
-                    smSaveList.append(((tile.x, tile.y), tile.occupand.weapon, tile.occupand.rank, tile.occupand.AP, tile.occupand.face, tile.occupand.guard, tile.occupand.jam, tile.occupand.overwatch, tile.occupand.susf))
+            if isinstance(tile, Tile):
 
-                elif isinstance(tile.occupand, Genestealer):
-                    gsSaveList.append(((tile.x, tile.y), tile.occupand.isBroodlord, tile.occupand.AP, tile.occupand.face))
+                if tile.isOccupied:
+                    if isinstance(tile.occupand, SpaceMarine):
+                        smSaveList.append(((tile.x, tile.y), tile.occupand.weapon, tile.occupand.rank, tile.occupand.AP, tile.occupand.face, tile.occupand.guard, tile.occupand.jam, tile.occupand.overwatch, tile.occupand.susf))
 
-                elif isinstance(tile.occupand, Blip):
-                    blSaveList.append(((tile.x, tile.y), tile.occupand.count, tile.occupand.AP))
+                    elif isinstance(tile.occupand, Genestealer):
+                        gsSaveList.append(((tile.x, tile.y), tile.occupand.isBroodlord, tile.occupand.AP, tile.occupand.face))
 
-            if tile.isBurning:
-                burningTiles.append((tile.x, tile.y))
+                    elif isinstance(tile.occupand, Blip):
+                        blSaveList.append(((tile.x, tile.y), tile.occupand.count, tile.occupand.AP))
+
+                if tile.isBurning:
+                    burningTiles.append((tile.x, tile.y))
 
         data = { 
             "map" : saveMap,
             "smList" : smSaveList,
             "gsList" : gsSaveList,
             "blList" : blSaveList,
-            "burning" : burningTiles
+            "burning" : burningTiles,
+            "level" : self.level,
+            "blipsack" : self.blipSack,
+            "blipreserve" : self.blipReserve,
+            "player1" : self.player1,
+            "player2" : self.player2,
+            "reinforcement" : self.reinforcement,
+            "assaultcannonammo" : self.assaultCannonAmmo,
+            "reload" : self.assaultCannonReload,
+            "flamer" : self.flamerAmmo,
+            "psypoints" : self.psyPoints,
+            "broodlord" : self.broodLord,
+            "maxGS" : self.maxGS,
+            "reuse" : self.reuseBlips,
+            "cp" : self.cp,
+            "lurkers" : lurkers
         }
 
         # File path to save the JSON file
-        file_path = "Levels/save.json"
+        file_path = "Levels/"+name+".json"
 
         # Writing data to the JSON file
         with open(file_path, 'w') as json_file:
             json.dump(data, json_file, indent=4)
+
+        logger.debug(f"Sucessfully created save {name}.")
 
     def load_save(self):
         pass
@@ -115,7 +153,7 @@ class Game():
 
         bluePrint = data["map"]
         for entry in smList:
-            self.smModelList.append(SpaceMarine(entry[0],entry[1]))
+            self.smModelList.append(SpaceMarine(entry[0],entry[1], entry[2]))
             
         for entry in bluePrint:
 

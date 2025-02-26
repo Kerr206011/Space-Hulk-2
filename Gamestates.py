@@ -495,6 +495,7 @@ class commandPhase:
 
     def endState(self):
         self.actionBar.clear()
+        self.game.make_save("auto")
         self.gameStateManager.screen.fill("black")
         self.gameStateManager.run_gamestate('smTurn')
 
@@ -807,6 +808,7 @@ class smAction:
         for tile in self.game.map:
             tile.render(self.gameStateManager.screen)
 
+        self.actionBar.clear()
         self.actionBar.align_buttons([self.move_button, self.turn_button, self.shoot_button,self.guard_button, self.overwatch_button])
         if self.game.clickedTile != None:
             if self.check_melee():
@@ -865,7 +867,7 @@ class smAction:
                     pygame.display.flip()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-
+                    
                     if self.move_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if self.check_move():
                             if self.calculate_movement_cost() <= (self.game.selectedModel.AP + self.game.cp):
@@ -1857,7 +1859,7 @@ class ShootFlamer:
         target.isBurning = True
         save = 0
         if target.isOccupied:
-            #add method to highlight the target
+            self.game.center_tile(target, self.gameStateManager.screen)
             dice.roll_dice(self.gameStateManager.screen)
             save = dice.face
             logger.info(f"Flamerroll: {save}")
@@ -1868,11 +1870,13 @@ class ShootFlamer:
                 if target.occupand in self.game.smModelList:
                     self.game.smModelList.remove(target.occupand)
                 elif target.occupand in self.game.gsModelList:
-                    self.game.gsMoelList.remove(target.occupand)
+                    self.game.gsModelList.remove(target.occupand)
                 elif target.occupand in self.game.blModelList:
+                    self.game.blipReserve.append(target.occupand.count)
                     self.game.blModelList.remove(target.occupand)
                 target.occupand = None
         target.change_picture(target.burningPictureFilePath)
+        pygame.display.flip()
 
     def run(self):
         logger.info(f"Current Gamestate: smShootFlamer")
@@ -2580,6 +2584,7 @@ class OutOfSequence:
                 elif target.occupand in self.game.gsModelList:
                     self.game.gsMoelList.remove(target.occupand)
                 elif target.occupand in self.game.blModelList:
+                    self.game.blipReserve.append(target.occupand.count)
                     self.game.blModelList.remove(target.occupand)
                 target.occupand = None
 
@@ -3373,6 +3378,7 @@ class blAction:
                 else:
                     self.game.selectedTile.isOccupied = False
                     self.game.selectedTile.occupand = None
+                    self.game.blipReserve.append(self.game.selectedModel.count)
                     self.game.blModelList.remove(self.game.selectedModel)
                     self.game.reset_select()
                     self.game.reset_clicked()
@@ -4216,11 +4222,12 @@ class gsTurn:
                     else:
                         for tile in self.game.map:
                             if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
-                                if isinstance(tile, EntryPoint) or isinstance(tile.occupand, Genestealer) or isinstance(tile.occupand, Blip):
-                                    self.game.selectedTile = tile
-                                    print(tile)
-                                    if not isinstance(tile, EntryPoint):
-                                        self.game.selectedModel = tile.occupand 
+                                if not isinstance(tile, Wall):
+                                    if isinstance(tile, EntryPoint) or isinstance(tile.occupand, Genestealer) or isinstance(tile.occupand, Blip):
+                                        self.game.selectedTile = tile
+                                        print(tile)
+                                        if not isinstance(tile, EntryPoint):
+                                            self.game.selectedModel = tile.occupand 
 
 
 class gsTurning:

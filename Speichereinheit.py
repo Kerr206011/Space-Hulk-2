@@ -291,14 +291,14 @@ for tile in map:
 
 smModelList = []
 smModelSaveList = []
-smModelList.append(SpaceMarine("Powersword", "sergant"))
-smModelList.append(SpaceMarine("Flamer", "brother"))
-smModelList.append(SpaceMarine("Bolter", "brother"))
-smModelList.append(SpaceMarine("Bolter", "brother"))
-smModelList.append(SpaceMarine("Bolter", "brother"))
+smModelList.append(SpaceMarine("Powersword", "sergant", "Pictures/Models/Brother.png"))
+smModelList.append(SpaceMarine("Flamer", "brother", "Pictures/Models/Brother.png"))
+smModelList.append(SpaceMarine("Bolter", "brother", "Pictures/Models/Brother.png"))
+smModelList.append(SpaceMarine("Bolter", "brother", "Pictures/Models/Brother.png"))
+smModelList.append(SpaceMarine("Bolter", "brother", "Pictures/Models/Brother.png"))
 
 for model in smModelList:
-    smModelSaveList.append((model.weapon, model.rank))
+    smModelSaveList.append((model.weapon, model.rank, model.pictureFilePath))
 
 data = {
     "level": 1,

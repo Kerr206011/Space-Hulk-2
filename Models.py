@@ -14,8 +14,8 @@ class Model:
         self.item = None
         
 class SpaceMarine(Model):
-    def __init__(self, weapon, rank):
-        super().__init__(4,'Pictures/Models/Brother.png')
+    def __init__(self, weapon, rank, picture):
+        super().__init__(4, picture)
         self.weapon = weapon
         self.rank = rank
         self.susf = False

@@ -1,29 +1,4 @@
 {
-    "level": 1,
-    "blipList": [
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        2,
-        2,
-        2,
-        2,
-        3,
-        3,
-        3,
-        3,
-        3,
-        3,
-        3,
-        3,
-        3
-    ],
     "map": [
         [
             [
@@ -60,16 +35,6 @@
         [
             [
                 1,
-                12
-            ],
-            "control",
-            "Pictures/Tiles/SM_entry.png",
-            0,
-            "Pictures/Tiles/Floor_burning.png"
-        ],
-        [
-            [
-                1,
                 13
             ],
             "wall",
@@ -86,16 +51,6 @@
         [
             [
                 2,
-                12
-            ],
-            "control",
-            "Pictures/Tiles/SM_entry.png",
-            0,
-            "Pictures/Tiles/Floor_burning.png"
-        ],
-        [
-            [
-                2,
                 13
             ],
             "wall",
@@ -108,16 +63,6 @@
             ],
             "wall",
             "Pictures/Tiles/Wall.png"
-        ],
-        [
-            [
-                3,
-                12
-            ],
-            "control",
-            "Pictures/Tiles/SM_entry.png",
-            0,
-            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -134,16 +79,6 @@
             ],
             "wall",
             "Pictures/Tiles/Wall.png"
-        ],
-        [
-            [
-                4,
-                12
-            ],
-            "control",
-            "Pictures/Tiles/SM_entry.png",
-            0,
-            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -160,16 +95,6 @@
             ],
             "wall",
             "Pictures/Tiles/Wall.png"
-        ],
-        [
-            [
-                5,
-                12
-            ],
-            "control",
-            "Pictures/Tiles/SM_entry.png",
-            0,
-            "Pictures/Tiles/Floor_burning.png"
         ],
         [
             [
@@ -204,7 +129,7 @@
             "Pictures/Tiles/Door_open_V.png",
             1,
             "Pictures/Tiles/Door_V.png",
-            false,
+            true,
             "Pictures/Tiles/Door_burning_V.png"
         ],
         [
@@ -316,7 +241,7 @@
             "Pictures/Tiles/Door_open_H.png",
             1,
             "Pictures/Tiles/Door_H.png",
-            false,
+            true,
             "Pictures/Tiles/Door_burning_H.png"
         ],
         [
@@ -538,7 +463,7 @@
             "Pictures/Tiles/Door_open_H.png",
             3,
             "Pictures/Tiles/Door_H.png",
-            false,
+            true,
             "Pictures/Tiles/Door_burning_H.png"
         ],
         [
@@ -754,7 +679,7 @@
             "Pictures/Tiles/Door_open_V.png",
             4,
             "Pictures/Tiles/Door_V.png",
-            false,
+            true,
             "Pictures/Tiles/Door_burning_V.png"
         ],
         [
@@ -2274,36 +2199,287 @@
                 0,
                 -1
             ]
+        ],
+        [
+            [
+                1,
+                12
+            ],
+            "tile",
+            "Pictures/Tiles/Floor_1.png",
+            0,
+            "Pictures/Tiles/Floor_burning.png"
+        ],
+        [
+            [
+                2,
+                12
+            ],
+            "tile",
+            "Pictures/Tiles/Floor_1.png",
+            0,
+            "Pictures/Tiles/Floor_burning.png"
+        ],
+        [
+            [
+                3,
+                12
+            ],
+            "tile",
+            "Pictures/Tiles/Floor_1.png",
+            0,
+            "Pictures/Tiles/Floor_burning.png"
+        ],
+        [
+            [
+                4,
+                12
+            ],
+            "tile",
+            "Pictures/Tiles/Floor_1.png",
+            0,
+            "Pictures/Tiles/Floor_burning.png"
+        ],
+        [
+            [
+                5,
+                12
+            ],
+            "tile",
+            "Pictures/Tiles/Floor_1.png",
+            0,
+            "Pictures/Tiles/Floor_burning.png"
         ]
     ],
-    "startBlip": 2,
-    "reinforcement": 2,
-    "smModelList": [
+    "smList": [
         [
+            [
+                7,
+                11
+            ],
             "Powersword",
             "sergant",
-            "Pictures/Models/Brother.png"
+            4,
+            [
+                1,
+                0
+            ],
+            false,
+            false,
+            false,
+            false
         ],
         [
+            [
+                8,
+                18
+            ],
             "Flamer",
             "brother",
-            "Pictures/Models/Brother.png"
+            4,
+            [
+                0,
+                1
+            ],
+            false,
+            false,
+            false,
+            false
         ],
         [
+            [
+                1,
+                12
+            ],
             "Bolter",
             "brother",
-            "Pictures/Models/Brother.png"
+            4,
+            [
+                1,
+                0
+            ],
+            false,
+            false,
+            false,
+            false
         ],
         [
+            [
+                2,
+                12
+            ],
             "Bolter",
             "brother",
-            "Pictures/Models/Brother.png"
+            4,
+            [
+                1,
+                0
+            ],
+            false,
+            false,
+            false,
+            false
         ],
         [
+            [
+                3,
+                12
+            ],
             "Bolter",
             "brother",
-            "Pictures/Models/Brother.png"
+            4,
+            [
+                1,
+                0
+            ],
+            false,
+            false,
+            false,
+            false
         ]
     ],
-    "broodLord": false
+    "gsList": [
+        [
+            [
+                7,
+                20
+            ],
+            false,
+            6,
+            [
+                0,
+                -1
+            ]
+        ],
+        [
+            [
+                8,
+                20
+            ],
+            false,
+            6,
+            [
+                0,
+                -1
+            ]
+        ],
+        [
+            [
+                9,
+                20
+            ],
+            false,
+            6,
+            [
+                0,
+                -1
+            ]
+        ]
+    ],
+    "blList": [],
+    "burning": [],
+    "level": 1,
+    "blipsack": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+    ],
+    "blipreserve": [
+        3,
+        1,
+        1
+    ],
+    "player1": "Player_1",
+    "player2": "Player_2",
+    "reinforcement": 2,
+    "assaultcannonammo": 10,
+    "reload": true,
+    "flamer": 5,
+    "psypoints": 20,
+    "broodlord": false,
+    "maxGS": 23,
+    "reuse": -1,
+    "cp": 4,
+    "lurkers": [
+        [
+            "bl",
+            [
+                12,
+                19
+            ],
+            2,
+            true
+        ],
+        [
+            "bl",
+            [
+                12,
+                19
+            ],
+            1,
+            true
+        ],
+        [
+            "gs",
+            [
+                12,
+                19
+            ],
+            1
+        ],
+        [
+            "bl",
+            [
+                12,
+                23
+            ],
+            3,
+            true
+        ],
+        [
+            "bl",
+            [
+                12,
+                23
+            ],
+            3,
+            true
+        ],
+        [
+            "bl",
+            [
+                19,
+                20
+            ],
+            1,
+            false
+        ],
+        [
+            "bl",
+            [
+                19,
+                20
+            ],
+            1,
+            false
+        ],
+        [
+            "bl",
+            [
+                19,
+                20
+            ],
+            2,
+            false
+        ]
+    ]
 }
