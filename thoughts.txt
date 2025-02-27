@@ -71,6 +71,8 @@ after rooling the cp again, the button for reroll needs to disappear
 
 having a door breaks the actionbar (exit is unclickable)
 
+loading breaks lurking blips and SM's
+
 ideas for Client server:
     clients have run() for gamestates, but they only log and send the clicks and have no internal logic
     server sends updates for the map, client displays it

@@ -495,7 +495,7 @@ class commandPhase:
 
     def endState(self):
         self.actionBar.clear()
-        self.game.make_save("auto")
+        self.game.make_save("auto", "command")
         self.gameStateManager.screen.fill("black")
         self.gameStateManager.run_gamestate('smTurn')
 
@@ -4727,9 +4727,8 @@ class gamestateMain:
                 sys.exit()
             
             if self.load_button.draw(self.gameStateManager.screen):
-                self.gameStateManager.shade()
-                center = (self.gameStateManager.screen.get_width()/2, self.gameStateManager.screen.get_height()/2)
-                print(center)
+                self.game.load_save("auto")
+                self.gameStateManager.run_gamestate("smTurn")
 
             if self.startNew_button.draw(self.gameStateManager.screen):
                 self.game.load_level("level_1")

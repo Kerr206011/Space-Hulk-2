@@ -966,3 +966,276 @@
 2025-02-26 19:40:16,962 - INFO - Genstealers win. 
 Congratulations Player_2!
 2025-02-26 19:40:16,963 - DEBUG - Gamestate Main
+2025-02-27 16:49:14,644 - INFO - Game initialized successfully.
+2025-02-27 16:49:14,650 - INFO - Initialized screen.
+2025-02-27 16:49:15,079 - DEBUG - Gamestate Main
+2025-02-27 16:49:20,151 - INFO - Levels/level_1.json
+2025-02-27 16:49:20,393 - INFO - Current GameState: placeSM
+2025-02-27 16:49:29,722 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:49:29,723 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:49:29,725 - DEBUG - Chosen position in blipSack: 8
+2025-02-27 16:49:29,725 - DEBUG - Chosen position in blipSack: 4
+2025-02-27 16:49:29,733 - INFO - Current GameState: blStart
+2025-02-27 16:49:30,934 - DEBUG - Blips on clicked Tile: []
+2025-02-27 16:49:32,000 - DEBUG - Current Bliplist: [1]
+2025-02-27 16:49:32,001 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001E9D99775F0>]
+2025-02-27 16:49:32,198 - DEBUG - Current Bliplist: []
+2025-02-27 16:49:32,199 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001E9D99775F0>, <Models.Blip object at 0x000001E9D9977620>]
+2025-02-27 16:49:32,200 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:49:32,201 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:49:32,202 - INFO - Current GameState: Command
+2025-02-27 16:49:32,204 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x000001E9D99722A0> present
+2025-02-27 16:49:32,209 - DEBUG - Reroll of CP: True
+2025-02-27 16:49:35,664 - DEBUG - CP: 6
+2025-02-27 16:49:35,674 - DEBUG - Sucessfully created save auto.
+2025-02-27 16:49:42,123 - INFO - Game initialized successfully.
+2025-02-27 16:49:42,124 - INFO - Initialized screen.
+2025-02-27 16:49:42,424 - DEBUG - Gamestate Main
+2025-02-27 16:49:43,753 - INFO - Levels/auto.json
+2025-02-27 16:49:43,757 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4755, in <module>
+    gameStateManager.run_gamestate("main")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4730, in run
+    self.game.load_save("auto")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Game.py", line 162, in load_save
+    self.broodLord = data["broodLord"]
+                     ~~~~^^^^^^^^^^^^^
+KeyError: 'broodLord'
+2025-02-27 16:50:23,444 - INFO - Game initialized successfully.
+2025-02-27 16:50:23,445 - INFO - Initialized screen.
+2025-02-27 16:50:23,753 - DEBUG - Gamestate Main
+2025-02-27 16:50:25,244 - INFO - Levels/auto.json
+2025-02-27 16:50:25,400 - INFO - Phase: command
+2025-02-27 16:50:25,400 - INFO - Current GameState: smAction
+2025-02-27 16:50:25,407 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4755, in <module>
+    gameStateManager.run_gamestate("main")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4731, in run
+    self.gameStateManager.run_gamestate("smAction")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 816, in run
+    if self.check_door():
+       ^^^^^^^^^^^^^^^^^
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 722, in check_door
+    face = self.game.selectedModel.face
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'face'
+2025-02-27 16:51:00,620 - INFO - Game initialized successfully.
+2025-02-27 16:51:00,621 - INFO - Initialized screen.
+2025-02-27 16:51:00,927 - DEBUG - Gamestate Main
+2025-02-27 16:51:03,139 - INFO - Levels/auto.json
+2025-02-27 16:51:03,293 - INFO - Phase: command
+2025-02-27 16:51:31,320 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:51:31,321 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:51:31,323 - DEBUG - Amount of free Entrypoints: 16
+2025-02-27 16:51:31,323 - DEBUG - Chosen position in blipSack: 12
+2025-02-27 16:51:31,324 - DEBUG - Chosen position in blipSack: 0
+2025-02-27 16:51:31,332 - INFO - Current GameState: blStart
+2025-02-27 16:51:35,767 - DEBUG - Blips on clicked Tile: [<Models.Blip object at 0x000001C912680530>, <Models.Blip object at 0x000001C90FE74B90>]
+2025-02-27 16:51:37,782 - DEBUG - Blips on clicked Tile: [<Models.Blip object at 0x000001C912680530>, <Models.Blip object at 0x000001C90FE74B90>]
+2025-02-27 16:51:38,932 - DEBUG - Current Bliplist: [1]
+2025-02-27 16:51:38,934 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001C912680530>, <Models.Blip object at 0x000001C90FE74B90>, <Models.Blip object at 0x000001C90FE74D70>]
+2025-02-27 16:51:45,688 - DEBUG - Blips on clicked Tile: []
+2025-02-27 16:51:46,015 - DEBUG - Blips on clicked Tile: []
+2025-02-27 16:51:47,137 - DEBUG - Current Bliplist: []
+2025-02-27 16:51:47,138 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x000001C90FE74BC0>]
+2025-02-27 16:51:47,139 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:51:47,140 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:51:51,172 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:51:51,173 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:51:51,738 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:51:51,739 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:51:51,740 - INFO - Current GameState: Command
+2025-02-27 16:51:55,704 - DEBUG - CP: 2
+2025-02-27 16:51:55,714 - DEBUG - Sucessfully created save auto.
+2025-02-27 16:52:19,543 - INFO - Game initialized successfully.
+2025-02-27 16:52:19,545 - INFO - Initialized screen.
+2025-02-27 16:52:19,854 - DEBUG - Gamestate Main
+2025-02-27 16:52:21,205 - INFO - Levels/auto.json
+2025-02-27 16:52:21,362 - INFO - Phase: command
+2025-02-27 16:52:51,067 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:52:51,069 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:52:51,070 - DEBUG - Amount of free Entrypoints: 14
+2025-02-27 16:52:51,071 - DEBUG - Chosen position in blipSack: 16
+2025-02-27 16:52:51,072 - DEBUG - Chosen position in blipSack: 15
+2025-02-27 16:52:51,079 - INFO - Current GameState: blStart
+2025-02-27 16:52:52,469 - DEBUG - Blips on clicked Tile: []
+2025-02-27 16:52:53,856 - DEBUG - Current Bliplist: [3]
+2025-02-27 16:52:53,857 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x00000205002AF590>]
+2025-02-27 16:52:54,220 - DEBUG - Current Bliplist: []
+2025-02-27 16:52:54,221 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x00000205002AF590>, <Models.Blip object at 0x00000205002AF5C0>]
+2025-02-27 16:52:54,222 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:52:54,223 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:52:59,486 - INFO - Current gamestate: gsAction
+2025-02-27 16:52:59,487 - DEBUG - SelectedModel.AP: 6
+2025-02-27 16:52:59,489 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4755, in <module>
+    gameStateManager.run_gamestate("main")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4731, in run
+    self.gameStateManager.run_gamestate("smTurn")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 1081, in run
+    self.endState()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 1015, in endState
+    self.gameStateManager.run_gamestate('gsPlace')
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 329, in run
+    self.endState()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 267, in endState
+    self.gameStateManager.run_gamestate('gsTurn')
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4220, in run
+    self.gameStateManager.run_gamestate('blSelect')
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 2880, in run
+    self.gameStateManager.run_gamestate("gsAction")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 3144, in run
+    logger.debug(f"selectedModel.broodlord: {self.game.selectedModel.isBroodlord}")
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Blip' object has no attribute 'isBroodlord'
+2025-02-27 16:53:54,088 - INFO - Game initialized successfully.
+2025-02-27 16:53:54,089 - INFO - Initialized screen.
+2025-02-27 16:53:54,375 - DEBUG - Gamestate Main
+2025-02-27 16:53:55,573 - INFO - Levels/level_1.json
+2025-02-27 16:53:55,738 - INFO - Current GameState: placeSM
+2025-02-27 16:54:02,205 - INFO - Game initialized successfully.
+2025-02-27 16:54:02,206 - INFO - Initialized screen.
+2025-02-27 16:54:02,523 - DEBUG - Gamestate Main
+2025-02-27 16:54:03,784 - INFO - Levels/auto.json
+2025-02-27 16:54:03,944 - INFO - Phase: command
+2025-02-27 16:54:11,302 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:54:11,302 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:54:11,304 - DEBUG - Amount of free Entrypoints: 14
+2025-02-27 16:54:11,304 - DEBUG - Chosen position in blipSack: 13
+2025-02-27 16:54:11,305 - DEBUG - Chosen position in blipSack: 1
+2025-02-27 16:54:11,312 - INFO - Current GameState: blStart
+2025-02-27 16:54:13,052 - DEBUG - Blips on clicked Tile: []
+2025-02-27 16:54:14,288 - DEBUG - Current Bliplist: [1]
+2025-02-27 16:54:14,289 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x00000255CB40F680>]
+2025-02-27 16:54:14,561 - DEBUG - Current Bliplist: []
+2025-02-27 16:54:14,562 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x00000255CB40F680>, <Models.Blip object at 0x00000255CB40F590>]
+2025-02-27 16:54:14,564 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:54:14,564 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:54:27,217 - INFO - Current gamestate: gsAction
+2025-02-27 16:54:27,218 - DEBUG - SelectedModel.AP: 6
+2025-02-27 16:54:27,221 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4755, in <module>
+    gameStateManager.run_gamestate("main")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4731, in run
+    self.gameStateManager.run_gamestate("smTurn")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 1081, in run
+    self.endState()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 1015, in endState
+    self.gameStateManager.run_gamestate('gsPlace')
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 329, in run
+    self.endState()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 267, in endState
+    self.gameStateManager.run_gamestate('gsTurn')
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 4220, in run
+    self.gameStateManager.run_gamestate('blSelect')
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 2880, in run
+    self.gameStateManager.run_gamestate("gsAction")
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 49, in run_gamestate
+    self.gamestates[gameState].run()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\Gamestates.py", line 3144, in run
+    logger.debug(f"selectedModel.broodlord: {self.game.selectedModel.isBroodlord}")
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Blip' object has no attribute 'isBroodlord'
+2025-02-27 16:54:58,741 - INFO - Game initialized successfully.
+2025-02-27 16:54:58,742 - INFO - Initialized screen.
+2025-02-27 16:54:59,034 - DEBUG - Gamestate Main
+2025-02-27 16:55:00,520 - INFO - Levels/level_1.json
+2025-02-27 16:55:00,683 - INFO - Current GameState: placeSM
+2025-02-27 16:55:10,449 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:55:10,451 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:55:10,451 - DEBUG - Chosen position in blipSack: 8
+2025-02-27 16:55:10,453 - DEBUG - Chosen position in blipSack: 5
+2025-02-27 16:55:10,460 - INFO - Current GameState: blStart
+2025-02-27 16:55:11,486 - DEBUG - Blips on clicked Tile: []
+2025-02-27 16:55:12,365 - DEBUG - Current Bliplist: [1]
+2025-02-27 16:55:12,367 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000026F48E8FDA0>]
+2025-02-27 16:55:12,534 - DEBUG - Current Bliplist: []
+2025-02-27 16:55:12,535 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000026F48E8FDA0>, <Models.Blip object at 0x0000026F48E8FDD0>]
+2025-02-27 16:55:12,535 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:55:12,536 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:55:12,537 - INFO - Current GameState: Command
+2025-02-27 16:55:12,538 - DEBUG - Sergant model: <Models.SpaceMarine object at 0x0000026F48E8F380> present
+2025-02-27 16:55:12,539 - DEBUG - Reroll of CP: True
+2025-02-27 16:55:14,992 - DEBUG - CP: 6
+2025-02-27 16:55:15,001 - DEBUG - Sucessfully created save auto.
+2025-02-27 16:55:17,252 - INFO - Current GameState: smAction
+2025-02-27 16:55:18,675 - INFO - Door
+2025-02-27 16:55:20,298 - INFO - Door
+2025-02-27 16:55:23,314 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:55:23,315 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:55:24,746 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:55:24,747 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:55:24,748 - DEBUG - Amount of free Entrypoints: 16
+2025-02-27 16:55:24,748 - DEBUG - Chosen position in blipSack: 0
+2025-02-27 16:55:24,749 - DEBUG - Chosen position in blipSack: 0
+2025-02-27 16:55:24,758 - INFO - Current GameState: blStart
+2025-02-27 16:55:27,244 - DEBUG - Blips on clicked Tile: []
+2025-02-27 16:55:28,376 - DEBUG - Current Bliplist: [1]
+2025-02-27 16:55:28,377 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000026F48E8CD70>]
+2025-02-27 16:55:28,577 - DEBUG - Current Bliplist: []
+2025-02-27 16:55:28,578 - DEBUG - Blips in the clicked Tile: [<Models.Blip object at 0x0000026F48E8CD70>, <Models.Blip object at 0x0000026F48E8CB60>]
+2025-02-27 16:55:28,583 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,587 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,593 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,597 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,602 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,607 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,612 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,616 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,621 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,627 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,630 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,634 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,639 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,645 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,651 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,655 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,661 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,664 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,667 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,673 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,677 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,683 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,686 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,692 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,697 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,700 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,703 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,709 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,714 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,718 - INFO - TargetTile not within 6.
+2025-02-27 16:55:28,718 - DEBUG - Reset selectedModel and Tile to None
+2025-02-27 16:55:28,719 - DEBUG - Reset ClickedModel and Tile to None
+2025-02-27 16:55:35,969 - DEBUG - Reset ClickedModel and Tile to None

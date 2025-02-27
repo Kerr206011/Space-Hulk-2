@@ -50,7 +50,7 @@ class Game():
         self.maxGS = 23 #including Broodlord as he is classified as a Genstealer
         self.reuseBlips = -1
 
-    def make_save(self, name):
+    def make_save(self, name, phase):
         # perhaps split into autosave and manualsave
         """
         Method that makes a .json savefile. Right now many of the parameters are depricated, but that may change if i decide to 
@@ -58,6 +58,7 @@ class Game():
 
         Args:
             name: String
+            phase: String (Current gamephase)
 
         Returns:
             None
@@ -79,9 +80,10 @@ class Game():
                 saveMap.append(((tile.x, tile.y), "entry", tile.picturePath, tile.face))
                 if tile.blips.__len__() != 0:
                     for blip in tile.blips:
-                        lurkers.append(("bl",(tile.x, tile.y), blip.count, blip.lurking))
+                        lurkers.append(("bl",(tile.x, tile.y), blip.count, blip.lurking, blip.AP))
                 if tile.genstealers.__len__() != 0:
-                    lurkers.append(("gs", (tile.x, tile.y), tile.genstealers.__len__()))
+                    for entry in tile.genstealers:
+                        lurkers.append(("gs", (tile.x, tile.y), entry.lurking, entry.isBroodlord, entry.AP))
             elif isinstance(tile, ControlledArea):
                 saveMap.append(((tile.x, tile.y), "control", tile.picturePath, tile.sector, tile.burningPictureFilePath))
             elif isinstance(tile, Tile):
@@ -91,7 +93,7 @@ class Game():
 
                 if tile.isOccupied:
                     if isinstance(tile.occupand, SpaceMarine):
-                        smSaveList.append(((tile.x, tile.y), tile.occupand.weapon, tile.occupand.rank, tile.occupand.AP, tile.occupand.face, tile.occupand.guard, tile.occupand.jam, tile.occupand.overwatch, tile.occupand.susf))
+                        smSaveList.append(((tile.x, tile.y), tile.occupand.weapon, tile.occupand.rank, tile.occupand.AP, tile.occupand.face, tile.occupand.guard, tile.occupand.jam, tile.occupand.overwatch, tile.occupand.susf, tile.occupand.pictureFilePath))
 
                     elif isinstance(tile.occupand, Genestealer):
                         gsSaveList.append(((tile.x, tile.y), tile.occupand.isBroodlord, tile.occupand.AP, tile.occupand.face))
@@ -101,6 +103,8 @@ class Game():
 
                 if tile.isBurning:
                     burningTiles.append((tile.x, tile.y))
+
+        phase = phase
 
         data = { 
             "map" : saveMap,
@@ -122,7 +126,9 @@ class Game():
             "maxGS" : self.maxGS,
             "reuse" : self.reuseBlips,
             "cp" : self.cp,
-            "lurkers" : lurkers
+            "lurkers" : lurkers,
+            "startBlip" : self.startBlip,
+            "phase" : phase
         }
 
         # File path to save the JSON file
@@ -134,8 +140,145 @@ class Game():
 
         logger.debug(f"Sucessfully created save {name}.")
 
-    def load_save(self):
-        pass
+    def load_save(self, name):
+        file_path = "Levels/"+name+".json"
+
+        logger.info(file_path)
+
+        with open(file_path, 'r') as json_file:
+            data = json.load(json_file)
+
+        self.level = data["level"]
+        self.blipSack = data["blipsack"]
+        self.blipReserve = data["blipreserve"]
+        self.reinforcement = data["reinforcement"]
+        smList = data["smList"]
+        gsList = data["gsList"]
+        blList = data["blList"]
+        bluePrint = data["map"]
+        lurkers = data["lurkers"]
+        burning = data["burning"]
+        phase = data["phase"]
+        self.startBlip = data["startBlip"]
+        self.player1 = data["player1"]
+        self.player2 = data["player2"]
+        self.cp = data["cp"]
+        self.reuseBlips = data["reuse"]
+        self.broodLord = data["broodlord"]
+        self.maxGS = data["maxGS"]
+        self.psyPoints = data["psypoints"]
+        self.flamerAmmo = data["flamer"]
+        self.assaultCannonReload = data["reload"]
+        self.assaultCannonAmmo = data["assaultcannonammo"]
+        self.reinforcement = data["reinforcement"]
+
+        for entry in bluePrint:
+
+            if entry[1] == "tile":
+                newTile = Tile(entry[2], entry[4], entry[0][0],entry[0][1],entry[3])
+                self.map.append(newTile)
+
+            elif entry[1] == "door":
+                newDoor = Door(entry[2], entry[4], entry[6], entry[0][0], entry[0][1], entry[3], entry[5])
+                if entry[5] == False:
+                    newDoor.change_picture(newDoor.pictureClosedPath)
+                self.map.append(newDoor)
+
+            elif entry[1] == "wall":
+                newWall = Wall(entry[2],entry[0][0],entry[0][1])
+                self.map.append(newWall)
+
+            elif entry[1] == "entry":
+                newEntry = EntryPoint(entry[2],entry[0][0],entry[0][1],entry[3])
+                self.map.append(newEntry)
+
+            elif entry[1] == "control":
+                newControl = ControlledArea(entry[2],entry[4],entry[0][0],entry[0][1],entry[3])
+                self.map.append(newControl)
+
+        for entry in smList:
+            newMarine = SpaceMarine(entry[1], entry[2], entry[9])
+            newMarine.AP = entry[3]
+            face = entry[4]
+            match face:
+                case (1,0): 
+                    pass
+                case (0,1):
+                    self.turn_model(newMarine, "right")
+                case(-1,0):
+                    self.turn_model(newMarine, "full")
+                case(0,-1):
+                    self.turn_model(newMarine, "left")  
+            #add rotation
+            newMarine.guard = entry[5]
+            newMarine.jam = entry[6]
+            newMarine.overwatch = entry[7]
+            newMarine.susf = entry[8]
+
+            for tile in self.map:
+                if tile.x == entry[0][0] and tile.y == entry[0][1]:
+                    target = tile
+            target.isOccupied = True
+            target.occupand = newMarine
+
+        for entry in gsList:
+            newGenstealer = Genestealer()
+            newGenstealer.AP = entry[2]
+            newGenstealer.isBroodlord = entry[1]
+            face = entry[3]
+            match face:
+                case (1,0): 
+                    pass
+                case (0,1):
+                    self.turn_model(newGenstealer, "right")
+                case(-1,0):
+                    self.turn_model(newGenstealer, "full")
+                case(0,-1):
+                    self.turn_model(newGenstealer, "left")  
+
+            for tile in self.map:
+                if tile.x == entry[0][0] and tile.y == entry[0][1]:
+                    target = tile
+            target.isOccupied = True
+            target.occupand = newGenstealer
+
+        for entry in blList:
+            newBlip = Blip(entry[1])
+            newBlip.AP = entry[2]
+            for tile in self.map:
+                if tile.x == entry[0][0] and tile.y == entry[0][1]:
+                    target = tile
+            target.isOccupied = True
+            target.occupand = newBlip
+
+        for entry in lurkers:
+            if entry[0] == "gs":
+                for tile in self.map:
+                    if tile.x == entry[1][0] and tile.y == entry[1][1]:
+                        target = tile
+                lurkerGS = Genestealer()
+                lurkerGS.AP = entry[4]
+                lurkerGS.lurking = entry[2]
+                lurkerGS.isBroodlord = entry[3]
+                target.genstealers.append(lurkerGS)
+            else:
+                for tile in self.map:
+                    if tile.x == entry[1][0] and tile.y == entry[1][1]:
+                        target = tile
+                lurkerBlip = Blip(entry[2])
+                lurkerBlip.lurking = entry[3]
+                lurkerBlip.AP = entry[4]
+                target.blips.append(lurkerBlip)
+
+        for entry in burning:
+            for tile in self.map:
+                if tile.x == entry[0][0] and tile.y == entry[0][1]:
+                    target = tile
+
+            target.change_picture(target.burningPictureFilePath)
+            target.isBurning = True
+        
+        logger.info(f"Phase: {phase}")
 
     def load_level(self,levelFile):
         file_path = "Levels/"+levelFile+".json"
