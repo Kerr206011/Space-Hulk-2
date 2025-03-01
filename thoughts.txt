@@ -11,8 +11,6 @@ Blips can be revealed outside Entry Areas (List, blitting a purple number?)
 
 implement Broodlord reveal on entrypoint
 
-checkmove needs to pe appended so that it blocks models from passing diagonally between a model and a wall(p.59) 
-
 the initial placement of blips must be skippable for certain missions
 
 implement visual distinction for Guard/Overwatch/Jam
@@ -20,7 +18,8 @@ implement visual distinction for Guard/Overwatch/Jam
 certain buttons don't appear/disappear
 
 sustained Fire needs to be processed on every gs individually
-    -> change susf to a model and compare
+    -> change susf to a model or tile and compare
+    -> save susf with coordiantes and str
 
 add shoot button only after check_ranged()
 
@@ -33,7 +32,6 @@ implement Assaultcannon explosion and reload
 implement Psyker phase 
 
 fix UI
-    use shade method and local button icons (circle menu)
 
 add oos Actions
 
@@ -61,17 +59,11 @@ add ac explosion
 add animations for all the actions (including the dice)
 add highlight for selected/clicked
 
-go through the code and add the blips to the plip-RESERVE whenever they are destroyed
-
 change movement, so that the model in question can be moved x tiles (perhaps a snapping rect to show where it would go and how much it would cost)
 
 add use for the amount button in BLStart and BLplace
 
 after rooling the cp again, the button for reroll needs to disappear
-
-having a door breaks the actionbar (exit is unclickable)
-
-loading breaks lurking blips and SM's
 
 ideas for Client server:
     clients have run() for gamestates, but they only log and send the clicks and have no internal logic

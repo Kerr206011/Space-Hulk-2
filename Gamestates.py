@@ -628,6 +628,7 @@ class smAction:
         burning = False
         doorOpen = False
         occupied = False
+        diagonal = False
         if isinstance(self.game.clickedTile, Tile):
             if (((self.game.clickedTile.x == self.game.selectedTile.x + self.game.selectedModel.face[0]) or (self.game.clickedTile.x == self.game.selectedTile.x - self.game.selectedModel.face[0])) and self.game.selectedModel.face[0] != 0) or (((self.game.clickedTile.y == self.game.selectedTile.y + self.game.selectedModel.face[1]) or (self.game.clickedTile.y == self.game.selectedTile.y - self.game.selectedModel.face[1])) and self.game.selectedModel.face[1] != 0):
                 direction = True
@@ -641,8 +642,35 @@ class smAction:
             else:
                 doorOpen = True
 
+            check_x = self.game.clickedTile.x - self.game.selectedTile.x
+            check_y = self.game.clickedTile.y - self.game.selectedTile.y
 
-        if direction and burning and doorOpen and occupied:
+            if check_x != 0 and check_y != 0:
+                x_check = True
+                y_check = True
+                for tile in self.game.map:
+                    if (tile.x == self.game.selectedTile.x + check_x) and (tile.y == self.game.selectedTile.y):
+                        if isinstance(tile, Wall):
+                            x_check = False
+                        else:
+                            if (tile.isOccupied == True) and (not isinstance(tile.occupand, Item)):
+                                x_check = False
+
+                    if (tile.y == self.game.selectedTile.y + check_y) and (tile.x == self.game.selectedTile.x):
+                        if isinstance(tile, Wall):
+                            y_check = False
+                        else:
+                            if (tile.isOccupied == True) and (not isinstance(tile.occupand, Item)):
+                                y_check = False
+            
+                if not (y_check == False and x_check == False):
+                    diagonal = True
+            else:
+                diagonal = True
+
+
+        if direction and burning and doorOpen and occupied and diagonal:
+            logger.info(f"Diagonal: {diagonal}")
             return True
         else:
             return False 
@@ -868,7 +896,16 @@ class smAction:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     
-                    if self.move_button.rect.collidepoint(pygame.mouse.get_pos()):
+                    if self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.game.selectedModel.AP = 0
+                        self.game.selectedModel.susf = False
+                        self.game.reset_select()
+                        self.game.reset_clicked()
+                        self.actionBar.clear()
+                        self.gameStateManager.screen.fill("black")
+                        self.gameStateManager.run_gamestate("smTurn")
+                    
+                    elif self.move_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if self.check_move():
                             if self.calculate_movement_cost() <= (self.game.selectedModel.AP + self.game.cp):
                                 self.reduce_ap(self.calculate_movement_cost())
@@ -921,15 +958,6 @@ class smAction:
                             self.game.selectedModel.overwatch = True
                             self.reduce_ap(2)
                             logger.debug(f"Overwatch == {self.game.selectedModel.overwatch}")
-
-                    elif self.accept_button.rect.collidepoint(pygame.mouse.get_pos()):
-                        self.game.selectedModel.AP = 0
-                        self.game.selectedModel.susf = False
-                        self.game.reset_select()
-                        self.game.reset_clicked()
-                        self.actionBar.clear()
-                        self.gameStateManager.screen.fill("black")
-                        self.gameStateManager.run_gamestate("smTurn")
 
                     elif self.melee_button.rect.collidepoint(pygame.mouse.get_pos()):
                         if self.game.selectedModel.AP + self.game.cp != 0:
@@ -2246,6 +2274,7 @@ class OutOfSequence:
         self.guard_button = Button(810, 100, self.amount_image, 1)
         self.accept_button = Button(810, 800, self.amount_image, 1)
         self.reload_button = Button(810, 900, self.amount_image, 1)
+        self.end_button = Button(810, 1000)
 
     def check_move(self, tile:Tile, model:SpaceMarine, target):
         """
@@ -2936,6 +2965,7 @@ class gsAction:
         burning = False
         doorOpen = False
         occupied = False
+        diagonal = False
 
         if isinstance(self.game.clickedTile, Tile):
             if ((self.game.selectedTile.x + 1 == self.game.clickedTile.x) or (self.game.selectedTile.x - 1 == self.game.clickedTile.x) or (self.game.selectedTile.x == self.game.clickedTile.x)) and ((self.game.selectedTile.y + 1 == self.game.clickedTile.y) or (self.game.selectedTile.y - 1 == self.game.clickedTile.y) or (self.game.selectedTile.y == self.game.clickedTile.y)):
@@ -2955,7 +2985,33 @@ class gsAction:
                 doorOpen = True
                 print("Door open")
 
-            if inRange and burning and doorOpen and occupied:
+            check_x = self.game.clickedTile.x - self.game.selectedTile.x
+            check_y = self.game.clickedTile.y - self.game.selectedTile.y
+
+            if check_x != 0 and check_y != 0:
+                x_check = True
+                y_check = True
+                for tile in self.game.map:
+                    if (tile.x == self.game.selectedTile.x + check_x) and (tile.y == self.game.selectedTile.y):
+                        if isinstance(tile, Wall):
+                            x_check = False
+                        else:
+                            if (tile.isOccupied == True) and (not isinstance(tile.occupand, Item)):
+                                x_check = False
+
+                    if (tile.y == self.game.selectedTile.y + check_y) and (tile.x == self.game.selectedTile.x):
+                        if isinstance(tile, Wall):
+                            y_check = False
+                        else:
+                            if (tile.isOccupied == True) and (not isinstance(tile.occupand, Item)):
+                                y_check = False
+            
+                if not (y_check == False and x_check == False):
+                    diagonal = True
+            else:
+                diagonal = True
+
+            if inRange and burning and doorOpen and occupied and diagonal:
                 return True
             else:
                 return False
@@ -3288,6 +3344,7 @@ class blAction:
         occupied = False
         seen = True
         inProximity = True
+        diagonal = False
 
         if isinstance(self.game.clickedTile, Tile):
             if ((self.game.selectedTile.x + 1 == self.game.clickedTile.x) or (self.game.selectedTile.x - 1 == self.game.clickedTile.x) or (self.game.selectedTile.x == self.game.clickedTile.x)) and ((self.game.selectedTile.y + 1 == self.game.clickedTile.y) or (self.game.selectedTile.y - 1 == self.game.clickedTile.y) or (self.game.selectedTile.y == self.game.clickedTile.y)):
@@ -3318,7 +3375,33 @@ class blAction:
                             if tile.occupand in self.game.smModelList:
                                 inProximity = False
 
-            if inRange and burning and doorOpen and occupied and seen and inProximity:
+            check_x = self.game.clickedTile.x - self.game.selectedTile.x
+            check_y = self.game.clickedTile.y - self.game.selectedTile.y
+
+            if check_x != 0 and check_y != 0:
+                x_check = True
+                y_check = True
+                for tile in self.game.map:
+                    if (tile.x == self.game.selectedTile.x + check_x) and (tile.y == self.game.selectedTile.y):
+                        if isinstance(tile, Wall):
+                            x_check = False
+                        else:
+                            if (tile.isOccupied == True) and (not isinstance(tile.occupand, Item)):
+                                x_check = False
+
+                    if (tile.y == self.game.selectedTile.y + check_y) and (tile.x == self.game.selectedTile.x):
+                        if isinstance(tile, Wall):
+                            y_check = False
+                        else:
+                            if (tile.isOccupied == True) and (not isinstance(tile.occupand, Item)):
+                                y_check = False
+            
+                if not (y_check == False and x_check == False):
+                    diagonal = True
+            else:
+                diagonal = True
+
+            if inRange and burning and doorOpen and occupied and seen and inProximity and diagonal:
                 return True
             else:
                 return False 

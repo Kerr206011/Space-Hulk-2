@@ -215,6 +215,8 @@ class Game():
             newMarine.overwatch = entry[7]
             newMarine.susf = entry[8]
 
+            self.smModelList.append(newMarine)
+
             for tile in self.map:
                 if tile.x == entry[0][0] and tile.y == entry[0][1]:
                     target = tile
@@ -225,6 +227,9 @@ class Game():
             newGenstealer = Genestealer()
             newGenstealer.AP = entry[2]
             newGenstealer.isBroodlord = entry[1]
+
+            self.gsModelList.append(newGenstealer)
+
             face = entry[3]
             match face:
                 case (1,0): 
@@ -245,6 +250,9 @@ class Game():
         for entry in blList:
             newBlip = Blip(entry[1])
             newBlip.AP = entry[2]
+
+            self.blModelList.append(newBlip)
+
             for tile in self.map:
                 if tile.x == entry[0][0] and tile.y == entry[0][1]:
                     target = tile
@@ -261,7 +269,10 @@ class Game():
                 lurkerGS.lurking = entry[2]
                 lurkerGS.isBroodlord = entry[3]
                 target.genstealers.append(lurkerGS)
-            else:
+                
+                self.gsModelList.append(lurkerGS)
+                
+            elif entry[0] == "bl":
                 for tile in self.map:
                     if tile.x == entry[1][0] and tile.y == entry[1][1]:
                         target = tile
@@ -269,6 +280,8 @@ class Game():
                 lurkerBlip.lurking = entry[3]
                 lurkerBlip.AP = entry[4]
                 target.blips.append(lurkerBlip)
+
+                self.blModelList.append(lurkerBlip)
 
         for entry in burning:
             for tile in self.map:
