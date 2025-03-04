@@ -32,9 +32,12 @@ class Server:
         client_socket.close()
 
     def accept_clients(self):
+        a = 1
         while True:
             client_socket, addr = self.server.accept()
             print(f"Client connected: {addr}")
+            print(a)
+            a+=1
             self.clients.append(client_socket)
             threading.Thread(target=self.handle_client, args=(client_socket,), daemon=True).start()
 
