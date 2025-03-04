@@ -28,6 +28,7 @@ class Server:
                         client.send(data)
             except:
                 break
+        print(f"Client {client_socket} disconnected.")
         self.clients.remove(client_socket)
         client_socket.close()
 
