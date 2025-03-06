@@ -61,9 +61,15 @@ class Client:
                 newControl = ControlledArea(entry[2], entry[4], entry[0][0], entry[0][1], entry[3])
                 self.map.append(newControl)
 
-        print(self.map)
+        for tile in self.map:
+            tile.render(self.screen)  # Render the tiles
+        pygame.display.flip()  # Update the display
+
+    def send_message(self):
+        pass
 
     def start(self):
+        clock = pygame.time.Clock()
         try:
             self.client_socket.connect((self.server_host, self.server_port))
             threading.Thread(target=self.listen_to_server, daemon=True).start()
@@ -75,12 +81,16 @@ class Client:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         self.running = False  # Stop the loop when window is closed
+                    
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        for tile in self.map:
+                            if isinstance(tile, Tile):
+                                if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
+                                    print(tile.x)
+                                    print(tile.y)
 
-                for tile in self.map:
-                    tile.render(self.screen)  # Render the tiles
-
-                pygame.display.flip()  # Update the display
                 pygame.time.delay(30)  # Control frame rate
+                # clock.tick(30)
 
         except Exception as e:
             print(f"Error: {e}")
