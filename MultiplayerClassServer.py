@@ -1,6 +1,6 @@
 import socket
 import threading
-from MultiplayerClassClient import Client
+from MultiplayerClassClient import *
 
 class Server:
     def __init__(self):
@@ -14,6 +14,7 @@ class Server:
         self.player1 = None
         self.player2 = None
         self.activePlayer = None
+        self.map = []
 
     def handle_client(self, client_socket):
         while True:
@@ -39,6 +40,7 @@ class Server:
             print(f"Client connected: {addr}")
             print(a)
             a+=1
+            self.sendSetupData("Level_1", client_socket)
             self.clients.append(client_socket)
             threading.Thread(target=self.handle_client, args=(client_socket,), daemon=True).start()
 
@@ -55,7 +57,47 @@ class Server:
             elif cmd.lower() == "1":
                 self.activePlayer = self.player1
 
+    def load_map(self, levelFile):
+        file_path = "Levels/"+levelFile+".json"
+        with open(file_path, 'r') as json_file:
+            data = json.load(json_file)
+
+        bluePrint = data["map"]
+
+        for entry in bluePrint:
+
+            if entry[1] == "tile":
+                newTile = Tile(entry[2], entry[4], entry[0][0],entry[0][1],entry[3])
+                self.map.append(newTile)
+
+            elif entry[1] == "door":
+                newDoor = Door(entry[2], entry[4], entry[6], entry[0][0], entry[0][1], entry[3], entry[5])
+                if entry[5] == False:
+                    newDoor.change_picture(newDoor.pictureClosedPath)
+                self.map.append(newDoor)
+
+            elif entry[1] == "wall":
+                newWall = Wall(entry[2],entry[0][0],entry[0][1])
+                self.map.append(newWall)
+
+            elif entry[1] == "entry":
+                newEntry = EntryPoint(entry[2],entry[0][0],entry[0][1],entry[3])
+                self.map.append(newEntry)
+
+            elif entry[1] == "control":
+                newControl = ControlledArea(entry[2],entry[4],entry[0][0],entry[0][1],entry[3])
+                self.map.append(newControl)
+
+        print(self.map)
+
+    def sendSetupData(self, levelFile, client):
+        file_path = "Levels/"+levelFile+".json"
+        data = {"purpose": "setup",
+                "mapFile":file_path}
+        client.send(json.dumps(data).encode())
+
     def start_server(self):
+        self.load_map("Level_1")
         threading.Thread(target=self.accept_clients, daemon=True).start()
         #self.command_listener()
 
