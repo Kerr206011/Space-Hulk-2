@@ -65,8 +65,9 @@ class Client:
             tile.render(self.screen)  # Render the tiles
         pygame.display.flip()  # Update the display
 
-    def send_message(self):
-        pass
+    def send_message(self, purpose:str):
+        data = {"purpose": purpose}
+        self.client_socket.send(json.dumps(data).encode())
 
     def start(self):
         clock = pygame.time.Clock()
@@ -90,7 +91,6 @@ class Client:
                                     print(tile.y)
 
                 pygame.time.delay(30)  # Control frame rate
-                # clock.tick(30)
 
         except Exception as e:
             print(f"Error: {e}")
