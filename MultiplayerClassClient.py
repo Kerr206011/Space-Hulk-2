@@ -18,6 +18,7 @@ class Client:
         self.selectedTile = None
         self.clickedTile = None
         self.gameStates = {}
+        self.SMmodelList
 
     def listen_to_server(self):
         while self.running:
@@ -118,6 +119,11 @@ class Client:
             self.client_socket.close()
             pygame.quit()
             print("Disconnected from server.")
+
+class ClientSpacemarinePlaceGamestate:
+
+    def __init__(self, client):
+        self.client = client
 
 client = Client()
 client.start()
