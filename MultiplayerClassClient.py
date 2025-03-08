@@ -3,6 +3,7 @@ import threading
 import json
 import pygame
 from Board import *
+from Models import *
 
 class Client:
     def __init__(self, host='127.0.0.1', port=5000):
@@ -13,6 +14,10 @@ class Client:
         pygame.init()
         self.screen = pygame.display.set_mode((900, 900), pygame.DOUBLEBUF)
         self.running = True  # Flag to control the main loop
+        self.role = None
+        self.selectedTile = None
+        self.clickedTile = None
+        self.gameStates = {}
 
     def listen_to_server(self):
         while self.running:
@@ -26,6 +31,16 @@ class Client:
                     case "setup":
                         print("setup")
                         self.load_map(message["mapFile"])
+                    case "role":
+                        self.role = message["role"]
+                        print(self.role)
+                    case "confirmation":
+                        if message["target"] == "clicked":
+                            if message["confirmation"] == True:
+                                print("confirmed Clicked")
+                            else:
+                                self.clickedTile = None
+
             except Exception as e:
                 print(f"Error in receiving: {e}")
                 break
@@ -69,8 +84,12 @@ class Client:
         data = {"purpose": purpose}
         self.client_socket.send(json.dumps(data).encode())
 
+    def send_message_clicked(self, tile):
+        data = {"purpose": "clicked",
+                "tile" : (tile.x, tile.y)}
+        self.client_socket.send(json.dumps(data).encode())
+
     def start(self):
-        clock = pygame.time.Clock()
         try:
             self.client_socket.connect((self.server_host, self.server_port))
             threading.Thread(target=self.listen_to_server, daemon=True).start()
@@ -87,8 +106,9 @@ class Client:
                         for tile in self.map:
                             if isinstance(tile, Tile):
                                 if tile.button.rect.collidepoint(pygame.mouse.get_pos()):
-                                    print(tile.x)
-                                    print(tile.y)
+                                    self.clickedTile = tile
+                                    self.send_message_clicked(tile)
+                                    
 
                 pygame.time.delay(30)  # Control frame rate
 
