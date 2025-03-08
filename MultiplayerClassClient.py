@@ -18,7 +18,9 @@ class Client:
         self.selectedTile = None
         self.clickedTile = None
         self.gameStates = {}
-        self.SMmodelList
+        self.SMModelList = []
+        self.GSModelList = []
+        self.BLModelList = []
 
     def listen_to_server(self):
         while self.running:
