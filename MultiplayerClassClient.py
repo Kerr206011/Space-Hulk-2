@@ -4,6 +4,7 @@ import json
 import pygame
 from Board import *
 from Models import *
+from UI import * 
 
 class Client:
     def __init__(self, host='127.0.0.1', port=5000):

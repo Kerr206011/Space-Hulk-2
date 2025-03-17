@@ -19,6 +19,10 @@ class Server:
         self.clickedTile_s = None
         self.selectedTile_g = None
         self.clickedTile_g = None
+        self.current_gameState = "Setup"
+        self.SMModelList = []
+        self.GSModelList = []
+        self.BLModelList = []
 
     def handle_client(self, client_socket):
         while True:
@@ -38,8 +42,14 @@ class Server:
                                         if tile.isOccupied == False or not isinstance(tile.occupand, SpaceMarine):
                                             self.clickedTile_s = tile
                                             self.send_confirmation(True, "clicked", self.player_S)
+                                elif client_socket == self.player_G:
+                                    if isinstance(tile, Tile):
+                                        if tile.isOccupied == False or isinstance(tile.occupand, SpaceMarine):
+                                            self.clickedTile_s = tile
+                                            self.send_confirmation(True, "clicked", self.player_G)
             except:
                 break
+            
         print(f"Client {client_socket} disconnected.")
         self.clients.remove(client_socket)
         client_socket.close()

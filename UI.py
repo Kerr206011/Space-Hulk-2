@@ -136,6 +136,26 @@ class Dice:
             pygame.display.update(self.rect)
             time.sleep(sleepTime)
 
+    def roll_dice_determined(self, screen, face, frames = 15, sleepTime = 0.1):
+        a = 0
+        while a < frames:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        break
+            b = random.randint(0, 5)
+            self.face = b + 1
+            self.picture = self.diceImage[b]
+            a +=1
+            screen.blit(self.picture, (self.x, self.y))
+            pygame.display.update(self.rect)
+            time.sleep(sleepTime)
+
+        self.face = face
+        self.picture = self.diceImage[face - 1]
+        screen.blit(self.picture, (self.x, self.y))
+        pygame.display.update(self.rect)
+
     def show_result(self, screen):
         action = False
 
