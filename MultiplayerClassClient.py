@@ -18,6 +18,12 @@ class Client:
         self.role = None
         self.selectedTile = None
         self.clickedTile = None
+
+        self.lobbyMemberList = []
+        self.SMPlayer = None
+        self.GSPlayer = None
+        self.Spectators = []
+
         self.gameStates = {}
         self.SMModelList = []
         self.GSModelList = []
@@ -123,10 +129,24 @@ class Client:
             pygame.quit()
             print("Disconnected from server.")
 
-class ClientSpacemarinePlaceGamestate:
+    def run(self):
+        pass
 
-    def __init__(self, client):
-        self.client = client
+    def run_lobby(self):
+        while self.running:
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False  # Stop the loop when window is closed
+                    pygame.quit()
+                    sys.exit()
+
+            for player in self.lobbyMemberList:
+                if player == self.SMPlayer:
+                    pygame.draw.rect(self.screen, "blue", pygame.Rect(10,10,20,10))
+                else:
+                    pygame.draw.rect(self.screen, "red", pygame.Rect(200,10,20,10))
+            pygame.display.flip()
 
 client = Client()
 client.start()

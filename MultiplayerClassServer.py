@@ -135,9 +135,11 @@ class Server:
     def start_server(self):
         self.load_map("Level_1")
         threading.Thread(target=self.accept_clients, daemon=True).start()
-        #self.command_listener()
 
     def sendPlayer1Update(self):
+        pass
+
+    def handle_lobby(self):
         pass
 
 server = Server()
