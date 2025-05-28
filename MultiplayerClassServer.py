@@ -155,8 +155,11 @@ class Server:
         self.player_G = None
         self.player_S = None
         self.activePlayer = None
+        self.admin = None
         self.map = []
         self.current_gameState = "Setup"
+        self.gsready = False
+        self.smready = False
         self.SMModelList = []
         self.GSModelList = []
         self.BLModelList = []
@@ -184,6 +187,19 @@ class Server:
                                         if tile.isOccupied == False or isinstance(tile.occupand, SpaceMarine):
                                             self.clickedTile_s = tile
                                             self.send_confirmation(True, "clicked", self.player_G)
+
+                    elif message["purpose"] == "ready":
+                        if client_socket == self.player_S:
+                            self.smready = not self.smready
+                        elif client_socket == self.player_G:
+                            self.gsready = not self.gsready
+
+                    elif message["purpose"] == "roleswitch":
+                        if client_socket == self.admin:
+                            gs = self.player_S
+                            self.player_S = self.player_G
+                            self.player_G = gs
+                        
             except:
                 break
             
@@ -201,6 +217,7 @@ class Server:
             self.sendSetupData("Level_1", client_socket)
             self.clients.append(client_socket)
             if a == 2:
+                self.admin = client_socket
                 self.player_S = client_socket
                 self.sendRole("S", self.player_S)
             else:
@@ -273,18 +290,24 @@ class Server:
         self.load_map("Level_1")
         threading.Thread(target=self.accept_clients, daemon=True).start()
 
-    def sendPlayer1Update(self):
-        pass
+    def sendMapUpdates(self, tiles):
+        data = {"purpose": "mapupdate",
+                "tiles": tiles}
+        
+        for client in self.clients:
+            client.send(json.dumps(data).encode())
 
     def handle_lobby(self):
         run = True
-        ready_SM = False
-        ready_GS = False
 
         while run:
-            if ready_SM and ready_GS:
+            if self.gsready and self.smready:
                 run = False
-                                                                                      
+                self.run_game()
+
+    def run_game(self):
+        while True:
+            pass                                                                                      
 
 server = Test_Server()
 client = Client()
