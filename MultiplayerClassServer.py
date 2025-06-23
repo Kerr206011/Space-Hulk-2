@@ -152,8 +152,8 @@ class Server:
         self.server.bind((self.HOST, self.PORT))
         self.server.listen(5)
         print(f"Server listening on {self.HOST}:{self.PORT}")
-        self.player_G = None
-        self.player_S = None
+        self.players_G = []
+        self.players_S = []
         self.activePlayer = None
         self.admin = None
         self.map = []
@@ -188,17 +188,33 @@ class Server:
                                             self.clickedTile_s = tile
                                             self.send_confirmation(True, "clicked", self.player_G)
 
-                    elif message["purpose"] == "ready":
-                        if client_socket == self.player_S:
-                            self.smready = not self.smready
-                        elif client_socket == self.player_G:
-                            self.gsready = not self.gsready
+                    # elif message["purpose"] == "ready":
+                    #     if client_socket == self.player_S:
+                    #         self.smready = not self.smready
+                    #     elif client_socket == self.player_G:
+                    #         self.gsready = not self.gsready
 
                     elif message["purpose"] == "roleswitch":
-                        if client_socket == self.admin:
-                            gs = self.player_S
-                            self.player_S = self.player_G
-                            self.player_G = gs
+                        if message["new_role"] == "gs":
+                            if client_socket not in self.players_G:
+                                self.players_G.append(client_socket)
+                            
+                            if client_socket in self.players_S:
+                                self.players_S.remove(client_socket)
+
+                        elif message["new_role"] == "sm":
+                            if client_socket not in self.players_S:
+                                self.players_S.append(client_socket)
+                            
+                            if client_socket in self.players_G:
+                                self.players_G.remove(client_socket)
+
+                        else:
+                            if client_socket in self.players_G:
+                                self.players_G.remove(client_socket)
+                            if client_socket in self.player_S:
+                                self.players_G.remove(client_socket)
+
                         
             except:
                 break

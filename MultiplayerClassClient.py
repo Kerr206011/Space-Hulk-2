@@ -240,6 +240,10 @@ class Client:
                 "tile" : (tile.x, tile.y)}
         self.client_socket.send(json.dumps(data).encode())
 
+    def send_message_roleChanged(self, role):
+        data = {"purpose": "roleswitch",
+                "new_role": role}
+
     def start(self):
         try:
             self.client_socket.connect((self.server_host, self.server_port))
@@ -282,8 +286,13 @@ class Client:
             "GS":{
                 (1, (500, 10)),
                 (2,(500, 20))
-            }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+            },
+            "Spectator":{
+                (1, (250, 800)),
+                (2, (350, 800))
+            }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
         }
+
         SM_Picture = pygame.image.load('Pictures/Tiles/Floor_1.png')
         SM_Button = Button(10, 800, SM_Picture, 1)
         GS_Picture = pygame.image.load('Pictures/Tiles/Floor_1.png')
