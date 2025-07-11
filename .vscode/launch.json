@@ -5,6 +5,27 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "HelloWorldMainLauncherClass",
+            "request": "launch",
+            "mainClass": "it.nanowar.ofsteel.helloworld.HelloWorldMainLauncherClass",
+            "projectName": "Space-Hulk-2_ea5ff8cc"
+        },
+        {
+            "type": "java",
+            "name": "HelloWorldMainLauncherClass",
+            "request": "launch",
+            "mainClass": "IT.Nanowar.ofSteel.HelloWorld.HelloWorldMainLauncherClass",
+            "projectName": "Space-Hulk-2_ea5ff8cc"
+        },
+        {
+            "type": "java",
+            "name": "helloWorldMainLauncherClass",
+            "request": "launch",
+            "mainClass": "IT.Nanowar.ofSteel.HelloWorld.helloWorldMainLauncherClass",
+            "projectName": "Space-Hulk-2_ea5ff8cc"
+        },
+        {
             "name": "Python Debugger: Current File",
             "type": "debugpy",
             "request": "launch",
