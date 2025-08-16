@@ -1,10 +1,11 @@
 import socket
 import threading
-from MultiplayerClassClient import *
-
-import socket
-import threading
 import json
+
+class GameState:
+    LOBBY = "lobby"
+    RUNNING = "running"
+    FINISHED = "finished"
 
 class Server:
     def __init__(self, host='127.0.0.1', port=5000):
@@ -12,6 +13,7 @@ class Server:
         self.port = port
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.clients = []  # [(conn, addr, name), ...]
+        self.gameState = GameState.LOBBY
 
     def start(self):
         self.server_socket.bind((self.host, self.port))
@@ -36,7 +38,6 @@ class Server:
                     name = message["name"]
                     self.clients.append((conn, addr, name))
                     self.send_lobby_update()
-                    print(name + "joined the Lobby!")
 
                     # Bestätigung an den neuen Client
                     self.send(conn, {
@@ -57,11 +58,13 @@ class Server:
 
     def send_lobby_update(self):
         players = [n for _, _, n in self.clients]
+        gameState = self.gameState
         for conn, _, _ in self.clients:
             self.send(conn, {
                 "purpose": "lobby_update",
-                "players": players
+                "players": players,
             })
+
 
 test_server = Server()
 test_server.start()

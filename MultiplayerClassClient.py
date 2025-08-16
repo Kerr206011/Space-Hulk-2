@@ -13,6 +13,7 @@ class Test_Client:
         self.name = name
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.players_in_lobby = []
+        self.gameState = "lobby"
 
     def connect(self):
         self.client_socket.connect((self.server_host, self.server_port))
@@ -48,11 +49,12 @@ class Test_Client:
             except Exception as e:
                 print("Fehler in Lobby:", e)
                 break
-
-client = Test_Client()
-client2 = Test_Client(name = 'Player2')
+            
+    def gameStat_lobby(self):
+        pass
+    
+client = Test_Client(name='Player2')
 client.connect()
-client2.connect()
 
 # class Test_Client:
 #     def __init__(self, host='127.0.0.1', port=5000):
