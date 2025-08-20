@@ -68,3 +68,5 @@ after rooling the cp again, the button for reroll needs to disappear
 ideas for Client server:
     clients have run() for gamestates, but they only log and send the clicks and have no internal logic
     server sends updates for the map, client displays it
+
+Version: 0.0.1
