@@ -5,6 +5,7 @@ import pygame
 from Board import *
 from Models import *
 from UI import * 
+from MultiplayerClassServer import Server
 
 class Test_Client:
     def __init__(self, host='127.0.0.1', port=5000, name='Player1'):
@@ -13,7 +14,7 @@ class Test_Client:
         self.name = name
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.players_in_lobby = []
-        self.gameState = "lobby"
+        self.is_host = False
 
     def connect(self):
         self.client_socket.connect((self.server_host, self.server_port))
@@ -51,10 +52,19 @@ class Test_Client:
                 break
             
     def gameStat_lobby(self):
-        pass
-    
-client = Test_Client(name='Player2')
-client.connect()
+        test_server = Server()
+        threading.Thread(target=test_server.start, args=(), daemon = True).start()
+        self.is_host = True
+
+a = int(input())
+if a == 0:
+    client = Test_Client()
+    client.gameStat_lobby()
+    client.connect()
+else:
+    client = Test_Client(name='Player2')
+    client.connect()
+
 
 # class Test_Client:
 #     def __init__(self, host='127.0.0.1', port=5000):

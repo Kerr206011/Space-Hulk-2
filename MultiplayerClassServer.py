@@ -2,24 +2,21 @@ import socket
 import threading
 import json
 
-class GameState:
-    LOBBY = "lobby"
-    RUNNING = "running"
-    FINISHED = "finished"
-
 class Server:
     def __init__(self, host='127.0.0.1', port=5000):
         self.host = host
         self.port = port
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.clients = []  # [(conn, addr, name), ...]
-        self.gameState = GameState.LOBBY
+        self.server_host = None
 
     def start(self):
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen()
+        threading.Thread(target=self.accept_clients, args=()).start()
         print("Server started")
 
+    def accept_clients(self):
         while True:
             conn, addr = self.server_socket.accept()
             threading.Thread(target=self.handle_client, args=(conn, addr)).start()
@@ -36,6 +33,9 @@ class Server:
 
                 if message["purpose"] == "join_lobby":
                     name = message["name"]
+                    if self.server_host == None:
+                        self.server_host = (conn, addr, name)
+                        # print(self.server_host[2])
                     self.clients.append((conn, addr, name))
                     self.send_lobby_update()
 
@@ -58,16 +58,11 @@ class Server:
 
     def send_lobby_update(self):
         players = [n for _, _, n in self.clients]
-        gameState = self.gameState
         for conn, _, _ in self.clients:
             self.send(conn, {
                 "purpose": "lobby_update",
                 "players": players,
             })
-
-
-test_server = Server()
-test_server.start()
 
 # class Test_Server:
 #     def __init__(self):
