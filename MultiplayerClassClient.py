@@ -9,12 +9,84 @@ from MultiplayerClassServer import Server
 
 class Test_Client:
     def __init__(self, host='127.0.0.1', port=5000, name='Player1'):
+        try:
+            with open("config.json", 'r') as json_file:
+                data = json.load(json_file)
+                self.name = data["name"]
+        except:
+            self.name = name
         self.server_host = host
         self.server_port = port
-        self.name = name
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.players_in_lobby = []
         self.is_host = False
+        pygame.init()
+        pygame.display.set_caption("Space Hulk")
+        self.screen = pygame.display.set_mode((900,700))
+        self.state = None
+
+    def main(self):
+        picture = pygame.image.load("Pictures/Buttons/Accept.png")
+        startButton = Button(400, 300, picture, 1)
+        hostButton = Button(400, 400, picture, 1)
+        configButton = Button(40, 600, picture, 1)
+        self.screen.fill('black')
+        startButton.draw(self.screen)
+        hostButton.draw(self.screen)
+        configButton.draw(self.screen)
+        pygame.display.flip()
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    if startButton.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.connect()
+                    elif hostButton.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.gameStat_lobby()
+                        self.connect()
+                    elif configButton.rect.collidepoint(pygame.mouse.get_pos()):
+                        self.config()
+
+    def config(self):
+        self.screen.fill('black')
+        picture = pygame.image.load("Pictures/Buttons/Accept.png")
+        acceptButton = Button(400, 600, picture, 1)
+        font = pygame.font.SysFont(None, 32)
+        file_path = "config.json"
+        name:str = self.name
+        acceptButton.draw(self.screen)
+        self.screen.blit(font.render(name, True, 'green'),(200,200))
+        pygame.display.flip()
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                #events werden ohne auftretendes event aufgerufen
+                elif (event.type == pygame.MOUSEBUTTONUP and acceptButton.rect.collidepoint(pygame.mouse.get_pos())) or (event.key == pygame.K_KP_ENTER) or (event.key == pygame.K_RETURN):
+                    if name.__len__() != 0:
+                        self.name = name
+                        data = {"name": self.name}
+                        with open(file_path, 'w') as json_file:
+                            json.dump(data, json_file, indent=4)
+                       # return
+                        self.main()
+                    
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_BACKSPACE:
+                        name = name[:-1]
+                    else:
+                        name += event.unicode
+                    self.screen.fill('black')
+                    self.screen.blit(font.render(name, True, 'green'),(200,200))
+                    acceptButton.draw(self.screen)
+                    pygame.display.flip()
+
 
     def connect(self):
         self.client_socket.connect((self.server_host, self.server_port))
@@ -56,15 +128,8 @@ class Test_Client:
         threading.Thread(target=test_server.start, args=(), daemon = True).start()
         self.is_host = True
 
-a = int(input())
-if a == 0:
-    client = Test_Client()
-    client.gameStat_lobby()
-    client.connect()
-else:
-    client = Test_Client(name='Player2')
-    client.connect()
-
+client = Test_Client()
+client.main()
 
 # class Test_Client:
 #     def __init__(self, host='127.0.0.1', port=5000):
