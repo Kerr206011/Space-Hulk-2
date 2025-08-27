@@ -59,6 +59,7 @@ class Test_Client:
         lobby_GSButton = Button(200, 600, config_picture, 1)
         lobby_spectatorButton = Button(400, 600, config_picture, 1)
         lobby_SMButton = Button(600, 600, config_picture, 1)
+        lobby_startButton = Button(100, 600, config_picture, 1)
 
         #start of game
         self.screen.fill('black')
@@ -137,6 +138,8 @@ class Test_Client:
                             lobby_GSButton.draw(self.screen)
                             lobby_SMButton.draw(self.screen)
                             lobby_spectatorButton.draw(self.screen)
+                            if self.is_host:
+                                lobby_startButton.draw(self.screen)
 
                             lobby_name_pos_spectator = 100
 
@@ -186,7 +189,10 @@ class Test_Client:
                                 message = {"purpose":"rolechange",
                                             "role" : "spectator"}
                                 self.send(message)
-                                print("Spectator message sent")
+                        
+                        elif self.is_host:
+                            if lobby_startButton.rect.collidepoint(pygame.mouse.get_pos()):
+                                pass
 
             #updates the screen after a stateshift
             if stateShift == True:
@@ -207,18 +213,17 @@ class Test_Client:
                     lobby_GSButton.draw(self.screen)
                     lobby_SMButton.draw(self.screen)
                     lobby_spectatorButton.draw(self.screen)
+                    if self.is_host:
+                        lobby_startButton.draw(self.screen)
                     
     
                 pygame.display.flip()
                 stateShift = False
 
     def connect(self):
+        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # NEU anlegen
         self.client_socket.connect((self.server_host, self.server_port))
-        # Namen an Server schicken
-        self.send({
-            "purpose": "join_lobby",
-            "name": self.name
-        })
+        self.send({ "purpose": "join_lobby", "name": self.name })
         self.running = True
         threading.Thread(target=self.listen_to_server).start()
 
