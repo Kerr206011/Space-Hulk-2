@@ -80,6 +80,8 @@ class Test_Client:
                 elif self.state == Game_State.MAINMENU and not wait:
                     if event.type == pygame.MOUSEBUTTONUP:
                         if main_startButton.rect.collidepoint(pygame.mouse.get_pos()):
+                            self.screen.fill('black')
+                            self.screen.blit(config_font.render("connecting", True, 'green'),(300,400))
                             self.connect()
                             self.state = Game_State.LOBBY
                             stateShift = True
@@ -87,6 +89,8 @@ class Test_Client:
 
                         elif main_hostButton.rect.collidepoint(pygame.mouse.get_pos()):
                             self.gameStat_lobby()
+                            self.screen.fill('black')
+                            self.screen.blit(config_font.render("connecting", True, 'green'),(300,400))
                             self.connect()
                             self.state = Game_State.LOBBY
                             stateShift = True
@@ -233,6 +237,7 @@ class Test_Client:
             self.send({ "purpose": "join_lobby", "name": self.name })
             self.running = True
             threading.Thread(target=self.listen_to_server).start()
+
 
     def disconnect(self):
         try:

@@ -121,8 +121,8 @@ class Server:
             print(f"Error with {addr}: {e}")
         finally:
             conn.close()
-            if name:
-                self.clients = [c for c in self.clients if c["name"] != name]
+            if conn:
+                self.clients = [c for c in self.clients if c["conn"] != conn]
                 self.send_lobby_update()
 
     def send(self, conn, message):
