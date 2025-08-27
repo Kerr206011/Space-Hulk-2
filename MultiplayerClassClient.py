@@ -82,6 +82,7 @@ class Test_Client:
                         if main_startButton.rect.collidepoint(pygame.mouse.get_pos()):
                             self.screen.fill('black')
                             self.screen.blit(config_font.render("connecting", True, 'green'),(300,400))
+                            pygame.display.flip()
                             self.connect()
                             self.state = Game_State.LOBBY
                             stateShift = True
@@ -91,6 +92,7 @@ class Test_Client:
                             self.gameStat_lobby()
                             self.screen.fill('black')
                             self.screen.blit(config_font.render("connecting", True, 'green'),(300,400))
+                            pygame.display.flip()
                             self.connect()
                             self.state = Game_State.LOBBY
                             stateShift = True
