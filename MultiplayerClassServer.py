@@ -9,7 +9,8 @@ class GameRole(Enum):
     GENSTEALER = "genstealer"
 
 class Server:
-    def __init__(self, host='0.0.0.0', port=5000):
+    def __init__(self, host="0.0.0.0", port=5000, discovery_port=5001):
+        self.discovery_port = discovery_port
         self.host = host
         self.port = port
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -23,6 +24,7 @@ class Server:
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen()
         threading.Thread(target=self.accept_clients, args=()).start()
+        threading.Thread(target=self.broadcast_listener, daemon=True).start()
         print("Server started")
 
     def accept_clients(self):
@@ -133,6 +135,20 @@ class Server:
                 "purpose": "lobby_update",
                 "players": players,
             })
+
+    def broadcast_listener(self):
+        udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        udp_socket.bind(("", self.discovery_port))
+
+        while True:
+            try:
+                data, addr = udp_socket.recvfrom(1024)
+                if data.decode() == "DISCOVER_SPACEHULK":
+                    response = f"SPACEHULK_SERVER:{self.port}"
+                    udp_socket.sendto(response.encode(), addr)
+            except Exception as e:
+                print("Discovery error:", e)
 
 # class Test_Server:
 #     def __init__(self):

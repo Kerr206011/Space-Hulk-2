@@ -222,10 +222,17 @@ class Test_Client:
 
     def connect(self):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # NEU anlegen
-        self.client_socket.connect((self.server_host, self.server_port))
-        self.send({ "purpose": "join_lobby", "name": self.name })
-        self.running = True
-        threading.Thread(target=self.listen_to_server).start()
+        try:
+            self.client_socket.connect((self.server_host, self.server_port))
+            self.send({ "purpose": "join_lobby", "name": self.name })
+            self.running = True
+            threading.Thread(target=self.listen_to_server).start()
+        except:
+            lobbys = self.discover_servers()
+            self.client_socket.connect((lobbys[0][0], lobbys[0][1]))
+            self.send({ "purpose": "join_lobby", "name": self.name })
+            self.running = True
+            threading.Thread(target=self.listen_to_server).start()
 
     def disconnect(self):
         try:
@@ -275,6 +282,26 @@ class Test_Client:
         test_server = Server()
         threading.Thread(target=test_server.start, args=(), daemon = True).start()
         self.is_host = True
+    
+    def discover_servers(self, discovery_port=5001, timeout=1):
+        udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        udp_socket.settimeout(timeout)
+
+        message = "DISCOVER_SPACEHULK".encode()
+        udp_socket.sendto(message, ("<broadcast>", discovery_port))
+
+        servers = []
+        try:
+            while True:
+                data, addr = udp_socket.recvfrom(1024)
+                if data.decode().startswith("SPACEHULK_SERVER:"):
+                    port = int(data.decode().split(":")[1])
+                    servers.append((addr[0], port))
+        except socket.timeout:
+            pass
+
+        return servers
 
 client = Test_Client()
 client.main()
