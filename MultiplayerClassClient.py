@@ -5,7 +5,12 @@ import pygame
 from Board import *
 from Models import *
 from UI import * 
-from MultiplayerClassServer import Server
+from MultiplayerClassServer import *
+
+class Game_State(Enum):
+    MAINMENU = "main"
+    LOBBY = "lobby"
+    CONFIG = "config"
 
 class Test_Client:
     def __init__(self, host='127.0.0.1', port=5000, name='Player1'):
@@ -15,6 +20,8 @@ class Test_Client:
                 self.name = data["name"]
         except:
             self.name = name
+
+        self.role = GameRole.SPECTATOR
         self.server_host = host
         self.server_port = port
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -24,69 +31,186 @@ class Test_Client:
         pygame.display.set_caption("Space Hulk")
         self.screen = pygame.display.set_mode((900,700))
         self.state = None
+        self.running = False
 
     def main(self):
-        picture = pygame.image.load("Pictures/Buttons/Accept.png")
-        startButton = Button(400, 300, picture, 1)
-        hostButton = Button(400, 400, picture, 1)
-        configButton = Button(40, 600, picture, 1)
+        #general init
+        stateShift = False
+        wait  =False
+
+        #main menu init
+        main_picture = pygame.image.load("Pictures/Buttons/Accept.png")
+        main_startButton = Button(400, 300, main_picture, 1)
+        main_hostButton = Button(400, 400, main_picture, 1)
+        main_configButton = Button(40, 600, main_picture, 1)
+
+        #config init
+        config_picture = pygame.image.load("Pictures/Buttons/Accept.png")
+        config_acceptButton = Button(400, 600, config_picture, 1)
+        config_font = pygame.font.SysFont(None, 32)
+        config_file_path = "config.json"
+        config_name:str = self.name
+
+        #lobby init
+        lobby_name_pos_spectator = 100
+        lobby_name_pos_gs = 100
+        lobby_name_pos_sm = 100
+        lobby_picture = pygame.image.load("Pictures/Buttons/Accept.png")
+        lobby_GSButton = Button(200, 600, config_picture, 1)
+        lobby_spectatorButton = Button(400, 600, config_picture, 1)
+        lobby_SMButton = Button(600, 600, config_picture, 1)
+
+        #start of game
         self.screen.fill('black')
-        startButton.draw(self.screen)
-        hostButton.draw(self.screen)
-        configButton.draw(self.screen)
+        main_startButton.draw(self.screen)
+        main_hostButton.draw(self.screen)
+        main_configButton.draw(self.screen)
         pygame.display.flip()
+        self.state = Game_State.MAINMENU
 
         while True:
+            wait = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                elif event.type == pygame.MOUSEBUTTONUP:
-                    if startButton.rect.collidepoint(pygame.mouse.get_pos()):
-                        self.connect()
-                    elif hostButton.rect.collidepoint(pygame.mouse.get_pos()):
-                        self.gameStat_lobby()
-                        self.connect()
-                    elif configButton.rect.collidepoint(pygame.mouse.get_pos()):
-                        self.config()
 
-    def config(self):
-        self.screen.fill('black')
-        picture = pygame.image.load("Pictures/Buttons/Accept.png")
-        acceptButton = Button(400, 600, picture, 1)
-        font = pygame.font.SysFont(None, 32)
-        file_path = "config.json"
-        name:str = self.name
-        acceptButton.draw(self.screen)
-        self.screen.blit(font.render(name, True, 'green'),(200,200))
-        pygame.display.flip()
+                #main menu logic
+                elif self.state == Game_State.MAINMENU and not wait:
+                    if event.type == pygame.MOUSEBUTTONUP:
+                        if main_startButton.rect.collidepoint(pygame.mouse.get_pos()):
+                            self.connect()
+                            self.state = Game_State.LOBBY
+                            stateShift = True
+                            wait = True
 
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
+                        elif main_hostButton.rect.collidepoint(pygame.mouse.get_pos()):
+                            self.gameStat_lobby()
+                            self.connect()
+                            self.state = Game_State.LOBBY
+                            stateShift = True
+                            wait = True
 
-                #events werden ohne auftretendes event aufgerufen
-                elif (event.type == pygame.MOUSEBUTTONUP and acceptButton.rect.collidepoint(pygame.mouse.get_pos())) or (event.key == pygame.K_KP_ENTER) or (event.key == pygame.K_RETURN):
-                    if name.__len__() != 0:
-                        self.name = name
-                        data = {"name": self.name}
-                        with open(file_path, 'w') as json_file:
-                            json.dump(data, json_file, indent=4)
-                       # return
-                        self.main()
-                    
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_BACKSPACE:
-                        name = name[:-1]
-                    else:
-                        name += event.unicode
+                        elif main_configButton.rect.collidepoint(pygame.mouse.get_pos()):
+                            stateShift = True
+                            self.state = Game_State.CONFIG
+                            wait = True
+
+                #config logic
+                elif self.state == Game_State.CONFIG and not wait:
+                    if event.type == pygame.MOUSEBUTTONUP and config_acceptButton.rect.collidepoint(pygame.mouse.get_pos()):
+                        if config_name.__len__() != 0:
+                            self.name = config_name
+                            data = {"name": self.name}
+                            with open(config_file_path, 'w') as json_file:
+                                json.dump(data, json_file, indent=4)
+                            stateShift = True
+                            self.state = Game_State.MAINMENU
+                            wait = True
+                        
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_BACKSPACE:
+                            config_name = config_name[:-1]
+
+                        elif event.key == pygame.K_KP_ENTER or event.key == pygame.K_RETURN:
+                            if config_name.__len__() != 0:
+                                self.name = config_name
+                                data = {"name": self.name}
+                                with open(config_file_path, 'w') as json_file:
+                                    json.dump(data, json_file, indent=4)
+                                stateShift = True
+                                self.state = Game_State.MAINMENU
+                                wait = True
+
+                        else:
+                            config_name += event.unicode
+                        self.screen.fill('black')
+                        self.screen.blit(config_font.render(config_name, True, 'green'),(200,200))
+                        config_acceptButton.draw(self.screen)
+                        pygame.display.flip()
+
+                #lobby logic
+                elif self.state == Game_State.LOBBY:
+                    if event.type == pygame.USEREVENT:
+                        if event.data["purpose"] == "lobby_update":
+                            self.screen.fill('black')
+                            lobby_GSButton.draw(self.screen)
+                            lobby_SMButton.draw(self.screen)
+                            lobby_spectatorButton.draw(self.screen)
+
+                            lobby_name_pos_spectator = 100
+
+                            for player in self.players_in_lobby:
+                                if player[1] == GameRole.SPECTATOR:
+                                    self.screen.blit(config_font.render(player[0], True, 'green',), (300, lobby_name_pos_spectator))
+                                    lobby_name_pos_spectator += 50
+                                elif player[1] == GameRole.SPACEMARINE:
+                                    self.screen.blit(config_font.render(player[0], True, 'blue',), (500, lobby_name_pos_sm))
+                                else:
+                                    self.screen.blit(config_font.render(player[0], True, 'purple',), (100, lobby_name_pos_gs))
+
+                            pygame.display.flip()
+
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            self.disconnect()
+                            self.state = Game_State.MAINMENU
+                            stateShift = True
+                            wait = True
+                        
+                    elif event.type == pygame.MOUSEBUTTONUP:
+                        if lobby_GSButton.rect.collidepoint(pygame.mouse.get_pos()):
+                            if self.role != GameRole.GENSTEALER:
+                                request = True
+                                for player in self.players_in_lobby:
+                                    if player[1] == GameRole.GENSTEALER:
+                                        request = False
+                                if request == True:
+                                    message = {"purpose":"rolechange",
+                                               "role" : "genstealer"}
+                                    self.send(message)
+
+                        elif lobby_SMButton.rect.collidepoint(pygame.mouse.get_pos()):
+                            if self.role != GameRole.SPACEMARINE:
+                                request = True
+                                for player in self.players_in_lobby:
+                                    if player[1] == GameRole.SPACEMARINE:
+                                        request = False
+                                if request == True:
+                                    message = {"purpose":"rolechange",
+                                               "role" : "spacemarine"}
+                                    self.send(message)
+
+                        elif lobby_spectatorButton.rect.collidepoint(pygame.mouse.get_pos()):
+                            if self.role != GameRole.SPECTATOR:
+                                message = {"purpose":"rolechange",
+                                            "role" : "spectator"}
+                                self.send(message)
+                                print("Spectator message sent")
+
+            #updates the screen after a stateshift
+            if stateShift == True:
+                if self.state == Game_State.MAINMENU:  
                     self.screen.fill('black')
-                    self.screen.blit(font.render(name, True, 'green'),(200,200))
-                    acceptButton.draw(self.screen)
-                    pygame.display.flip()
+                    main_startButton.draw(self.screen)
+                    main_hostButton.draw(self.screen)
+                    main_configButton.draw(self.screen)
 
+                if self.state == Game_State.CONFIG:
+                    self.screen.fill('black')
+                    config_acceptButton.draw(self.screen)
+                    self.screen.blit(config_font.render(config_name, True, 'green'),(200,200))
+                
+                if self.state == Game_State.LOBBY:
+                    self.screen.fill('black')
+                    self.screen.blit(config_font.render("Connecting", True, 'green',), (300, 400))
+                    lobby_GSButton.draw(self.screen)
+                    lobby_SMButton.draw(self.screen)
+                    lobby_spectatorButton.draw(self.screen)
+                    
+    
+                pygame.display.flip()
+                stateShift = False
 
     def connect(self):
         self.client_socket.connect((self.server_host, self.server_port))
@@ -97,6 +221,17 @@ class Test_Client:
         })
         self.running = True
         threading.Thread(target=self.listen_to_server).start()
+
+    def disconnect(self):
+        try:
+            # Server informieren (optional)
+            self.send({"purpose": "disconnect"})
+        except:
+            pass
+        finally:
+            self.running = False   # stoppe Empfangs-Thread
+            self.client_socket.close()
+            print("Verbindung getrennt")
 
     def send(self, message):
         self.client_socket.sendall(json.dumps(message).encode())
@@ -111,13 +246,21 @@ class Test_Client:
 
                 match message["purpose"]:
                     case "lobby_joined":
-                        self.players_in_lobby = message["players"]
+                        self.players_in_lobby = []
+                        for player in message["players"]:
+                            self.players_in_lobby.append([player[0], GameRole[player[1]]])
                         print("Lobby joined:", self.players_in_lobby)
                     case "lobby_update":
-                        self.players_in_lobby = message["players"]
-                        print("Lobby update:", self.players_in_lobby)
+                        self.players_in_lobby = []
+                        for player in message["players"]:
+                            self.players_in_lobby.append([player[0], GameRole[player[1]]])
+                        print("Lobby joined:", self.players_in_lobby)
+                    case "rolechange":
+                        self.role = GameRole[message["role"]]
                     case "start_game":
                         print("Spiel startet!")
+
+                pygame.event.post(pygame.event.Event(pygame.USEREVENT, {"data" : message}))
 
             except Exception as e:
                 print("Fehler in Lobby:", e)

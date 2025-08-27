@@ -5,12 +5,6 @@
 # game = Game()
 
 from MultiplayerClassClient import *
-from MultiplayerClassServer import *
 
-server = Server()
-threading.Thread(target=server.start(), args=()).start()
-
-pygame.time.wait(20)
-
-client = Test_Client(name='Player2')
-client.connect()
+client = Test_Client()
+client.main()
