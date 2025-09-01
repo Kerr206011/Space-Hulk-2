@@ -2,8 +2,6 @@ import socket
 import threading
 import json
 import pygame
-from Board import *
-from Models import *
 from UI import * 
 from MultiplayerClassServer import *
 
@@ -11,6 +9,7 @@ class Game_State(Enum):
     MAINMENU = "main"
     LOBBY = "lobby"
     CONFIG = "config"
+    SETUP = "setup"
 
 class Test_Client:
     def __init__(self, host='127.0.0.1', port=5000, name='Player1'):
@@ -32,6 +31,9 @@ class Test_Client:
         self.screen = pygame.display.set_mode((900,700))
         self.state = None
         self.running = False
+
+        #global level variables
+        self.level = None
 
     def main(self):
         #general init
@@ -60,6 +62,10 @@ class Test_Client:
         lobby_spectatorButton = Button(400, 600, config_picture, 1)
         lobby_SMButton = Button(600, 600, config_picture, 1)
         lobby_startButton = Button(100, 600, config_picture, 1)
+
+        #setup init
+        setup_levelName = None
+        setup_isReady = False
 
         #start of game
         self.screen.fill('black')
@@ -160,6 +166,11 @@ class Test_Client:
 
                             pygame.display.flip()
 
+                        elif event.data["purpose"] == "start":
+                            stateShift = True
+                            self.state = Game_State.SETUP
+                            wait = True
+
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_ESCAPE:
                             self.disconnect()
@@ -198,7 +209,17 @@ class Test_Client:
                         
                         elif self.is_host:
                             if lobby_startButton.rect.collidepoint(pygame.mouse.get_pos()):
-                                pass
+                                message = {"purpose" : "start"}
+                                self.send(message)
+
+                elif self.state == Game_State.SETUP and not wait:
+                    if setup_isReady == False:
+                        self.send({"purpose" : "readytorecive"})
+                    
+                    if event.type == pygame.USEREVENT:
+                        if event.data ["purpose"] == "setup":
+                            if self.role == GameRole.SPACEMARINE:
+                                setup_levelName = data["level"]
 
             #updates the screen after a stateshift
             if stateShift == True:
@@ -221,6 +242,10 @@ class Test_Client:
                     lobby_spectatorButton.draw(self.screen)
                     if self.is_host:
                         lobby_startButton.draw(self.screen)
+
+                if self.state == Game_State.SETUP:
+                    self.screen.fill('black')
+                    self.screen.blit(config_font.render("Loading Level: 0%", True, 'green',), (300, 400))
                     
     
                 pygame.display.flip()

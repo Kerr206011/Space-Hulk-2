@@ -300,6 +300,7 @@ class Game():
 
         with open(file_path, 'r') as json_file:
             data = json.load(json_file)
+            
         self.level = data["level"]
         self.blipSack = data["blipList"]
         self.reinforcement = data["reinforcement"]

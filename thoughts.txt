@@ -70,3 +70,5 @@ ideas for Client server:
     server sends updates for the map, client displays it
 
 Version: 0.0.4
+
+level needs to be changable in lobby

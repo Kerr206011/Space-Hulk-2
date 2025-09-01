@@ -20,6 +20,18 @@ class Server:
         self.spectators  = []
         self.server_host = None
 
+        #Information for the setup
+        self.isReadyToRecive = []
+        self.level = "1"
+        self.available_blips = []
+        self.reinforceing_blips = int
+        self.isBroodLordPresent = False
+        self.startBlips = int
+
+        #Information for the running game
+        self.smModelList = []
+        self.map = []
+
     def start(self):
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen()
@@ -114,6 +126,14 @@ class Server:
                         print("back to spectator!")
                         self.send_lobby_update()
 
+                elif message["purpose"] == "start":
+                    for c in self.clients:
+                        self.send(c["conn"], {"purpose" : "start"})
+                    self.setup_lobby()
+
+                elif message["purpose"] == "readytorecive":
+                    self.isReadyToRecive.append[conn]
+
                 if message["purpose"] == "disconnect":
                     break
 
@@ -135,6 +155,36 @@ class Server:
                 "purpose": "lobby_update",
                 "players": players,
             })
+
+    def setup_lobby(self):
+        print("Lobby started")
+
+        level_file = "Levels/" + "level_" + self.level + ".json"
+
+        with open(level_file, 'r') as json_file:
+            data = json.load(json_file)
+
+        self.available_blips = data["blipList"]
+        self.reinforceing_blips = data["reinforcement"]
+        self.isBroodLordPresent = data["broodLord"]
+        self.startBlips = data["startBlip"]
+
+        SMList = data["smModelList"]
+        bluePrint = data["map"]
+
+        isReadyToSend = False
+
+        while isReadyToSend == False:
+
+            isReadyToSend = True
+
+            for c in self.clients:
+                if c["conn"] not in self.isReadyToRecive:
+                    isReadyToSend  = False
+
+        self.send(self.SMplayer["conn"], {"purpose" : "setup",
+                                          "modellist" : SMList,
+                                          "level" : level_file})
 
     def broadcast_listener(self):
         udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
