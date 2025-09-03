@@ -72,3 +72,4 @@ ideas for Client server:
 Version: 0.0.4
 
 level needs to be changable in lobby
+server needs to shut down if no player is connected

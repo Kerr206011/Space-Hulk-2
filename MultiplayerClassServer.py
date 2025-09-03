@@ -2,6 +2,7 @@ import socket
 import threading
 import json
 from enum import Enum
+from MultiplayerModels import *
 
 class GameRole(Enum):
     SPECTATOR = "spectator"
@@ -14,6 +15,7 @@ class Server:
         self.host = host
         self.port = port
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.lock = threading.Lock()
         self.clients = []  # [(conn, addr, name, roll), ...]
         self.GSplayer = None
         self.SMplayer = None
@@ -21,7 +23,7 @@ class Server:
         self.server_host = None
 
         #Information for the setup
-        self.isReadyToRecive = []
+        self.isReadyToRecive = set()
         self.level = "1"
         self.available_blips = []
         self.reinforceing_blips = int
@@ -127,12 +129,15 @@ class Server:
                         self.send_lobby_update()
 
                 elif message["purpose"] == "start":
-                    for c in self.clients:
-                        self.send(c["conn"], {"purpose" : "start"})
-                    self.setup_lobby()
+                    if self.SMplayer != None and self.GSplayer != None:
+                        for c in self.clients:
+                            self.send(c["conn"], {"purpose" : "start"})
+                        threading.Thread(target=self.setup_lobby).start()
 
                 elif message["purpose"] == "readytorecive":
-                    self.isReadyToRecive.append[conn]
+                    with self.lock:
+                        print(f"Ready recived from {addr}")
+                        self.isReadyToRecive.add(addr)
 
                 if message["purpose"] == "disconnect":
                     break
@@ -178,9 +183,10 @@ class Server:
 
             isReadyToSend = True
 
-            for c in self.clients:
-                if c["conn"] not in self.isReadyToRecive:
-                    isReadyToSend  = False
+            with self.lock:
+                for c in self.clients:
+                    if c["addr"] not in self.isReadyToRecive:
+                        isReadyToSend  = False
 
         self.send(self.SMplayer["conn"], {"purpose" : "setup",
                                           "modellist" : SMList,

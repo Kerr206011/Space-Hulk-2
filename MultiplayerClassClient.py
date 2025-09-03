@@ -5,6 +5,17 @@ import pygame
 from UI import * 
 from MultiplayerClassServer import *
 
+class SpaceMarineSprite(SpaceMarine):
+    def __init__(self, weapon: str, rank: str, picture_path: str):
+        super().__init__(weapon, rank)
+        self.picture_path = picture_path
+        self.image = pygame.image.load(picture_path).convert_alpha()
+        self.rect = self.image.get_rect()
+
+    def draw(self, screen):
+        self.rect.topleft = (self.position[0] * 32, self.position[1] * 32)  # Beispiel Tile-Grid
+        screen.blit(self.image, self.rect)
+
 class Game_State(Enum):
     MAINMENU = "main"
     LOBBY = "lobby"
@@ -64,7 +75,6 @@ class Test_Client:
         lobby_startButton = Button(100, 600, config_picture, 1)
 
         #setup init
-        setup_levelName = None
         setup_isReady = False
 
         #start of game
@@ -214,12 +224,22 @@ class Test_Client:
 
                 elif self.state == Game_State.SETUP and not wait:
                     if setup_isReady == False:
-                        self.send({"purpose" : "readytorecive"})
+                        pygame.time.wait(10)
+                        message = {"purpose" : "readytorecive"}
+                        self.send(message)
+                        setup_isReady = True
+                        print("ready sent!")
                     
                     if event.type == pygame.USEREVENT:
                         if event.data ["purpose"] == "setup":
-                            if self.role == GameRole.SPACEMARINE:
-                                setup_levelName = data["level"]
+                            print("setup Recived!")
+
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            self.disconnect()
+                            self.state = Game_State.MAINMENU
+                            wait = True
+                            stateShift = True
 
             #updates the screen after a stateshift
             if stateShift == True:
