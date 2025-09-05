@@ -73,3 +73,4 @@ Version: 0.0.4
 
 level needs to be changable in lobby
 server needs to shut down if no player is connected
+from_data in Sm and Gs needs to automatically select the Pictures based on rank/weapon or Broodlord status

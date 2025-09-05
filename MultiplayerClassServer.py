@@ -31,7 +31,7 @@ class Server:
         self.startBlips = int
 
         #Information for the running game
-        self.smModelList = []
+        self.SMmodelList = []
         self.map = []
 
     def start(self):
@@ -188,9 +188,9 @@ class Server:
                     if c["addr"] not in self.isReadyToRecive:
                         isReadyToSend  = False
 
-        self.send(self.SMplayer["conn"], {"purpose" : "setup",
-                                          "modellist" : SMList,
-                                          "level" : level_file})
+        for entry in SMList:
+            marine = SpaceMarine(entry["weapon"], entry["rank"])
+            self.SMmodelList.append(marine)
 
     def broadcast_listener(self):
         udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

@@ -11,6 +11,32 @@ class SpaceMarineSprite(SpaceMarine):
         self.picture_path = picture_path
         self.image = pygame.image.load(picture_path).convert_alpha()
         self.rect = self.image.get_rect()
+ 
+    @classmethod
+    def from_data(cls, data):
+        return SpaceMarineSprite(data["weapon"], data["rank"], "Pictures/Models/Brother.png")
+
+    def draw(self, screen):
+        self.rect.topleft = (self.position[0] * 32, self.position[1] * 32)  # Beispiel Tile-Grid
+        screen.blit(self.image, self.rect)
+
+class BlipSprite(Blip):
+    def __init__(self, count, picture_path: str):
+        super().__init__(count)
+        self.picture_path = picture_path
+        self.image = pygame.image.load(picture_path).convert_alpha()
+        self.rect = self.image.get_rect()
+
+    def draw(self, screen):
+        self.rect.topleft = (self.position[0] * 32, self.position[1] * 32)  # Beispiel Tile-Grid
+        screen.blit(self.image, self.rect)
+
+class GenstealerSprite(Genstealer):
+    def __init__(self, broodlord, picture_path: str):
+        super().__init__(broodlord)
+        self.picture_path = picture_path
+        self.image = pygame.image.load(picture_path).convert_alpha()
+        self.rect = self.image.get_rect()
 
     def draw(self, screen):
         self.rect.topleft = (self.position[0] * 32, self.position[1] * 32)  # Beispiel Tile-Grid
