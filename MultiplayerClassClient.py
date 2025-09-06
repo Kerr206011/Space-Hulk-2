@@ -71,6 +71,7 @@ class Test_Client:
 
         #global level variables
         self.level = None
+        self.smlist = []
 
     def main(self):
         #general init
@@ -101,7 +102,7 @@ class Test_Client:
         lobby_startButton = Button(100, 600, config_picture, 1)
 
         #setup init
-        setup_isReady = False
+
 
         #start of game
         self.screen.fill('black')
@@ -250,16 +251,18 @@ class Test_Client:
                                 print("start send")
 
                 elif self.state == Game_State.SETUP and not wait:
-                    if setup_isReady == False:
-                        pygame.time.wait(10)
-                        message = {"purpose" : "readytorecive"}
-                        self.send(message)
-                        setup_isReady = True
-                        print("ready sent!")
-                    
                     if event.type == pygame.USEREVENT:
-                        if event.data ["purpose"] == "setup":
-                            print("setup Recived!")
+                        if event.data["purpose"] == "setup":
+                            print(event.data)
+                            # for entry in event.data["marines"]:
+                            #     self.smlist.append(SpaceMarineSprite.from_data(entry))
+                            # print("setup Recived!")
+                            # print(self.smlist)
+
+                        if event.data["purpose"] == "readyup":
+                            message = {"purpose" : "readytorecive"}
+                            self.send(message)
+                            print("ready sent!")
 
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_ESCAPE:

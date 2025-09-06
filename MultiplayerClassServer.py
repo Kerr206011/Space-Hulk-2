@@ -179,6 +179,9 @@ class Server:
 
         isReadyToSend = False
 
+        for c in self.clients:
+            self.send(c["conn"],{"purpose":"readyup"})
+
         while isReadyToSend == False:
 
             isReadyToSend = True
@@ -188,14 +191,12 @@ class Server:
                     if c["addr"] not in self.isReadyToRecive:
                         isReadyToSend  = False
 
-        print("ready")
-
         for entry in SMList:
             marine = SpaceMarine(entry["weapon"], entry["rank"])
             self.SMmodelList.append(marine)
 
         for c in self.clients:
-            message = {"purpose":"setup"}
+            message = {"purpose":"setup","marines":SMList}
             self.send(c["conn"],message)
         
         print(self.SMmodelList)
