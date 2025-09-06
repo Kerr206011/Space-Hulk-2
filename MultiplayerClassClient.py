@@ -247,6 +247,7 @@ class Test_Client:
                             if lobby_startButton.rect.collidepoint(pygame.mouse.get_pos()):
                                 message = {"purpose" : "start"}
                                 self.send(message)
+                                print("start send")
 
                 elif self.state == Game_State.SETUP and not wait:
                     if setup_isReady == False:

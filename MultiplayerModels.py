@@ -42,7 +42,7 @@ class SpaceMarine(Model):
                 f"overwatch={self.overwatch}, jam={self.jam}>")
     
     def to_dict(self):
-        return {"ap":self.activated,
+        return {"activated":self.activated,
                 "pos":self.position,
                 "weapon":self.weapon.value,
                 "rank":self.rank,

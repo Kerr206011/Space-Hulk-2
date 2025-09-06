@@ -175,7 +175,7 @@ class Server:
         self.startBlips = data["startBlip"]
 
         SMList = data["smModelList"]
-        bluePrint = data["map"]
+        #bluePrint = data["map"]
 
         isReadyToSend = False
 
@@ -191,6 +191,8 @@ class Server:
         for entry in SMList:
             marine = SpaceMarine(entry["weapon"], entry["rank"])
             self.SMmodelList.append(marine)
+        
+        print(self.SMmodelList)
 
     def broadcast_listener(self):
         udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
