@@ -188,9 +188,15 @@ class Server:
                     if c["addr"] not in self.isReadyToRecive:
                         isReadyToSend  = False
 
+        print("ready")
+
         for entry in SMList:
             marine = SpaceMarine(entry["weapon"], entry["rank"])
             self.SMmodelList.append(marine)
+
+        for c in self.clients:
+            message = {"purpose":"setup"}
+            self.send(c["conn"],message)
         
         print(self.SMmodelList)
 
