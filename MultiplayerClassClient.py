@@ -253,11 +253,11 @@ class Test_Client:
                 elif self.state == Game_State.SETUP and not wait:
                     if event.type == pygame.USEREVENT:
                         if event.data["purpose"] == "setup":
-                            print(event.data)
-                            # for entry in event.data["marines"]:
-                            #     self.smlist.append(SpaceMarineSprite.from_data(entry))
-                            # print("setup Recived!")
-                            # print(self.smlist)
+                            # print(event.data)
+                            for entry in event.data["marines"]:
+                                self.smlist.append(SpaceMarineSprite.from_data(entry))
+                            print("setup Recived!")
+                            print(self.smlist)
 
                         if event.data["purpose"] == "readyup":
                             message = {"purpose" : "readytorecive"}

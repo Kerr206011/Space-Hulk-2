@@ -135,9 +135,8 @@ class Server:
                         threading.Thread(target=self.setup_lobby).start()
 
                 elif message["purpose"] == "readytorecive":
-                    with self.lock:
-                        print(f"Ready recived from {addr}")
-                        self.isReadyToRecive.add(addr)
+                    print(f"Ready recived from {addr}")
+                    self.isReadyToRecive.add(addr)
 
                 if message["purpose"] == "disconnect":
                     break
@@ -182,14 +181,22 @@ class Server:
         for c in self.clients:
             self.send(c["conn"],{"purpose":"readyup"})
 
+        timeOut = 0
+
         while isReadyToSend == False:
 
+            timeOut +=1
             isReadyToSend = True
 
-            with self.lock:
-                for c in self.clients:
-                    if c["addr"] not in self.isReadyToRecive:
-                        isReadyToSend  = False
+            for c in self.clients:
+                if c["addr"] not in self.isReadyToRecive:
+                    isReadyToSend  = False
+                    if timeOut == 50:
+                        self.send(c["conn"],{"purpose":"readyup"})
+            
+            if timeOut == 60:
+                print("Timeoutfail!")
+                break
 
         for entry in SMList:
             marine = SpaceMarine(entry["weapon"], entry["rank"])
