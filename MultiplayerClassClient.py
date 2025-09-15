@@ -328,33 +328,81 @@ class Test_Client:
             print("Verbindung getrennt")
 
     def send(self, message):
-        self.client_socket.sendall(json.dumps(message).encode())
+        self.client_socket.sendall((json.dumps(message) + "\n").encode())
+
+    # def listen_to_server(self):
+    #     while self.running:
+    #         try:
+    #             data = self.client_socket.recv(1024)
+    #             if not data:
+    #                 break
+    #             message = json.loads(data.decode())
+
+    #             match message["purpose"]:
+    #                 case "lobby_joined":
+    #                     self.players_in_lobby = []
+    #                     for player in message["players"]:
+    #                         self.players_in_lobby.append([player[0], GameRole[player[1]]])
+    #                     print("Lobby joined:", self.players_in_lobby)
+    #                 case "lobby_update":
+    #                     self.players_in_lobby = []
+    #                     for player in message["players"]:
+    #                         self.players_in_lobby.append([player[0], GameRole[player[1]]])
+    #                     print("Lobby joined:", self.players_in_lobby)
+    #                 case "rolechange":
+    #                     self.role = GameRole[message["role"]]
+    #                 case "start_game":
+    #                     print("Spiel startet!")
+
+    #             pygame.event.post(pygame.event.Event(pygame.USEREVENT, {"data" : message}))
+
+    #         except Exception as e:
+    #             print("Fehler in Lobby:", e)
+    #             break
 
     def listen_to_server(self):
+        buffer = ""   # Rest-Buffer für unvollständige Nachrichten
         while self.running:
             try:
                 data = self.client_socket.recv(1024)
                 if not data:
                     break
-                message = json.loads(data.decode())
 
-                match message["purpose"]:
-                    case "lobby_joined":
-                        self.players_in_lobby = []
-                        for player in message["players"]:
-                            self.players_in_lobby.append([player[0], GameRole[player[1]]])
-                        print("Lobby joined:", self.players_in_lobby)
-                    case "lobby_update":
-                        self.players_in_lobby = []
-                        for player in message["players"]:
-                            self.players_in_lobby.append([player[0], GameRole[player[1]]])
-                        print("Lobby joined:", self.players_in_lobby)
-                    case "rolechange":
-                        self.role = GameRole[message["role"]]
-                    case "start_game":
-                        print("Spiel startet!")
+                buffer += data.decode()
 
-                pygame.event.post(pygame.event.Event(pygame.USEREVENT, {"data" : message}))
+                # solange mindestens eine vollständige Nachricht im Buffer ist
+                while "\n" in buffer:
+                    raw_message, buffer = buffer.split("\n", 1)
+                    if not raw_message.strip():
+                        continue  # leere Nachrichten überspringen
+
+                    try:
+                        message = json.loads(raw_message)
+                    except json.JSONDecodeError as e:
+                        print("JSON-Fehler:", e, "bei Nachricht:", raw_message)
+                        continue
+
+                    match message["purpose"]:
+                        case "lobby_joined":
+                            self.players_in_lobby = []
+                            for player in message["players"]:
+                                self.players_in_lobby.append([player[0], GameRole[player[1]]])
+                            print("Lobby joined:", self.players_in_lobby)
+
+                        case "lobby_update":
+                            self.players_in_lobby = []
+                            for player in message["players"]:
+                                self.players_in_lobby.append([player[0], GameRole[player[1]]])
+                            print("Lobby update:", self.players_in_lobby)
+
+                        case "rolechange":
+                            self.role = GameRole[message["role"]]
+
+                        case "start_game":
+                            print("Spiel startet!")
+
+                    # Event in pygame posten
+                    pygame.event.post(pygame.event.Event(pygame.USEREVENT, {"data": message}))
 
             except Exception as e:
                 print("Fehler in Lobby:", e)

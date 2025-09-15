@@ -48,98 +48,112 @@ class Server:
 
     def handle_client(self, conn, addr):
         name = None
+        buffer = ""
         print(f"New connection: {addr}")
         try:
             while True:
                 data = conn.recv(1024)
                 if not data:
                     break
-                message = json.loads(data.decode())
-
-                if message["purpose"] == "join_lobby":
-                    name = message["name"]
-                    if self.server_host == None:
-                        self.server_host = {"conn":conn, "addr":addr, "name":name, "role":GameRole.SPECTATOR}
-                        # print(self.server_host[2])
-                    self.clients.append({"conn":conn, "addr":addr, "name":name, "role":GameRole.SPECTATOR})
-                    self.spectators.append({"conn":conn, "addr":addr, "name":name, "role":GameRole.SPECTATOR})
-                    self.send_lobby_update()
-
-                    # Bestätigung an den neuen Client
-                    self.send(conn, {
-                        "purpose": "lobby_joined",
-                        "players": [(c["name"],c["role"].name) for c in self.clients]
-                    })
                 
-                elif message["purpose"] == "rolechange":
-                    if message["role"] == "genstealer":
-                        if self.GSplayer == None:
-                            if self.SMplayer != None:
-                                if self.SMplayer["conn"] == conn and self.SMplayer["addr"] == addr and self.SMplayer["name"] == name:
-                                    self.SMplayer = None
-                            for player in self.clients:
-                                if player["conn"] == conn and player["addr"] == addr and player["name"] == name:
-                                    player["role"] = GameRole.GENSTEALER
-                            self.GSplayer = {
-                                "conn": conn,
-                                "addr": addr,
-                                "name": name,
-                                "role": GameRole.GENSTEALER
-                            }
-                            print("gs selected!")
-                            message = {"purpose" : "rolechange",
-                                       "role" : self.GSplayer["role"].name}
-                            self.send(conn, message)
-                            self.send_lobby_update()
+                buffer += data.decode()
 
-                    elif message["role"] == "spacemarine":
-                        if self.SMplayer == None:
-                            if self.GSplayer != None:
-                                if self.GSplayer["conn"] == conn and self.GSplayer["addr"] == addr and self.GSplayer["name"] == name:
-                                    self.GSplayer = None
-                            for player in self.clients:
-                                if player["conn"] == conn and player["addr"] == addr and player["name"] == name:
-                                    player["role"] = GameRole.SPACEMARINE
-                            self.SMplayer = {
-                                "conn": conn,
-                                "addr": addr,
-                                "name": name,
-                                "role": GameRole.SPACEMARINE
-                            }
-                            message = {"purpose" : "rolechange",
-                                       "role" : self.SMplayer["role"].name}
-                            self.send(conn, message)
-                            print("sm selected!")
-                            self.send_lobby_update()
-                    
-                    else:
-                        if self.GSplayer != None:
-                            if self.GSplayer["conn"] == conn and self.GSplayer["addr"] == addr and self.GSplayer["name"] == name:
-                                    self.GSplayer = None
-                        if self.SMplayer != None:
-                            if self.SMplayer["conn"] == conn and self.SMplayer["addr"] == addr and self.SMplayer["name"] == name:
-                                    self.SMplayer = None
-                        for player in self.clients:
-                                if player["conn"] == conn and player["addr"] == addr and player["name"] == name:
-                                    player["role"] = GameRole.SPECTATOR
-                        message = {"purpose" : "rolechange",
-                                    "role" : GameRole.SPECTATOR.name}
-                        self.send(conn, message)
-                        print("back to spectator!")
+                while "\n" in buffer:
+                    raw_msg, buffer = buffer.split("\n", 1)
+
+                    if not raw_msg.strip():
+                        continue
+
+                    try:
+                        message = json.loads(raw_msg)
+                    except json.JSONDecodeError as e:
+                        print(f"JSON decode error von {addr}: {e}, raw={raw_msg}")
+                        continue
+
+                    if message["purpose"] == "join_lobby":
+                        name = message["name"]
+                        if self.server_host == None:
+                            self.server_host = {"conn":conn, "addr":addr, "name":name, "role":GameRole.SPECTATOR}
+                            # print(self.server_host[2])
+                        self.clients.append({"conn":conn, "addr":addr, "name":name, "role":GameRole.SPECTATOR})
+                        self.spectators.append({"conn":conn, "addr":addr, "name":name, "role":GameRole.SPECTATOR})
                         self.send_lobby_update()
 
-                elif message["purpose"] == "start":
-                    if self.SMplayer != None and self.GSplayer != None:
-                        for c in self.clients:
-                            self.send(c["conn"], {"purpose" : "start"})
-                        threading.Thread(target=self.setup_lobby).start()
+                        # Bestätigung an den neuen Client
+                        self.send(conn, {
+                            "purpose": "lobby_joined",
+                            "players": [(c["name"],c["role"].name) for c in self.clients]
+                        })
+                    
+                    elif message["purpose"] == "rolechange":
+                        if message["role"] == "genstealer":
+                            if self.GSplayer == None:
+                                if self.SMplayer != None:
+                                    if self.SMplayer["conn"] == conn and self.SMplayer["addr"] == addr and self.SMplayer["name"] == name:
+                                        self.SMplayer = None
+                                for player in self.clients:
+                                    if player["conn"] == conn and player["addr"] == addr and player["name"] == name:
+                                        player["role"] = GameRole.GENSTEALER
+                                self.GSplayer = {
+                                    "conn": conn,
+                                    "addr": addr,
+                                    "name": name,
+                                    "role": GameRole.GENSTEALER
+                                }
+                                print("gs selected!")
+                                message = {"purpose" : "rolechange",
+                                        "role" : self.GSplayer["role"].name}
+                                self.send(conn, message)
+                                self.send_lobby_update()
 
-                elif message["purpose"] == "readytorecive":
-                    print(f"Ready recived from {addr}")
-                    self.isReadyToRecive.add(addr)
+                        elif message["role"] == "spacemarine":
+                            if self.SMplayer == None:
+                                if self.GSplayer != None:
+                                    if self.GSplayer["conn"] == conn and self.GSplayer["addr"] == addr and self.GSplayer["name"] == name:
+                                        self.GSplayer = None
+                                for player in self.clients:
+                                    if player["conn"] == conn and player["addr"] == addr and player["name"] == name:
+                                        player["role"] = GameRole.SPACEMARINE
+                                self.SMplayer = {
+                                    "conn": conn,
+                                    "addr": addr,
+                                    "name": name,
+                                    "role": GameRole.SPACEMARINE
+                                }
+                                message = {"purpose" : "rolechange",
+                                        "role" : self.SMplayer["role"].name}
+                                self.send(conn, message)
+                                print("sm selected!")
+                                self.send_lobby_update()
+                        
+                        else:
+                            if self.GSplayer != None:
+                                if self.GSplayer["conn"] == conn and self.GSplayer["addr"] == addr and self.GSplayer["name"] == name:
+                                        self.GSplayer = None
+                            if self.SMplayer != None:
+                                if self.SMplayer["conn"] == conn and self.SMplayer["addr"] == addr and self.SMplayer["name"] == name:
+                                        self.SMplayer = None
+                            for player in self.clients:
+                                    if player["conn"] == conn and player["addr"] == addr and player["name"] == name:
+                                        player["role"] = GameRole.SPECTATOR
+                            message = {"purpose" : "rolechange",
+                                        "role" : GameRole.SPECTATOR.name}
+                            self.send(conn, message)
+                            print("back to spectator!")
+                            self.send_lobby_update()
 
-                if message["purpose"] == "disconnect":
-                    break
+                    elif message["purpose"] == "start":
+                        if self.SMplayer != None and self.GSplayer != None:
+                            for c in self.clients:
+                                self.send(c["conn"], {"purpose" : "start"})
+                            threading.Thread(target=self.setup_lobby).start()
+
+                    elif message["purpose"] == "readytorecive":
+                        print(f"Ready recived from {addr}")
+                        self.isReadyToRecive.add(addr)
+
+                    if message["purpose"] == "disconnect":
+                        break
 
         except Exception as e:
             print(f"Error with {addr}: {e}")
@@ -150,7 +164,7 @@ class Server:
                 self.send_lobby_update()
 
     def send(self, conn, message):
-        conn.sendall(json.dumps(message).encode())
+        conn.sendall((json.dumps(message) + "\n").encode())
 
     def send_lobby_update(self):
         players = [(c["name"], c["role"].name) for c in self.clients]
@@ -181,22 +195,14 @@ class Server:
         for c in self.clients:
             self.send(c["conn"],{"purpose":"readyup"})
 
-        timeOut = 0
-
         while isReadyToSend == False:
 
-            timeOut +=1
             isReadyToSend = True
 
             for c in self.clients:
                 if c["addr"] not in self.isReadyToRecive:
                     isReadyToSend  = False
-                    if timeOut == 50:
-                        self.send(c["conn"],{"purpose":"readyup"})
-            
-            if timeOut == 60:
-                print("Timeoutfail!")
-                break
+                    self.send(c["conn"],{"purpose":"readyup"})
 
         for entry in SMList:
             marine = SpaceMarine(entry["weapon"], entry["rank"])
