@@ -1,0 +1,11 @@
+@startuml
+class Client {
+  str name
+  str role
+}
+
+class Server {
+}
+
+Client "*" <-- "1" Server
+@enduml
