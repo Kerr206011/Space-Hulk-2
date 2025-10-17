@@ -1,5 +1,47 @@
 {
     "level": 1,
+    "map":[
+        {
+            "x":7,
+            "y":12,
+            "sector":1,
+            "is_burning":false,
+            "has_item":false,
+            "item":null,
+            "is_occupied":false,
+            "occupant":0
+        },
+        {
+            "x":8,
+            "y":12,
+            "sector":1,
+            "is_burning":false,
+            "has_item":false,
+            "item":null,
+            "is_occupied":false,
+            "occupant":0
+        },
+        {
+            "x":9,
+            "y":12,
+            "sector":1,
+            "is_burning":false,
+            "has_item":false,
+            "item":null,
+            "is_occupied":false,
+            "occupant":0
+        },
+        {
+            "x":10,
+            "y":12,
+            "sector":1,
+            "is_burning":false,
+            "has_item":false,
+            "item":null,
+            "is_occupied":false,
+            "occupant":0
+        }
+    ],
     "blipList": [
         1,
         1,

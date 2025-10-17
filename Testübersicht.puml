@@ -1,11 +1,32 @@
-@startuml
-class Client {
-  str name
-  str role
+@startuml Game
+class MultiplayerClassClient {
+  GameRole role
+  list players_in_lobby
+  bool is_host
+  pygame.display screen
+  Game_State state
+  bool running
+  int level
+  list smlist
+
+  void main() 
+  void connect()
 }
 
+enum GameRole{
+  SPECTATOR = "spectator"
+  SPACEMARINE = "spacemarine"
+  GENSTEALER = "genstealer"
+}
+
+enum Game_State{
+  MAINMENU = "main"
+  LOBBY = "lobby"
+  CONFIG = "config"
+  SETUP = "setup"
+}
 class Server {
 }
 
-Client "*" <-- "1" Server
+MultiplayerClassClient "*" <-- "1" Server
 @enduml

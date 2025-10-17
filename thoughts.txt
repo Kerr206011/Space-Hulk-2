@@ -75,5 +75,36 @@ level needs to be changable in lobby
 server needs to shut down if no player is connected
 from_data in Sm and Gs needs to automatically select the Pictures based on rank/weapon or Broodlord status
 need to make server send more robust, insert exeption handeling
+add join menu
 
-Todo: new classes for Map objects, make them server/ client compatible
+Todo: new classes for Map objects, make them server/ client compatible, clientside needs to be checked
+
+Class Brainstorm:
+
+Model:
+    Serverside:
+        coordinates
+        activated?
+        face
+        picture?
+        
+    
+
+Tile:
+    Serverside:
+        coordinates
+        occupied?
+        occupand?
+        sector
+        burning?
+        picture? as string? or exported to clientside?
+        method to package it to json standard
+
+    Clientside:
+        coordinates 
+        occupied?
+        occupand? or is it easier to make the models clickable and let the tiles be?
+        sector 
+        burning
+        pictures for normal and burning
+        classmethod to create from from_data

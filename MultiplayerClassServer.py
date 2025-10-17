@@ -188,7 +188,7 @@ class Server:
         self.startBlips = data["startBlip"]
 
         SMList = data["smModelList"]
-        #bluePrint = data["map"]
+        bluePrint = data["map"]
 
         isReadyToSend = False
 
@@ -208,8 +208,16 @@ class Server:
             marine = SpaceMarine(entry["weapon"], entry["rank"])
             self.SMmodelList.append(marine)
 
+        for entry in bluePrint:
+            tile = Tile(entry["x"], entry["y"], entry["sector"])
+            self.map.append(tile)
+
+        sendMap = []
+        for tile in self.map:
+            sendMap.append(tile.send())
+
         for c in self.clients:
-            message = {"purpose":"setup","marines":SMList}
+            message = {"purpose":"setup","marines":SMList,"map":sendMap}
             self.send(c["conn"],message)
         
         print(self.SMmodelList)

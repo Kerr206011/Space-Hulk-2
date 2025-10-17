@@ -42,20 +42,50 @@ class GenstealerSprite(Genstealer):
         self.rect.topleft = (self.position[0] * 32, self.position[1] * 32)  # Beispiel Tile-Grid
         screen.blit(self.image, self.rect)
 
+class TileSprite:
+    def __init__(self, x, y, sector, scale, is_burning = False, has_item = False):
+        self.x = x
+        self.y = y
+        self.sector = sector
+        self.is_burning = is_burning
+        self.has_item = has_item
+        self.image = None
+        self.rect = None
+        self.scale = scale
+
+        match self.sector:
+            case 1:
+                image = pygame.image.load("Pictures/Tiles/Floor_1.png").convert_alpha()
+                width = int(image.get_width() * scale)
+                height = int(image.get_height() * scale)
+                self.image = pygame.transform.scale(image, (width, height))
+                self.rect = self.image.get_rect()
+
+    @classmethod
+    def from_data(cls, data, scale):
+        return TileSprite(data["x"], data["y"], data["sector"], scale, data["is_burning"], data["has_item"])
+    
+    def draw(self, screen):
+        self.rect.topleft = (self.x * self.image.get_width(), self.y * self.image.get_height())
+        screen.blit(self.image, self.rect)
+
 class Game_State(Enum):
     MAINMENU = "main"
     LOBBY = "lobby"
     CONFIG = "config"
     SETUP = "setup"
+    READY = "ready" #placeholder to check if setup is correct
 
 class Test_Client:
-    def __init__(self, host='127.0.0.1', port=5000, name='Player1'):
+    def __init__(self, host='127.0.0.1', port=5000, name='Player1', scale = 1):
         try:
             with open("config.json", 'r') as json_file:
                 data = json.load(json_file)
                 self.name = data["name"]
+                self.scale = data["scale"]
         except:
             self.name = name
+            self.scale = scale
 
         self.role = GameRole.SPECTATOR
         self.server_host = host
@@ -72,6 +102,7 @@ class Test_Client:
         #global level variables
         self.level = None
         self.smlist = []
+        self.map = []
 
     def main(self):
         #general init
@@ -126,10 +157,13 @@ class Test_Client:
                             self.screen.fill('black')
                             self.screen.blit(config_font.render("connecting", True, 'green'),(300,400))
                             pygame.display.flip()
-                            self.connect()
-                            self.state = Game_State.LOBBY
-                            stateShift = True
-                            wait = True
+                            if self.connect() == False:
+                                stateShift = True
+                                wait = True
+                            else:
+                                self.state = Game_State.LOBBY
+                                stateShift = True
+                                wait = True
 
                         elif main_hostButton.rect.collidepoint(pygame.mouse.get_pos()):
                             self.gameStat_lobby()
@@ -256,14 +290,28 @@ class Test_Client:
                             # print(event.data)
                             for entry in event.data["marines"]:
                                 self.smlist.append(SpaceMarineSprite.from_data(entry))
+                            for entry in event.data["map"]:
+                                self.map.append(TileSprite.from_data(entry, self.scale))
                             print("setup Recived!")
                             print(self.smlist)
+                            print(self.map)
+                            self.state = Game_State.READY
+                            wait = True
+                            stateShift = True
 
                         if event.data["purpose"] == "readyup":
                             message = {"purpose" : "readytorecive"}
                             self.send(message)
                             print("ready sent!")
 
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            self.disconnect()
+                            self.state = Game_State.MAINMENU
+                            wait = True
+                            stateShift = True
+
+                elif self.state == Game_State.READY and not wait:
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_ESCAPE:
                             self.disconnect()
@@ -296,7 +344,11 @@ class Test_Client:
                 if self.state == Game_State.SETUP:
                     self.screen.fill('black')
                     self.screen.blit(config_font.render("Loading Level: 0%", True, 'green',), (300, 400))
-                    
+
+                if self.state == Game_State.READY:
+                    self.screen.fill('black')
+                    for tile in self.map:
+                        tile.draw(self.screen)
     
                 pygame.display.flip()
                 stateShift = False

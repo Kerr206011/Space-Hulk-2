@@ -18,13 +18,14 @@ class Weapon(Enum):
 
 class Model:
 
-    def __init__(self, face: Facing = Facing.NORTH, activated = False):
+    def __init__(self, face: Facing = Facing.NORTH, activated = False, position_x = None, position_y = None):
         self.activated = activated
         self.face = face
-        self.position = None
+        self.position_x = position_x
+        self.position_y = position_y
 
     def __repr__(self):
-        return f"<Model ap={self.ap}, pos={self.position}, face={self.face}>"
+        return f"<Model ap={self.ap}, pos={(self.position_x, self.position_y)}, face={self.face}>"
     
 class SpaceMarine(Model):
     def __init__(self, weapon: str, rank: str, item = None):
@@ -43,7 +44,9 @@ class SpaceMarine(Model):
     
     def to_dict(self):
         return {"activated":self.activated,
-                "pos":self.position,
+                "face":self.face.value,
+                "pos_x":self.position_x,
+                "pos_y":self.position_y,
                 "weapon":self.weapon.value,
                 "rank":self.rank,
                 "susf":self.sustained_fire,
@@ -51,6 +54,16 @@ class SpaceMarine(Model):
                 "guard":self.guard,
                 "jam":self.jam,
                 "item":self.item}
+    
+    def send(self):
+        return{
+            "pos_x":self.position_x,
+            "pos_y":self.position_y,
+            "face":self.face.value,
+            "weapon":self.weapon.value,
+            "rank":self.rank,
+            "item":self.item
+        }
 
 class Blip(Model):
     def __init__(self, count):
@@ -62,8 +75,15 @@ class Blip(Model):
     
     def to_dict(self):
         return {"ap" : self.activated,
-                "pos":self.position,
+                "pos_x":self.position_x,
+                "pos_y":self.position_y,
                 "count" : self.count}
+    
+    def send(self):
+        return{
+            "pos_x":self.position_x,
+            "pos_y":self.position_y,
+        }
 
 class Genstealer(Model):
     def __init__(self, broodlord):
@@ -75,9 +95,18 @@ class Genstealer(Model):
     
     def to_dict(self):
         return {"ap" : self.activated,
-                "pos": self.position,
+                "pos_x": self.position_x,
+                "pos_y":self.position_y,
                 "face" : self.face.value,
                 "broodlord" : self.broodlord}
+    
+    def send(self):
+        return{
+            "pos_x": self.position_x,
+            "pos_y":self.position_y,
+            "face" : self.face.value,
+            "broodlord" : self.broodlord
+        }
     
 class OccupantType(Enum):
     NONE = 0
@@ -94,7 +123,7 @@ class Tile:
         self.has_item = False
         self.item = None
         self.is_occupied:bool = False
-        self.occupant:OccupantType = None
+        self.occupant:OccupantType = OccupantType.NONE
 
     def to_dict(self):
         return {
@@ -105,6 +134,15 @@ class Tile:
             "has_item": self.has_item,
             "is_occupied": self.is_occupied,
             "occupant": self.occupant.value  # z.B. Model-ID oder None
+        }
+    
+    def send(self):
+        return{
+            "x": self.x,
+            "y": self.y,
+            "sector": self.sector,
+            "is_burning": self.is_burning,
+            "has_item": self.has_item,
         }
     
 class Door(Tile):
