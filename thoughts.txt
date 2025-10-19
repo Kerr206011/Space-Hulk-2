@@ -77,6 +77,7 @@ from_data in Sm and Gs needs to automatically select the Pictures based on rank/
 need to make server send more robust, insert exeption handeling
 add join menu
 add debug gamestate to test ingame interactions or make it a toggelable option with a variable 
+add a method to create mapobjects from data for server
 
 Todo: new classes for Map objects, make them server/ client compatible, clientside needs to be checked
 
@@ -87,7 +88,11 @@ Model:
         coordinates
         activated?
         face
-        picture? -> no, this can be match cased by the client
+        picture? -> yes, less info for the client this way
+    Clientside:
+        coordinates
+        face
+        picture
         
     
 

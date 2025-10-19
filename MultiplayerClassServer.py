@@ -215,9 +215,13 @@ class Server:
         sendMap = []
         for tile in self.map:
             sendMap.append(tile.send())
+        sendRoster = []
+        for model in self.SMmodelList:
+            sendRoster.append(model.send())
+        print (sendRoster[0])
 
         for c in self.clients:
-            message = {"purpose":"setup","marines":SMList,"map":sendMap}
+            message = {"purpose":"setup","marines":sendRoster,"map":sendMap}
             self.send(c["conn"],message)
         
         print(self.SMmodelList)

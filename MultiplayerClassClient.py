@@ -5,20 +5,51 @@ import pygame
 from UI import * 
 from MultiplayerClassServer import *
 
-class SpaceMarineSprite(SpaceMarine):
-    def __init__(self, weapon: str, rank: str, picture_path: str):
-        super().__init__(weapon, rank)
-        self.picture_path = picture_path
-        self.image = pygame.image.load(picture_path).convert_alpha()
+class SpaceMarineSprite:
+    def __init__(self, pos_x, pos_y, scale, picture_path: str, face):
+        self.face = Facing((face[0], face[1]))
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.picture_path = picture_path    #perhaps unnececary but left in for possible future use
+        image = pygame.image.load(picture_path).convert_alpha()
+        width = int(image.get_width() * scale)
+        height = int(image.get_height() * scale)
+        self.image = pygame.transform.scale(image, (width, height))
         self.rect = self.image.get_rect()
+
+        match self.face:
+            case Facing.NORTH:
+                self.image = pygame.transform.rotate(self.image, 90)
+            
+            case Facing.EAST:
+                pass
+
+            case Facing.SOUTH:
+                self.image = pygame.transform.rotate(self.image, 180)
+
+            case Facing.WEST:
+                self.image = pygame.transform.rotate(self.image, -90)
  
     @classmethod
-    def from_data(cls, data):
-        return SpaceMarineSprite(data["weapon"], data["rank"], "Pictures/Models/Brother.png")
+    def from_data(cls, data, scale):
+        return SpaceMarineSprite(data["pos_x"], data["pos_y"], scale, data["picture"], data["face"])
 
     def draw(self, screen):
-        self.rect.topleft = (self.position[0] * 32, self.position[1] * 32)  # Beispiel Tile-Grid
+        self.rect.topleft = (self.pos_x * self.image.get_width(), self.pos_y * self.image.get_height())  # Beispiel Tile-Grid
         screen.blit(self.image, self.rect)
+
+    def rescale(self, scale):
+        image = self.image
+        width = int(image.get_width() * scale)
+        height = int(image.get_height() * scale)
+        self.image = pygame.transform.scale(image, (width, height))
+        self.rect = self.image.get_rect()
+
+    def turn(self, degr):
+        self.image = pygame.transform.rotate(self.image, degr)
+
+    def __repr__(self):
+        return (f"<SpaceMarine pos=({self.pos_x},{self.pos_y}), face:{self.face}>")
 
 class BlipSprite(Blip):
     def __init__(self, count, picture_path: str):
@@ -43,31 +74,37 @@ class GenstealerSprite(Genstealer):
         screen.blit(self.image, self.rect)
 
 class TileSprite:
-    def __init__(self, x, y, sector, scale, is_burning = False, has_item = False):
+    def __init__(self, x, y, sector, scale, picture_path, is_burning = False, has_item = False):
         self.x = x
         self.y = y
         self.sector = sector
         self.is_burning = is_burning
-        self.has_item = has_item
-        self.image = None
-        self.rect = None
+        self.has_item = has_item    #perhaps not needed, but here for possible furure use
         self.scale = scale
-
-        match self.sector:
-            case 1:
-                image = pygame.image.load("Pictures/Tiles/Floor_1.png").convert_alpha()
-                width = int(image.get_width() * scale)
-                height = int(image.get_height() * scale)
-                self.image = pygame.transform.scale(image, (width, height))
-                self.rect = self.image.get_rect()
+        self.picture_path = picture_path
+        image = pygame.image.load(picture_path).convert_alpha()
+        width = int(image.get_width() * scale)
+        height = int(image.get_height() * scale)
+        self.image = pygame.transform.scale(image, (width, height))
+        self.rect = self.image.get_rect()
 
     @classmethod
     def from_data(cls, data, scale):
-        return TileSprite(data["x"], data["y"], data["sector"], scale, data["is_burning"], data["has_item"])
+        return TileSprite(data["pos_x"], data["pos_y"], data["sector"], scale, data["picture"], data["is_burning"], data["has_item"])
     
     def draw(self, screen):
         self.rect.topleft = (self.x * self.image.get_width(), self.y * self.image.get_height())
         screen.blit(self.image, self.rect)
+
+    def __repr__(self):
+        return (f"<Tile pos=({self.x},{self.y}), burning={self.is_burning}>")
+    
+    def rescale(self, scale):
+        image = self.image
+        width = int(image.get_width() * scale)
+        height = int(image.get_height() * scale)
+        self.image = pygame.transform.scale(image, (width, height))
+        self.rect = self.image.get_rect()
 
 class Game_State(Enum):
     MAINMENU = "main"
@@ -289,7 +326,7 @@ class Test_Client:
                         if event.data["purpose"] == "setup":
                             # print(event.data)
                             for entry in event.data["marines"]:
-                                self.smlist.append(SpaceMarineSprite.from_data(entry))
+                                self.smlist.append(SpaceMarineSprite.from_data(entry, self.scale))
                             for entry in event.data["map"]:
                                 self.map.append(TileSprite.from_data(entry, self.scale))
                             print("setup Recived!")

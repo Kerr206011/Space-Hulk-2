@@ -56,13 +56,15 @@ class SpaceMarine(Model):
                 "item":self.item}
     
     def send(self):
+        match self.weapon:
+            case _:
+                picture_path = "Pictures/Models/Brother.png"
+
         return{
             "pos_x":self.position_x,
             "pos_y":self.position_y,
             "face":self.face.value,
-            "weapon":self.weapon.value,
-            "rank":self.rank,
-            "item":self.item
+            "picture":picture_path
         }
 
 class Blip(Model):
@@ -81,8 +83,8 @@ class Blip(Model):
     
     def send(self):
         return{
-            "pos_x":self.position_x,
-            "pos_y":self.position_y,
+            "x":self.position_x,
+            "y":self.position_y,
         }
 
 class Genstealer(Model):
@@ -124,11 +126,12 @@ class Tile:
         self.item = None
         self.is_occupied:bool = False
         self.occupant:OccupantType = OccupantType.NONE
+        self.picture = "Pictures/Tiles/Floor_1.png"
 
     def to_dict(self):
         return {
-            "x": self.x,
-            "y": self.y,
+            "pos_x": self.x,
+            "pos_y": self.y,
             "sector": self.sector,
             "is_burning": self.is_burning,
             "has_item": self.has_item,
@@ -138,11 +141,12 @@ class Tile:
     
     def send(self):
         return{
-            "x": self.x,
-            "y": self.y,
+            "pos_x": self.x,
+            "pos_y": self.y,
             "sector": self.sector,
             "is_burning": self.is_burning,
             "has_item": self.has_item,
+            "picture":  self.picture
         }
     
 class Door(Tile):
