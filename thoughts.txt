@@ -76,6 +76,7 @@ server needs to shut down if no player is connected
 from_data in Sm and Gs needs to automatically select the Pictures based on rank/weapon or Broodlord status
 need to make server send more robust, insert exeption handeling
 add join menu
+add debug gamestate to test ingame interactions or make it a toggelable option with a variable 
 
 Todo: new classes for Map objects, make them server/ client compatible, clientside needs to be checked
 
@@ -86,7 +87,7 @@ Model:
         coordinates
         activated?
         face
-        picture?
+        picture? -> no, this can be match cased by the client
         
     
 
@@ -97,13 +98,12 @@ Tile:
         occupand?
         sector
         burning?
-        picture? as string? or exported to clientside?
-        method to package it to json standard
-
+        picture? as string? or exported to clientside? -> No, the picture needs to be set, to ensure that sectors are seperated properly
+        method to package it to json
     Clientside:
         coordinates 
         occupied?
-        occupand? or is it easier to make the models clickable and let the tiles be?
+        occupand? or is it easier to make the models clickable and let the tiles be? -> both for all situations, solved by giving both a rect that can be collisionchecked against the mousepos
         sector 
         burning
         pictures for normal and burning
