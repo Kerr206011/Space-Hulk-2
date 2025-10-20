@@ -153,6 +153,8 @@ class Test_Client:
         main_configButton = Button(40, 600, main_picture, 1)
 
         #config init
+        config_slider = Slider(500, 500)
+        config_active_slider = None
         config_picture = pygame.image.load("Pictures/Buttons/Accept.png")
         config_acceptButton = Button(400, 600, config_picture, 1)
         config_font = pygame.font.SysFont(None, 32)
@@ -219,15 +221,19 @@ class Test_Client:
 
                 #config logic
                 elif self.state == Game_State.CONFIG and not wait:
-                    if event.type == pygame.MOUSEBUTTONUP and config_acceptButton.rect.collidepoint(pygame.mouse.get_pos()):
-                        if config_name.__len__() != 0:
-                            self.name = config_name
-                            data = {"name": self.name}
-                            with open(config_file_path, 'w') as json_file:
-                                json.dump(data, json_file, indent=4)
-                            stateShift = True
-                            self.state = Game_State.MAINMENU
-                            wait = True
+                    if event.type == pygame.MOUSEBUTTONUP: 
+                        config_active_slider = None
+                        if config_acceptButton.rect.collidepoint(pygame.mouse.get_pos()):
+                            if config_name.__len__() != 0:
+                                self.name = config_name
+                                self.scale = config_slider.value()
+                                data = {"name": self.name,
+                                        "scale": self.scale}
+                                with open(config_file_path, 'w') as json_file:
+                                    json.dump(data, json_file, indent=4)
+                                stateShift = True
+                                self.state = Game_State.MAINMENU
+                                wait = True
                         
                     elif event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_BACKSPACE:
@@ -249,6 +255,25 @@ class Test_Client:
                         self.screen.blit(config_font.render(config_name, True, 'green'),(200,200))
                         config_acceptButton.draw(self.screen)
                         pygame.display.flip()
+
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        if config_slider.rect.collidepoint(pygame.mouse.get_pos()):
+                            config_active_slider = config_slider
+                            self.screen.fill('black')
+                            self.screen.blit(config_font.render(config_name, True, 'green'),(200,200))
+                            config_acceptButton.draw(self.screen)
+                            config_active_slider.slide()
+                            config_active_slider.draw(self.screen)
+                            pygame.display.flip()
+
+                    elif event.type == pygame.MOUSEMOTION:
+                        if config_active_slider != None:
+                            self.screen.fill('black')
+                            self.screen.blit(config_font.render(config_name, True, 'green'),(200,200))
+                            config_acceptButton.draw(self.screen)
+                            config_active_slider.slide()
+                            config_active_slider.draw(self.screen)
+                            pygame.display.flip()
 
                 #lobby logic
                 elif self.state == Game_State.LOBBY:
@@ -367,6 +392,7 @@ class Test_Client:
                 if self.state == Game_State.CONFIG:
                     self.screen.fill('black')
                     config_acceptButton.draw(self.screen)
+                    config_slider.draw(self.screen)
                     self.screen.blit(config_font.render(config_name, True, 'green'),(200,200))
                 
                 if self.state == Game_State.LOBBY:

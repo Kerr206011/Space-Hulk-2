@@ -78,6 +78,8 @@ need to make server send more robust, insert exeption handeling
 add join menu
 add debug gamestate to test ingame interactions or make it a toggelable option with a variable 
 add a method to create mapobjects from data for server
+add scale to UI Objects
+scaling slider in config needs work
 
 Todo: new classes for Map objects, make them server/ client compatible, clientside needs to be checked
 

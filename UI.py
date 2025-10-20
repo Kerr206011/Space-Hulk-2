@@ -225,3 +225,43 @@ class ActionField:
             button.draw(screen)
             i+= 1
         pygame.display.flip()
+
+
+class Slider:
+
+    def __init__(self, pos_x, pos_y, size_x=100, size_y=10, size_r=10,
+                 color_b='blue', color_s='red'):
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.size_x = size_x
+        self.size_y = size_y
+        self.size_r = size_r
+        self.color_b = color_b
+        self.color_s = color_s
+        self.slider_pos = [self.pos_x + self.size_x / 2,
+                           self.pos_y + self.size_y / 2]
+
+        self.rect = pygame.Rect(self.pos_x, self.pos_y,
+                                          self.size_x, self.size_y)
+
+    def value(self) -> float:
+        """Berechnet den Wert (0–1) je nach Slider-Position."""
+        rel_x = 2*(self.slider_pos[0] - self.pos_x) / self.size_x
+        return max(0.1, min(2, rel_x))
+
+    def draw(self, screen: pygame.Surface):
+        pygame.draw.rect(screen, self.color_b, self.rect)
+        pygame.draw.circle(screen, self.color_s,
+                           (int(self.slider_pos[0]), int(self.slider_pos[1])),
+                           self.size_r)
+
+    def slide(self):
+        mouse_pos = pygame.mouse.get_pos()[0]
+        if mouse_pos != self.slider_pos[0]:
+            if mouse_pos < self.pos_x:
+                self.slider_pos[0] = self.pos_x
+            elif mouse_pos > (self.pos_x + self.size_x):
+                self.slider_pos[0] = (self.pos_x + self.size_x)
+
+            else:
+                self.slider_pos[0] = mouse_pos
