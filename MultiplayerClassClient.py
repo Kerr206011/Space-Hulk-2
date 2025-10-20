@@ -81,8 +81,9 @@ class TileSprite:
         self.is_burning = is_burning
         self.has_item = has_item    #perhaps not needed, but here for possible furure use
         self.scale = scale
-        self.picture_path = picture_path
-        image = pygame.image.load(picture_path).convert_alpha()
+        self.picture_path = picture_path+".png"
+        self.burning_picture_path = picture_path+"_burning.png"
+        image = pygame.image.load(self.picture_path).convert_alpha()
         width = int(image.get_width() * scale)
         height = int(image.get_height() * scale)
         self.image = pygame.transform.scale(image, (width, height))
@@ -105,6 +106,42 @@ class TileSprite:
         height = int(image.get_height() * scale)
         self.image = pygame.transform.scale(image, (width, height))
         self.rect = self.image.get_rect()
+
+    def ignite(self, scale):
+        image = pygame.image.load(self.burning_picture_path).convert_alpha()
+        width = int(image.get_width() * scale)
+        height = int(image.get_height() * scale)
+        self.image = pygame.transform.scale(image, (width, height))
+        self.rect = self.image.get_rect()
+
+
+class DoorSprite(TileSprite):
+
+    def __init__(self, x, y, sector, scale, picture_path, is_burning=False, has_item=False, is_open = False):
+        super().__init__(x, y, sector, scale, picture_path, is_burning, has_item)
+        self.picture_path_open = picture_path+"_open.png"
+        self.is_open = is_open
+
+    @classmethod
+    def from_data(cls, data, scale):
+        return DoorSprite(data["pos_x"], data["pos_y"], data["sector"], scale, data["picture"], data["is_burning"], data["has_item"], data["is_open"])
+
+    def interact(self, scale):
+        if self.is_open:
+            image = pygame.image.load(self.picture_path).convert_alpha()
+            width = int(image.get_width() * scale)
+            height = int(image.get_height() * scale)
+            self.image = pygame.transform.scale(image, (width, height))
+            self.rect = self.image.get_rect()
+            self.is_open = False
+        else:
+            image = pygame.image.load(self.picture_path_open).convert_alpha()
+            width = int(image.get_width() * scale)
+            height = int(image.get_height() * scale)
+            self.image = pygame.transform.scale(image, (width, height))
+            self.rect = self.image.get_rect()
+            self.is_open = True
+
 
 class Game_State(Enum):
     MAINMENU = "main"
@@ -254,6 +291,7 @@ class Test_Client:
                         self.screen.fill('black')
                         self.screen.blit(config_font.render(config_name, True, 'green'),(200,200))
                         config_acceptButton.draw(self.screen)
+                        config_slider.draw(self.screen)
                         pygame.display.flip()
 
                     elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -346,6 +384,7 @@ class Test_Client:
                                 self.send(message)
                                 print("start send")
 
+                #setup logic
                 elif self.state == Game_State.SETUP and not wait:
                     if event.type == pygame.USEREVENT:
                         if event.data["purpose"] == "setup":
@@ -353,7 +392,11 @@ class Test_Client:
                             for entry in event.data["marines"]:
                                 self.smlist.append(SpaceMarineSprite.from_data(entry, self.scale))
                             for entry in event.data["map"]:
-                                self.map.append(TileSprite.from_data(entry, self.scale))
+                                match entry["type"]:
+                                    case "tile":
+                                        self.map.append(TileSprite.from_data(entry, self.scale))
+                                    case "door":
+                                        self.map.append(DoorSprite.from_data(entry, self.scale))
                             print("setup Recived!")
                             print(self.smlist)
                             print(self.map)

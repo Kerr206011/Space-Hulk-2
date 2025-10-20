@@ -209,7 +209,11 @@ class Server:
             self.SMmodelList.append(marine)
 
         for entry in bluePrint:
-            tile = Tile(entry["x"], entry["y"], entry["sector"])
+            match entry["type"]:
+                case "tile":
+                    tile = Tile(entry["x"], entry["y"], entry["sector"])
+                case "door":
+                    tile = Door(entry["x"], entry["y"], entry["sector"])
             self.map.append(tile)
 
         sendMap = []

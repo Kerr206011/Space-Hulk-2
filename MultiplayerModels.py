@@ -117,7 +117,7 @@ class OccupantType(Enum):
     BLIP = 3
     
 class Tile:
-    def __init__(self, x, y, sector):
+    def __init__(self, x, y, sector, picture = "Pictures/Tiles/Floor_1", tile_type = "tile"):
         self.x = x
         self.y = y
         self.sector = sector
@@ -126,7 +126,8 @@ class Tile:
         self.item = None
         self.is_occupied:bool = False
         self.occupant:OccupantType = OccupantType.NONE
-        self.picture = "Pictures/Tiles/Floor_1.png"
+        self.picture = picture
+        self.type = tile_type
 
     def to_dict(self):
         return {
@@ -136,7 +137,9 @@ class Tile:
             "is_burning": self.is_burning,
             "has_item": self.has_item,
             "is_occupied": self.is_occupied,
-            "occupant": self.occupant.value  # z.B. Model-ID oder None
+            "occupant": self.occupant.value,  # z.B. Model-ID oder None
+            "picture": self.picture,
+            "type": self.type
         }
     
     def send(self):
@@ -146,14 +149,40 @@ class Tile:
             "sector": self.sector,
             "is_burning": self.is_burning,
             "has_item": self.has_item,
-            "picture":  self.picture
+            "picture":  self.picture,
+            "type": self.type
         }
     
 class Door(Tile):
-    def __init__(self, x, y, sector, is_open, is_verical = False):
-        super().__init__(x, y, sector)
+    def __init__(self, x, y, sector, is_open = False, picture = "Pictures/Tiles/Door_V"):
+        super().__init__(x, y, sector, picture, "door")
         self.is_open = is_open
-        self.is_vertical = is_verical
+
+    def to_dict(self):
+        return {
+            "pos_x": self.x,
+            "pos_y": self.y,
+            "sector": self.sector,
+            "is_burning": self.is_burning,
+            "has_item": self.has_item,
+            "is_occupied": self.is_occupied,
+            "occupant": self.occupant.value,  # z.B. Model-ID oder None
+            "picture": self.picture,
+            "type": self.type,
+            "is_open": self.is_open
+        }
+    
+    def send(self):
+        return{
+            "pos_x": self.x,
+            "pos_y": self.y,
+            "sector": self.sector,
+            "is_burning": self.is_burning,
+            "has_item": self.has_item,
+            "picture":  self.picture,
+            "type": self.type,
+            "is_open": self.is_open
+        }
 
 class EntryPoint:
     pass
