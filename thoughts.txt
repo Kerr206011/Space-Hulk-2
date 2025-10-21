@@ -69,7 +69,7 @@ ideas for Client server:
     clients have run() for gamestates, but they only log and send the clicks and have no internal logic
     server sends updates for the map, client displays it
 
-Version: 0.0.4
+Version: 0.0.5
 
 level needs to be changable in lobby
 server needs to shut down if no player is connected
@@ -81,6 +81,7 @@ add a method to create mapobjects from data for server
 add scale to UI Objects
 scaling slider in config needs work
 rework blip and Genstealer Class
+give the Slider a method to put it at a certain position
 
 Todo: new classes for Map objects, make them server/ client compatible, clientside needs to be checked
 
