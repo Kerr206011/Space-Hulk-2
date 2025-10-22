@@ -117,17 +117,21 @@ class OccupantType(Enum):
     BLIP = 3
     
 class Tile:
-    def __init__(self, x, y, sector, picture = "Pictures/Tiles/Floor_1", tile_type = "tile"):
+    def __init__(self, x, y, sector, picture = "Pictures/Tiles/Floor_1", is_burning = False, has_item = False, item = None, is_occupied = False, occupant = 0, tile_type = "tile"):
         self.x = x
         self.y = y
         self.sector = sector
-        self.is_burning = False
-        self.has_item = False
-        self.item = None
-        self.is_occupied:bool = False
-        self.occupant:OccupantType = OccupantType.NONE
+        self.is_burning = is_burning
+        self.has_item = has_item
+        self.item = item
+        self.is_occupied:bool = is_occupied
+        self.occupant:OccupantType = OccupantType(occupant)
         self.picture = picture
         self.type = tile_type
+
+    @classmethod
+    def from_data(cls, data):
+        return Tile(data["x"], data["y"], data["sector"], data["picture"], data["is_burning"], data["has_item"], data["item"], data["is_occupied"], data["occupant"])
 
     def to_dict(self):
         return {
@@ -136,6 +140,7 @@ class Tile:
             "sector": self.sector,
             "is_burning": self.is_burning,
             "has_item": self.has_item,
+            "item": self.item,
             "is_occupied": self.is_occupied,
             "occupant": self.occupant.value,  # z.B. Model-ID oder None
             "picture": self.picture,
@@ -146,7 +151,6 @@ class Tile:
         return{
             "pos_x": self.x,
             "pos_y": self.y,
-            "sector": self.sector,
             "is_burning": self.is_burning,
             "has_item": self.has_item,
             "picture":  self.picture,
@@ -154,8 +158,8 @@ class Tile:
         }
     
 class Door(Tile):
-    def __init__(self, x, y, sector, is_open = False, picture = "Pictures/Tiles/Door_V"):
-        super().__init__(x, y, sector, picture, "door")
+    def __init__(self, x, y, sector, picture="Pictures/Tiles/Floor_1", is_burning=False, has_item=False, item=None, is_occupied=False, occupant=0, is_open = True):
+        super().__init__(x, y, sector, picture, is_burning, has_item, item, is_occupied, occupant, tile_type = "door")
         self.is_open = is_open
 
     def to_dict(self):
@@ -176,12 +180,30 @@ class Door(Tile):
         return{
             "pos_x": self.x,
             "pos_y": self.y,
-            "sector": self.sector,
             "is_burning": self.is_burning,
             "has_item": self.has_item,
             "picture":  self.picture,
             "type": self.type,
             "is_open": self.is_open
+        }
+
+class Wall(Tile):
+    def __init__(self, x, y, sector = 0, picture="Pictures/Tiles/Wall", tile_type="wall"):
+        super().__init__(x, y, sector, picture, tile_type)
+
+    def to_dict(self):
+        return {
+            "pos_x": self.x,
+            "pos_y": self.y,
+            "sector": self.sector,
+            "picture": self.picture,
+            "type": self.type
+        }
+    
+    def send(self):
+        return{
+            "pos_x": self.x,
+            "pos_y": self.y
         }
 
 class EntryPoint:

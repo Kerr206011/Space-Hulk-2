@@ -10,6 +10,7 @@
             "item":null,
             "is_occupied":false,
             "occupant":0,
+            "picture":"Pictures/Tiles/Floor_1",
             "type": "tile"
         },
         {
@@ -21,6 +22,7 @@
             "item":null,
             "is_occupied":false,
             "occupant":0,
+            "picture":"Pictures/Tiles/Floor_1",
             "type": "tile"
         },
         {
@@ -32,6 +34,7 @@
             "item":null,
             "is_occupied":false,
             "occupant":0,
+            "picture":"Pictures/Tiles/Floor_1",
             "type": "tile"
         },
         {
@@ -43,6 +46,7 @@
             "item":null,
             "is_occupied":false,
             "occupant":0,
+            "picture":"Pictures/Tiles/Floor_1",
             "type": "tile"
         },
         {
@@ -54,6 +58,7 @@
             "item":null,
             "is_occupied":false,
             "occupant":0,
+            "picture":"Pictures/Tiles/Floor_1",
             "type": "tile"
         },
         {
@@ -65,6 +70,7 @@
             "item":null,
             "is_occupied":false,
             "occupant":0,
+            "picture":"Pictures/Tiles/Door_V",
             "type": "door",
             "is_open": true
         }

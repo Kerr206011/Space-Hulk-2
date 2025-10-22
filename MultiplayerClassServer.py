@@ -211,9 +211,11 @@ class Server:
         for entry in bluePrint:
             match entry["type"]:
                 case "tile":
-                    tile = Tile(entry["x"], entry["y"], entry["sector"])
+                    tile = Tile.from_data(entry)
                 case "door":
                     tile = Door(entry["x"], entry["y"], entry["sector"])
+                case "wall":
+                    tile = Wall(entry["x"], entry["y"])
             self.map.append(tile)
 
         sendMap = []

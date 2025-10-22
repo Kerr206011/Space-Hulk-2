@@ -74,10 +74,9 @@ class GenstealerSprite(Genstealer):
         screen.blit(self.image, self.rect)
 
 class TileSprite:
-    def __init__(self, x, y, sector, scale, picture_path, is_burning = False, has_item = False):
+    def __init__(self, x, y,scale, picture_path, is_burning = False, has_item = False):
         self.x = x
         self.y = y
-        self.sector = sector
         self.is_burning = is_burning
         self.has_item = has_item    #perhaps not needed, but here for possible furure use
         self.scale = scale
@@ -91,7 +90,7 @@ class TileSprite:
 
     @classmethod
     def from_data(cls, data, scale):
-        return TileSprite(data["pos_x"], data["pos_y"], data["sector"], scale, data["picture"], data["is_burning"], data["has_item"])
+        return TileSprite(data["pos_x"], data["pos_y"], scale, data["picture"], data["is_burning"], data["has_item"])
     
     def draw(self, screen):
         self.rect.topleft = (self.x * self.image.get_width(), self.y * self.image.get_height())
@@ -117,14 +116,14 @@ class TileSprite:
 
 class DoorSprite(TileSprite):
 
-    def __init__(self, x, y, sector, scale, picture_path, is_burning=False, has_item=False, is_open = False):
-        super().__init__(x, y, sector, scale, picture_path, is_burning, has_item)
+    def __init__(self, x, y, scale, picture_path, is_burning=False, has_item=False, is_open = False):
+        super().__init__(x, y, scale, picture_path, is_burning, has_item)
         self.picture_path_open = picture_path+"_open.png"
         self.is_open = is_open
 
     @classmethod
     def from_data(cls, data, scale):
-        return DoorSprite(data["pos_x"], data["pos_y"], data["sector"], scale, data["picture"], data["is_burning"], data["has_item"], data["is_open"])
+        return DoorSprite(data["pos_x"], data["pos_y"], scale, data["picture"], data["is_burning"], data["has_item"], data["is_open"])
 
     def interact(self, scale):
         if self.is_open:

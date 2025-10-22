@@ -117,3 +117,5 @@ Tile:
         burning
         pictures for normal and burning
         classmethod to create from from_data
+
+SMStartTile? -> easely implemented through a list serverside and highlights clientside
