@@ -139,7 +139,40 @@ class DoorSprite(TileSprite):
             height = int(image.get_height() * scale)
             self.image = pygame.transform.scale(image, (width, height))
             self.rect = self.image.get_rect()
-            self.is_open = True
+    
+    def draw(self, screen):
+        self.rect.topleft = (self.x * self.image.get_width(), self.y * self.image.get_height())
+        screen.blit(self.image, self.rect)
+
+class WallSprite:
+    def __init__(self, x, y,scale, picture_path):
+        self.x = x
+        self.y = y
+        self.scale = scale
+        self.picture_path = picture_path+".png"
+        image = pygame.image.load(self.picture_path).convert_alpha()
+        width = int(image.get_width() * scale)
+        height = int(image.get_height() * scale)
+        self.image = pygame.transform.scale(image, (width, height))
+        self.rect = self.image.get_rect()
+
+    def __repr__(self):
+        return (f"<Tile pos=({self.x},{self.y})>")
+
+    @classmethod
+    def from_data(cls, data, scale):
+        return WallSprite(data["pos_x"], data["pos_y"], scale, data["picture"])
+    
+    def rescale(self, scale):
+        image = self.image
+        width = int(image.get_width() * scale)
+        height = int(image.get_height() * scale)
+        self.image = pygame.transform.scale(image, (width, height))
+        self.rect = self.image.get_rect()
+    
+    def draw(self, screen):
+        self.rect.topleft = (self.x * self.image.get_width(), self.y * self.image.get_height())
+        screen.blit(self.image, self.rect)
 
 
 class Game_State(Enum):
@@ -396,6 +429,8 @@ class Test_Client:
                                         self.map.append(TileSprite.from_data(entry, self.scale))
                                     case "door":
                                         self.map.append(DoorSprite.from_data(entry, self.scale))
+                                    case "wall":
+                                        self.map.append(WallSprite.from_data(entry, self.scale))
                             print("setup Recived!")
                             print(self.smlist)
                             print(self.map)

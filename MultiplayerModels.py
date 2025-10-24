@@ -158,9 +158,14 @@ class Tile:
         }
     
 class Door(Tile):
-    def __init__(self, x, y, sector, picture="Pictures/Tiles/Floor_1", is_burning=False, has_item=False, item=None, is_occupied=False, occupant=0, is_open = True):
-        super().__init__(x, y, sector, picture, is_burning, has_item, item, is_occupied, occupant, tile_type = "door")
+    def __init__(self, x, y, sector, picture="Pictures/Tiles/Door_V", is_burning=False, has_item=False, item=None, is_occupied=False, occupant=0, is_open = True, tile_type = "door"):
+        super().__init__(x, y, sector, picture, is_burning, has_item, item, is_occupied, occupant, tile_type)
         self.is_open = is_open
+    
+    @classmethod
+    def from_data(cls, data):
+        return Door(data["x"], data["y"], data["sector"], data["picture"], data["is_burning"], data["has_item"], data["item"], data["is_occupied"], data["occupant"], data["is_open"])
+
 
     def to_dict(self):
         return {
@@ -169,6 +174,7 @@ class Door(Tile):
             "sector": self.sector,
             "is_burning": self.is_burning,
             "has_item": self.has_item,
+            "item": self.item,
             "is_occupied": self.is_occupied,
             "occupant": self.occupant.value,  # z.B. Model-ID oder None
             "picture": self.picture,
@@ -188,9 +194,13 @@ class Door(Tile):
         }
 
 class Wall(Tile):
-    def __init__(self, x, y, sector = 0, picture="Pictures/Tiles/Wall", tile_type="wall"):
-        super().__init__(x, y, sector, picture, tile_type)
+    def __init__(self, x, y, sector, picture="Pictures/Tiles/Wall", is_burning=False, has_item=False, item=None, is_occupied=False, occupant=0, tile_type="wall"):
+        super().__init__(x, y, sector, picture, is_burning, has_item, item, is_occupied, occupant, tile_type)
 
+    @classmethod
+    def from_data(cls, data):
+        return Wall(data["x"], data["y"], data["sector"], data["picture"])
+    
     def to_dict(self):
         return {
             "pos_x": self.x,
@@ -203,8 +213,13 @@ class Wall(Tile):
     def send(self):
         return{
             "pos_x": self.x,
-            "pos_y": self.y
+            "pos_y": self.y,
+            "picture":  self.picture,
+            "type": self.type
         }
 
 class EntryPoint:
+    pass
+
+class Ladder:
     pass

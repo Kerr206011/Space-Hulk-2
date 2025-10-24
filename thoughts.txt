@@ -76,12 +76,14 @@ server needs to shut down if no player is connected
 from_data in Sm and Gs needs to automatically select the Pictures based on rank/weapon or Broodlord status
 need to make server send more robust, insert exeption handeling
 add join menu
-add debug gamestate to test ingame interactions or make it a toggelable option with a variable 
-add a method to create mapobjects from data for server
+add debug gamestate to test ingame interactions or make it a toggelable option with a variable
 add scale to UI Objects
 scaling slider in config needs work
 rework blip and Genstealer Class
 give the Slider a method to put it at a certain position
+add graphicx/y to Tiles to seperate boardposition and Screenposition
+add options with the Sprite classes to adjust the parameters of the Tiles (like burning etc.)
+add a main Method to the server so it can be shutdown correctly instead of creashing whenever someone disconnects
 
 Todo: new classes for Map objects, make them server/ client compatible, clientside needs to be checked
 

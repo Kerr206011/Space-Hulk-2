@@ -35,6 +35,10 @@ class Server:
         self.map = []
 
     def start(self):
+        """
+        starts the server by binding it to its host and port and listening on that adress. After that it calls accept_clients
+        and broadcast_listener as Threads.
+        """
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen()
         threading.Thread(target=self.accept_clients, args=()).start()
@@ -213,9 +217,9 @@ class Server:
                 case "tile":
                     tile = Tile.from_data(entry)
                 case "door":
-                    tile = Door(entry["x"], entry["y"], entry["sector"])
+                    tile = Door.from_data(entry)
                 case "wall":
-                    tile = Wall(entry["x"], entry["y"])
+                    tile = Wall.from_data(entry)
             self.map.append(tile)
 
         sendMap = []
@@ -225,6 +229,8 @@ class Server:
         for model in self.SMmodelList:
             sendRoster.append(model.send())
         print (sendRoster[0])
+        print("MAP:")
+        print(sendMap)
 
         for c in self.clients:
             message = {"purpose":"setup","marines":sendRoster,"map":sendMap}
