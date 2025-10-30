@@ -32,6 +32,7 @@ class Server:
 
         #Information for the running game
         self.SMmodelList = []
+        self.map = []
 
     def start(self):
         """
