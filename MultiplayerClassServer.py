@@ -3,6 +3,30 @@ import threading
 import json
 from enum import Enum
 from MultiplayerModels import *
+import logging
+import sys
+
+logging.basicConfig(
+    level=logging.DEBUG,  # Set to INFO, WARNING, or ERROR as needed
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler("game.log"),  # Save logs to a file
+        logging.StreamHandler()          # Also log to console
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
+def handle_exception(exc_type, exc_value, exc_traceback):
+    if issubclass(exc_type, KeyboardInterrupt):
+        # Allow keyboard interrupts to exit silently
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+    logger.critical("Unhandled exception", exc_info=(exc_type, exc_value, exc_traceback))
+
+# Override the default exception handler
+sys.excepthook = handle_exception
+
 
 class GameRole(Enum):
     SPECTATOR = "spectator"
@@ -43,7 +67,7 @@ class Server:
         self.server_socket.listen()
         threading.Thread(target=self.accept_clients, args=()).start()
         threading.Thread(target=self.broadcast_listener, daemon=True).start()
-        print("Server started")
+        logger.info(f"SERVER: Server started on Port {self.port} with Host {self.host}")
 
     def accept_clients(self):
         while True:
@@ -53,7 +77,7 @@ class Server:
     def handle_client(self, conn, addr):
         name = None
         buffer = ""
-        print(f"New connection: {addr}")
+        logger.info(f"SERVER: New connection: {addr}")
         try:
             while True:
                 data = conn.recv(1024)
@@ -71,7 +95,7 @@ class Server:
                     try:
                         message = json.loads(raw_msg)
                     except json.JSONDecodeError as e:
-                        print(f"JSON decode error von {addr}: {e}, raw={raw_msg}")
+                        logger.exception(f"SERVER: JSON decode error von {addr}: {e}, raw={raw_msg}")
                         continue
 
                     if message["purpose"] == "join_lobby":
@@ -104,7 +128,7 @@ class Server:
                                     "name": name,
                                     "role": GameRole.GENSTEALER
                                 }
-                                print("gs selected!")
+                                logger.info(f"SERVER: player {name}, {conn} has selected GS")
                                 message = {"purpose" : "rolechange",
                                         "role" : self.GSplayer["role"].name}
                                 self.send(conn, message)
@@ -127,7 +151,7 @@ class Server:
                                 message = {"purpose" : "rolechange",
                                         "role" : self.SMplayer["role"].name}
                                 self.send(conn, message)
-                                print("sm selected!")
+                                logger.info(f"SERVER: player {name}, {conn} has selected SM")
                                 self.send_lobby_update()
                         
                         else:
@@ -143,7 +167,7 @@ class Server:
                             message = {"purpose" : "rolechange",
                                         "role" : GameRole.SPECTATOR.name}
                             self.send(conn, message)
-                            print("back to spectator!")
+                            logger.info(f"SERVER: player {name}, {conn} has selected Spectator")
                             self.send_lobby_update()
 
                     elif message["purpose"] == "start":
@@ -153,14 +177,15 @@ class Server:
                             threading.Thread(target=self.setup_lobby).start()
 
                     elif message["purpose"] == "readytorecive":
-                        print(f"Ready recived from {addr}")
+                        logger.info(f"SERVER: Ready recived from {addr}")
                         self.isReadyToRecive.add(addr)
 
                     if message["purpose"] == "disconnect":
+                        self.send(conn, {"Purpose": "disconnect"})
                         break
 
         except Exception as e:
-            print(f"Error with {addr}: {e}")
+            logger.exception(f"SERVER: Error with {addr}: {e}")
         finally:
             conn.close()
             if conn:
@@ -179,7 +204,7 @@ class Server:
             })
 
     def setup_lobby(self):
-        print("Lobby started")
+        logger.info(f"SERVER: Lobby started with {self.clients}")
 
         level_file = "Levels/" + "level_" + self.level + ".json"
 

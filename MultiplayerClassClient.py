@@ -509,6 +509,25 @@ class Test_Client:
 
 
     def disconnect(self):
+        # timeout = 0
+        # self.send({"purpose": "disconnect"})
+        # while timeout < 60:
+        #     timeout += 1
+        #     if timeout == 60:
+        #         print("Disconnection timed out!")
+        #         self.running = False   # stoppe Empfangs-Thread
+        #         self.client_socket.close()
+        #         print("Verbindung getrennt")
+
+        #     if timeout%20 == 0:
+        #         self.send({"purpose": "disconnect"})
+
+        #     for event in pygame.event.get():
+        #         if event.type == pygame.USEREVENT:
+        #             if event.data["purpose"] == "disconnect":
+        #                 self.running = False   # stoppe Empfangs-Thread
+        #                 self.client_socket.close()
+        #                 print("Verbindung getrennt")
         try:
             # Server informieren (optional)
             self.send({"purpose": "disconnect"})

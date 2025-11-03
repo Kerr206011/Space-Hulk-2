@@ -218,8 +218,9 @@ class Wall(Tile):
             "type": self.type
         }
 
-class EntryPoint:
-    pass
+class EntryPoint(Wall):
+    def __init__(self, x, y, sector, picture="Pictures/Tiles/lurking", is_burning=False, has_item=False, item=None, is_occupied=False, occupant=0, tile_type="wall"):
+        super().__init__(x, y, sector, picture, is_burning, has_item, item, is_occupied, occupant, tile_type) 
 
 class Ladder:
     pass
