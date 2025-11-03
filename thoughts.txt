@@ -84,6 +84,7 @@ give the Slider a method to put it at a certain position
 add graphicx/y to Tiles to seperate boardposition and Screenposition
 add options with the Sprite classes to adjust the parameters of the Tiles (like burning etc.)
 add a main Method to the server so it can be shutdown correctly instead of creashing whenever someone disconnects
+    added disconnect method to client, last client to  disconnect still gets error
 add a variable to the saved SM models so that they can be attributed to a Spawnarea
 implement logger 
 
