@@ -218,9 +218,37 @@ class Wall(Tile):
             "type": self.type
         }
 
-class EntryPoint(Wall):
-    def __init__(self, x, y, sector, picture="Pictures/Tiles/lurking", is_burning=False, has_item=False, item=None, is_occupied=False, occupant=0, tile_type="wall"):
-        super().__init__(x, y, sector, picture, is_burning, has_item, item, is_occupied, occupant, tile_type) 
+class EntryPoint:
+    def __init__(self, x, y, picture="Pictures/Tiles/lurking", tile_type="entry", face = (1,0)):
+        self.x = x
+        self.y = y
+        self.picture = picture
+        self.type = tile_type
+        self.blips = []
+        self.face = face
+
+    def send(self):
+        return{
+            "pos_x": self.x,
+            "pos_y": self.y,
+            "picture":  self.picture,
+            "type": self.type,
+            "blips": self.blips.__len__(),
+            "face": self.face
+        }
+    
+    def to_dict(self):
+        bliplist = []
+        for blip in self.blips:
+            bliplist.append(blip.count)
+        return {
+            "pos_x": self.x,
+            "pos_y": self.y,
+            "picture": self.picture,
+            "type": self.type,
+            "bliplist": bliplist,
+            "face": self.face
+        }
 
 class Ladder:
     pass
