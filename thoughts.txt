@@ -87,6 +87,7 @@ add a main Method to the server so it can be shutdown correctly instead of creas
     added disconnect method to client, last client to  disconnect still gets error
 add a variable to the saved SM models so that they can be attributed to a Spawnarea
 implement logger 
+use with lock: to lock critical sections of code for only one Thread to work in
 
 Todo: new classes for Map objects, make them server/ client compatible, clientside needs to be checked
 

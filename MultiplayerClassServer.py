@@ -17,6 +17,8 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+lock = threading.Lock()
+
 def handle_exception(exc_type, exc_value, exc_traceback):
     if issubclass(exc_type, KeyboardInterrupt):
         # Allow keyboard interrupts to exit silently
@@ -114,61 +116,62 @@ class Server:
                         })
                     
                     elif message["purpose"] == "rolechange":
-                        if message["role"] == "genstealer":
-                            if self.GSplayer == None:
-                                if self.SMplayer != None:
-                                    if self.SMplayer["conn"] == conn and self.SMplayer["addr"] == addr and self.SMplayer["name"] == name:
-                                        self.SMplayer = None
-                                for player in self.clients:
-                                    if player["conn"] == conn and player["addr"] == addr and player["name"] == name:
-                                        player["role"] = GameRole.GENSTEALER
-                                self.GSplayer = {
-                                    "conn": conn,
-                                    "addr": addr,
-                                    "name": name,
-                                    "role": GameRole.GENSTEALER
-                                }
-                                logger.info(f"SERVER: player {name}, {conn} has selected GS")
-                                message = {"purpose" : "rolechange",
-                                        "role" : self.GSplayer["role"].name}
-                                self.send(conn, message)
-                                self.send_lobby_update()
+                        with lock:
+                            if message["role"] == "genstealer":
+                                if self.GSplayer == None:
+                                    if self.SMplayer != None:
+                                        if self.SMplayer["conn"] == conn and self.SMplayer["addr"] == addr and self.SMplayer["name"] == name:
+                                            self.SMplayer = None
+                                    for player in self.clients:
+                                        if player["conn"] == conn and player["addr"] == addr and player["name"] == name:
+                                            player["role"] = GameRole.GENSTEALER
+                                    self.GSplayer = {
+                                        "conn": conn,
+                                        "addr": addr,
+                                        "name": name,
+                                        "role": GameRole.GENSTEALER
+                                    }
+                                    logger.info(f"SERVER: player {name}, {conn} has selected GS")
+                                    message = {"purpose" : "rolechange",
+                                            "role" : self.GSplayer["role"].name}
+                                    self.send(conn, message)
+                                    self.send_lobby_update()
 
-                        elif message["role"] == "spacemarine":
-                            if self.SMplayer == None:
+                            elif message["role"] == "spacemarine":
+                                if self.SMplayer == None:
+                                    if self.GSplayer != None:
+                                        if self.GSplayer["conn"] == conn and self.GSplayer["addr"] == addr and self.GSplayer["name"] == name:
+                                            self.GSplayer = None
+                                    for player in self.clients:
+                                        if player["conn"] == conn and player["addr"] == addr and player["name"] == name:
+                                            player["role"] = GameRole.SPACEMARINE
+                                    self.SMplayer = {
+                                        "conn": conn,
+                                        "addr": addr,
+                                        "name": name,
+                                        "role": GameRole.SPACEMARINE
+                                    }
+                                    message = {"purpose" : "rolechange",
+                                            "role" : self.SMplayer["role"].name}
+                                    self.send(conn, message)
+                                    logger.info(f"SERVER: player {name}, {conn} has selected SM")
+                                    self.send_lobby_update()
+                            
+                            else:
                                 if self.GSplayer != None:
                                     if self.GSplayer["conn"] == conn and self.GSplayer["addr"] == addr and self.GSplayer["name"] == name:
-                                        self.GSplayer = None
+                                            self.GSplayer = None
+                                if self.SMplayer != None:
+                                    if self.SMplayer["conn"] == conn and self.SMplayer["addr"] == addr and self.SMplayer["name"] == name:
+                                            self.SMplayer = None
                                 for player in self.clients:
-                                    if player["conn"] == conn and player["addr"] == addr and player["name"] == name:
-                                        player["role"] = GameRole.SPACEMARINE
-                                self.SMplayer = {
-                                    "conn": conn,
-                                    "addr": addr,
-                                    "name": name,
-                                    "role": GameRole.SPACEMARINE
-                                }
+                                        if player["conn"] == conn and player["addr"] == addr and player["name"] == name:
+                                            player["role"] = GameRole.SPECTATOR
                                 message = {"purpose" : "rolechange",
-                                        "role" : self.SMplayer["role"].name}
+                                            "role" : GameRole.SPECTATOR.name}
                                 self.send(conn, message)
-                                logger.info(f"SERVER: player {name}, {conn} has selected SM")
+                                logger.info(f"SERVER: player {name}, {conn} has selected Spectator")
                                 self.send_lobby_update()
-                        
-                        else:
-                            if self.GSplayer != None:
-                                if self.GSplayer["conn"] == conn and self.GSplayer["addr"] == addr and self.GSplayer["name"] == name:
-                                        self.GSplayer = None
-                            if self.SMplayer != None:
-                                if self.SMplayer["conn"] == conn and self.SMplayer["addr"] == addr and self.SMplayer["name"] == name:
-                                        self.SMplayer = None
-                            for player in self.clients:
-                                    if player["conn"] == conn and player["addr"] == addr and player["name"] == name:
-                                        player["role"] = GameRole.SPECTATOR
-                            message = {"purpose" : "rolechange",
-                                        "role" : GameRole.SPECTATOR.name}
-                            self.send(conn, message)
-                            logger.info(f"SERVER: player {name}, {conn} has selected Spectator")
-                            self.send_lobby_update()
 
                     elif message["purpose"] == "start":
                         if self.SMplayer != None and self.GSplayer != None:
@@ -181,16 +184,18 @@ class Server:
                         self.isReadyToRecive.add(addr)
 
                     if message["purpose"] == "disconnect":
-                        self.send(conn, {"Purpose": "disconnect"})
-                        break
+                        with lock:
+                            self.send(conn, {"Purpose": "disconnect"})
+                            break
 
         except Exception as e:
             logger.exception(f"SERVER: Error with {addr}: {e}")
         finally:
             conn.close()
             if conn:
-                self.clients = [c for c in self.clients if c["conn"] != conn]
-                self.send_lobby_update()
+                with lock:
+                    self.clients = [c for c in self.clients if c["conn"] != conn]
+                    self.send_lobby_update()
 
     def send(self, conn, message):
         conn.sendall((json.dumps(message) + "\n").encode())

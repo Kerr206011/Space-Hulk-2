@@ -1,1 +1,40 @@
 
+2025-11-13 11:19:24,603 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-11-13 11:19:24,605 - INFO - SERVER: New connection: ('127.0.0.1', 53488)
+2025-11-13 11:19:28,058 - INFO - SERVER: player Player1, <socket.socket fd=1232, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 53488)> has selected SM
+2025-11-13 11:19:32,604 - INFO - SERVER: New connection: ('127.0.0.1', 53489)
+2025-11-13 11:19:36,030 - INFO - SERVER: player Player1, <socket.socket fd=1996, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 53489)> has selected GS
+2025-11-13 11:19:44,551 - INFO - SERVER: player Player1, <socket.socket fd=1232, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 53488)> has selected Spectator
+2025-11-13 11:19:47,225 - INFO - SERVER: player Player1, <socket.socket fd=1996, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 53489)> has selected Spectator
+2025-11-13 11:19:48,674 - INFO - SERVER: player Player1, <socket.socket fd=1996, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 53489)> has selected GS
+2025-11-13 11:19:50,698 - INFO - SERVER: player Player1, <socket.socket fd=1232, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 53488)> has selected SM
+2025-11-13 11:19:52,885 - INFO - SERVER: Lobby started with [{'conn': <socket.socket fd=1232, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 53488)>, 'addr': ('127.0.0.1', 53488), 'name': 'Player1', 'role': <GameRole.SPACEMARINE: 'spacemarine'>}, {'conn': <socket.socket fd=1996, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 53489)>, 'addr': ('127.0.0.1', 53489), 'name': 'Player1', 'role': <GameRole.GENSTEALER: 'genstealer'>}]
+2025-11-13 11:19:52,958 - INFO - SERVER: Ready recived from ('127.0.0.1', 53488)
+2025-11-13 11:19:52,959 - INFO - SERVER: Ready recived from ('127.0.0.1', 53488)
+2025-11-13 11:19:52,960 - INFO - SERVER: Ready recived from ('127.0.0.1', 53488)
+2025-11-13 11:19:52,961 - INFO - SERVER: Ready recived from ('127.0.0.1', 53488)
+2025-11-13 11:19:52,973 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:52,994 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,006 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,032 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,033 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,033 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,035 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,036 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,037 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,038 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,038 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,039 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,039 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,040 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,040 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,041 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,042 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:53,042 - INFO - SERVER: Ready recived from ('127.0.0.1', 53489)
+2025-11-13 11:19:55,695 - ERROR - SERVER: Error with ('127.0.0.1', 53489): [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassServer.py", line 188, in handle_client
+    self.send(conn, {"Purpose": "disconnect"})
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassServer.py", line 201, in send
+    conn.sendall((json.dumps(message) + "\n").encode())
+ConnectionResetError: [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
