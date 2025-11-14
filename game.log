@@ -38,3 +38,11 @@ Traceback (most recent call last):
   File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassServer.py", line 201, in send
     conn.sendall((json.dumps(message) + "\n").encode())
 ConnectionResetError: [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+2025-11-14 14:12:41,473 - INFO - SERVER: New connection: ('127.0.0.1', 49161)
+2025-11-14 14:12:41,474 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-11-14 14:12:44,607 - INFO - SERVER: player Player1, <socket.socket fd=1944, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 49161)> has selected GS
+2025-11-14 14:13:00,442 - INFO - SERVER: New connection: ('127.0.0.1', 59187)
+2025-11-14 14:13:28,760 - INFO - SERVER: New connection: ('127.0.0.1', 52161)
+2025-11-14 14:14:07,204 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-11-14 14:14:07,206 - INFO - SERVER: New connection: ('127.0.0.1', 62044)
+2025-11-14 14:14:08,622 - INFO - SERVER: player Player1, <socket.socket fd=1960, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 62044)> has selected GS
