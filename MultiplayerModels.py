@@ -131,7 +131,7 @@ class Tile:
 
     @classmethod
     def from_data(cls, data):
-        return Tile(data["x"], data["y"], data["sector"], data["picture"], data["is_burning"], data["has_item"], data["item"], data["is_occupied"], data["occupant"])
+        return Tile(data["pos_x"], data["pos_y"], data["sector"], data["picture"], data["is_burning"], data["has_item"], data["item"], data["is_occupied"], data["occupant"])
 
     def to_dict(self):
         return {
@@ -164,7 +164,7 @@ class Door(Tile):
     
     @classmethod
     def from_data(cls, data):
-        return Door(data["x"], data["y"], data["sector"], data["picture"], data["is_burning"], data["has_item"], data["item"], data["is_occupied"], data["occupant"], data["is_open"])
+        return Door(data["pos_x"], data["pos_y"], data["sector"], data["picture"], data["is_burning"], data["has_item"], data["item"], data["is_occupied"], data["occupant"], data["is_open"])
 
 
     def to_dict(self):
@@ -199,7 +199,7 @@ class Wall(Tile):
 
     @classmethod
     def from_data(cls, data):
-        return Wall(data["x"], data["y"], data["sector"], data["picture"])
+        return Wall(data["pos_x"], data["pos_y"], data["sector"], data["picture"])
     
     def to_dict(self):
         return {
@@ -225,8 +225,13 @@ class EntryPoint:
         self.picture = picture
         self.type = tile_type
         self.blips = []
+        self.genstealer = []
         self.face = face
 
+    @classmethod
+    def from_data(cls, data):
+        return EntryPoint(data["pos_x"], data["pos_y"], data["picture"], data["type"], data["face"])
+    
     def send(self):
         return{
             "pos_x": self.x,
@@ -247,7 +252,8 @@ class EntryPoint:
             "picture": self.picture,
             "type": self.type,
             "bliplist": bliplist,
-            "face": self.face
+            "face": self.face,
+            "genstealer": self.genstealer.__len__()
         }
 
 class Ladder:

@@ -228,7 +228,7 @@ class ActionField:
 
 class Slider:
 
-    def __init__(self, pos_x, pos_y, size_x=100, size_y=10, size_r=10,
+    def __init__(self, pos_x, pos_y, size_x=200, size_y=20, size_r=20,
                  color_b='blue', color_s='red', max = 1, min = 0.1):
         self.pos_x = pos_x
         self.pos_y = pos_y
@@ -242,7 +242,7 @@ class Slider:
         self.slider_pos = [self.pos_x + self.size_x / 2,
                            self.pos_y + self.size_y / 2]
 
-        self.rect = pygame.Rect(self.pos_x, self.pos_y,
+        self.rect = pygame.Rect(self.pos_x-(self.size_x/2), self.pos_y,
                                           self.size_x, self.size_y)
 
     def value(self) -> float:

@@ -651,7 +651,7 @@ class Test_Client:
             
     def gameStat_lobby(self):
         test_server = Server()
-        threading.Thread(target=test_server.start, args=(), daemon = True).start()
+        threading.Thread(target=test_server.main, args=(), daemon = True).start()
         self.is_host = True
     
     def discover_servers(self, discovery_port=5001, timeout=1):

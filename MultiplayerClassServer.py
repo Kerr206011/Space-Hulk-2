@@ -60,6 +60,11 @@ class Server:
         self.SMmodelList = []
         self.map = []
 
+    def main(self):
+        self.start()
+        while self.clients.__len__()!=0:
+            pass
+
     def start(self):
         """
         starts the server by binding it to its host and port and listening on that adress. After that it calls accept_clients

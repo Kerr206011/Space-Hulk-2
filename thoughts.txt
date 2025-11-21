@@ -87,7 +87,11 @@ add a main Method to the server so it can be shutdown correctly instead of creas
     added disconnect method to client, last client to  disconnect still gets error
 add a variable to the saved SM models so that they can be attributed to a Spawnarea
 implement logger 
-use with lock: to lock critical sections of code for only one Thread to work in
+change entrypoint class so that it can utilise saved lists to fill its blips/genstealer lists
+finish the Server main method, so that it is clearer what the server is doing an when(
+    should the server ustilise only the main method, with the threads only passing the infos from their
+    clients along, or should the main method only be for directing the flow of the game?
+)
 
 Todo: new classes for Map objects, make them server/ client compatible, clientside needs to be checked
 

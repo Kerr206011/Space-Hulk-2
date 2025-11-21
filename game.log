@@ -46,3 +46,11 @@ ConnectionResetError: [WinError 10054] Eine vorhandene Verbindung wurde vom Remo
 2025-11-14 14:14:07,204 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
 2025-11-14 14:14:07,206 - INFO - SERVER: New connection: ('127.0.0.1', 62044)
 2025-11-14 14:14:08,622 - INFO - SERVER: player Player1, <socket.socket fd=1960, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 62044)> has selected GS
+2025-11-21 12:57:21,438 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-11-21 12:57:21,440 - INFO - SERVER: New connection: ('127.0.0.1', 63391)
+2025-11-21 13:18:56,832 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-11-21 13:18:56,834 - INFO - SERVER: New connection: ('127.0.0.1', 51022)
+2025-11-21 13:18:58,699 - INFO - SERVER: player Player1, <socket.socket fd=1948, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51022)> has selected GS
+2025-11-21 13:19:11,891 - INFO - SERVER: New connection: ('127.0.0.1', 51026)
+2025-11-21 13:19:17,332 - INFO - SERVER: player Player1, <socket.socket fd=1900, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51026)> has selected SM
+2025-11-21 13:19:21,714 - INFO - SERVER: player Player1, <socket.socket fd=1900, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51026)> has selected Spectator
