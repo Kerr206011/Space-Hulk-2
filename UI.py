@@ -266,3 +266,6 @@ class Slider:
 
             else:
                 self.slider_pos[0] = mouse_pos
+
+    def config(self, value):
+        pass

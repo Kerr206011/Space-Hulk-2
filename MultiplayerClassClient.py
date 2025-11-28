@@ -16,7 +16,7 @@ class SpaceMarineSprite:
         height = int(image.get_height() * scale)
         self.image = pygame.transform.scale(image, (width, height))
         self.rect = self.image.get_rect()
-
+        
         match self.face:
             case Facing.NORTH:
                 self.image = pygame.transform.rotate(self.image, 90)
@@ -35,7 +35,7 @@ class SpaceMarineSprite:
         return SpaceMarineSprite(data["pos_x"], data["pos_y"], scale, data["picture"], data["face"])
 
     def draw(self, screen):
-        self.rect.topleft = (self.pos_x * self.image.get_width(), self.pos_y * self.image.get_height())  # Beispiel Tile-Grid
+        self.rect.topleft = (self.pos_x * self.image.get_width(), self.pos_y * self.image.get_height()) 
         screen.blit(self.image, self.rect)
 
     def rescale(self, scale):
@@ -51,27 +51,81 @@ class SpaceMarineSprite:
     def __repr__(self):
         return (f"<SpaceMarine pos=({self.pos_x},{self.pos_y}), face:{self.face}>")
 
-class BlipSprite(Blip):
-    def __init__(self, count, picture_path: str):
-        super().__init__(count)
+class BlipSprite:
+    def __init__(self, pos_x, pos_y, scale, picture_path: str):
+        self.pos_x = pos_x
+        self.pos_y = pos_y
         self.picture_path = picture_path
-        self.image = pygame.image.load(picture_path).convert_alpha()
+        image = pygame.image.load(picture_path).convert_alpha()
+        width = int(image.get_width() * scale)
+        height = int(image.get_height() * scale)
+        self.image = pygame.transform.scale(image, (width, height))
         self.rect = self.image.get_rect()
 
+    @classmethod
+    def from_data(cls, data, scale):
+        return BlipSprite(data["pos_x"], data["pos_y"], scale, data["picture"])
+
     def draw(self, screen):
-        self.rect.topleft = (self.position[0] * 32, self.position[1] * 32)  # Beispiel Tile-Grid
+        self.rect.topleft = (self.pos_x * self.image.get_width(), self.pos_y * self.image.get_height()) 
         screen.blit(self.image, self.rect)
 
-class GenstealerSprite(Genstealer):
-    def __init__(self, broodlord, picture_path: str):
-        super().__init__(broodlord)
-        self.picture_path = picture_path
-        self.image = pygame.image.load(picture_path).convert_alpha()
+    def rescale(self, scale):
+        image = self.image
+        width = int(image.get_width() * scale)
+        height = int(image.get_height() * scale)
+        self.image = pygame.transform.scale(image, (width, height))
         self.rect = self.image.get_rect()
 
+    def __repr__(self):
+        return (f"<Blip pos=({self.pos_x},{self.pos_y})>")
+
+class GenstealerSprite:
+    def __init__(self, pos_x, pos_y, scale, picture_path: str, face, broodlord):
+        self.broodlord = broodlord
+        self.face = Facing((face[0], face[1]))
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.picture_path = picture_path
+        image = pygame.image.load(picture_path).convert_alpha()
+        width = int(image.get_width() * scale)
+        height = int(image.get_height() * scale)
+        self.image = pygame.transform.scale(image, (width, height))
+        self.rect = self.image.get_rect()
+
+        match self.face:
+            case Facing.NORTH:
+                self.image = pygame.transform.rotate(self.image, 90)
+            
+            case Facing.EAST:
+                pass
+
+            case Facing.SOUTH:
+                self.image = pygame.transform.rotate(self.image, 180)
+
+            case Facing.WEST:
+                self.image = pygame.transform.rotate(self.image, -90)
+
+    @classmethod
+    def from_data(cls, data, scale):
+        return GenstealerSprite(data["pos_x"], data["pos_y"], scale, data["picture"], data["face"], data["broodlord"])
+
     def draw(self, screen):
-        self.rect.topleft = (self.position[0] * 32, self.position[1] * 32)  # Beispiel Tile-Grid
+        self.rect.topleft = (self.pos_x * self.image.get_width(), self.pos_y * self.image.get_height()) 
         screen.blit(self.image, self.rect)
+
+    def rescale(self, scale):
+        image = self.image
+        width = int(image.get_width() * scale)
+        height = int(image.get_height() * scale)
+        self.image = pygame.transform.scale(image, (width, height))
+        self.rect = self.image.get_rect()
+
+    def turn(self, degr):
+        self.image = pygame.transform.rotate(self.image, degr)
+
+    def __repr__(self):
+        return (f"<Genstealer pos=({self.pos_x},{self.pos_y}), face:{self.face}, Broodlord:{self.broodlord}>")
 
 class TileSprite:
     def __init__(self, x, y,scale, picture_path, is_burning = False, has_item = False):

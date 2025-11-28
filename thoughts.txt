@@ -79,7 +79,6 @@ add join menu
 add debug gamestate to test ingame interactions or make it a toggelable option with a variable
 add scale to UI Objects
 scaling slider in config needs work
-rework blip and Genstealer Class
 give the Slider a method to put it at a certain position
 add graphicx/y to Tiles to seperate boardposition and Screenposition
 add options with the Sprite classes to adjust the parameters of the Tiles (like burning etc.)
