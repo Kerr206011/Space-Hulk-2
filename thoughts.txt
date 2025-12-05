@@ -66,6 +66,7 @@ finish the Server main method, so that it is clearer what the server is doing an
     should the server ustilise only the main method, with the threads only passing the infos from their
     clients along, or should the main method only be for directing the flow of the game?
 )
+change the Pictures in the serverside Tile Objects to represents their namesake
 
 Todo: new classes for Map objects, make them server/ client compatible, clientside needs to be checked
 

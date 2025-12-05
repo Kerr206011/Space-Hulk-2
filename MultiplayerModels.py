@@ -256,5 +256,37 @@ class EntryPoint:
             "genstealer": self.genstealer.__len__()
         }
 
-class Ladder:
-    pass
+class Ladder(Tile):
+    def __init__(self, x, y, sector, partner, picture="Pictures/Tiles/Floor_1", is_burning=False, has_item=False, item=None, is_occupied=False, occupant=0, tile_type="ladder"):
+        super().__init__(x, y, sector, picture, is_burning, has_item, item, is_occupied, occupant, tile_type)
+        self.partner = partner
+
+    @classmethod
+    def from_data(cls, data):
+        return Ladder(data["pos_x"], data["pos_y"], data["sector"], data["partner"], data["picture"], data["is_burning"], data["has_item"], data["item"], data["is_occupied"], data["occupant"])
+
+    def to_dict(self):
+        return {
+            "pos_x": self.x,
+            "pos_y": self.y,
+            "sector": self.sector,
+            "partner": self.partner,
+            "is_burning": self.is_burning,
+            "has_item": self.has_item,
+            "item": self.item,
+            "is_occupied": self.is_occupied,
+            "occupant": self.occupant.value,  # z.B. Model-ID oder None
+            "picture": self.picture,
+            "type": self.type
+        }
+    
+    def send(self):
+        return{
+            "pos_x": self.x,
+            "pos_y": self.y,
+            "is_burning": self.is_burning,
+            "has_item": self.has_item,
+            "picture":  self.picture,
+            "type": self.type
+        }
+    

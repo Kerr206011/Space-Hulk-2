@@ -128,9 +128,11 @@ class GenstealerSprite:
         return (f"<Genstealer pos=({self.pos_x},{self.pos_y}), face:{self.face}, Broodlord:{self.broodlord}>")
 
 class TileSprite:
-    def __init__(self, x, y,scale, picture_path, is_burning = False, has_item = False):
+    def __init__(self, x, y, scale, picture_path, is_burning = False, has_item = False):
         self.x = x
         self.y = y
+        self.graphic_x = x
+        self.graphic_y = y
         self.is_burning = is_burning
         self.has_item = has_item    #perhaps not needed, but here for possible furure use
         self.scale = scale
@@ -147,7 +149,7 @@ class TileSprite:
         return TileSprite(data["pos_x"], data["pos_y"], scale, data["picture"], data["is_burning"], data["has_item"])
     
     def draw(self, screen):
-        self.rect.topleft = (self.x * self.image.get_width(), self.y * self.image.get_height())
+        self.rect.topleft = (self.graphic_x * self.image.get_width(), self.graphic_y * self.image.get_height())
         screen.blit(self.image, self.rect)
 
     def __repr__(self):
@@ -160,6 +162,10 @@ class TileSprite:
         self.image = pygame.transform.scale(image, (width, height))
         self.rect = self.image.get_rect()
 
+    def move(self, direction):
+        self.graphic_x += direction[0]
+        self.graphic_y += direction[1]
+
     def ignite(self, scale):
         image = pygame.image.load(self.burning_picture_path).convert_alpha()
         width = int(image.get_width() * scale)
@@ -169,7 +175,6 @@ class TileSprite:
 
 
 class DoorSprite(TileSprite):
-
     def __init__(self, x, y, scale, picture_path, is_burning=False, has_item=False, is_open = False):
         super().__init__(x, y, scale, picture_path, is_burning, has_item)
         self.picture_path_open = picture_path+"_open.png"
@@ -195,13 +200,19 @@ class DoorSprite(TileSprite):
             self.rect = self.image.get_rect()
     
     def draw(self, screen):
-        self.rect.topleft = (self.x * self.image.get_width(), self.y * self.image.get_height())
+        self.rect.topleft = (self.graphic_x * self.image.get_width(), self.graphic_y * self.image.get_height())
         screen.blit(self.image, self.rect)
+
+    def move(self, direction):
+        self.graphic_x += direction[0]
+        self.graphic_y += direction[1]
 
 class WallSprite:
     def __init__(self, x, y,scale, picture_path):
         self.x = x
         self.y = y
+        self.graphic_x = x
+        self.graphic_y = y
         self.scale = scale
         self.picture_path = picture_path+".png"
         image = pygame.image.load(self.picture_path).convert_alpha()
@@ -225,13 +236,19 @@ class WallSprite:
         self.rect = self.image.get_rect()
     
     def draw(self, screen):
-        self.rect.topleft = (self.x * self.image.get_width(), self.y * self.image.get_height())
+        self.rect.topleft = (self.graphic_x * self.image.get_width(), self.graphic_y * self.image.get_height())
         screen.blit(self.image, self.rect)
+
+    def move(self, direction):
+        self.graphic_x += direction[0]
+        self.graphic_y += direction[1]
 
 class EntryPointSprite:
     def __init__(self, x, y,scale, picture_path, blips, face):
         self.x = x
         self.y = y
+        self.graphic_x = x
+        self.graphic_y = y
         self.scale = scale
         self.picture_path = picture_path+".png"
         self.blips = blips
@@ -257,8 +274,12 @@ class EntryPointSprite:
         self.rect = self.image.get_rect()
     
     def draw(self, screen):
-        self.rect.topleft = (self.x * self.image.get_width(), self.y * self.image.get_height())
+        self.rect.topleft = (self.graphic_x * self.image.get_width(), self.graphic_y * self.image.get_height())
         screen.blit(self.image, self.rect)
+
+    def move(self, direction):
+        self.graphic_x += direction[0]
+        self.graphic_y += direction[1]
 
 
 
@@ -328,6 +349,8 @@ class Test_Client:
         lobby_startButton = Button(100, 600, config_picture, 1)
 
         #setup init
+
+        #gameplay init
 
 
         #start of game
@@ -518,6 +541,8 @@ class Test_Client:
                                         self.map.append(DoorSprite.from_data(entry, self.scale))
                                     case "wall":
                                         self.map.append(WallSprite.from_data(entry, self.scale))
+                                    case "entry":
+                                        self.map.append(EntryPointSprite.from_data(entry, self.scale))
                             print("setup Recived!")
                             print(self.smlist)
                             print(self.map)
@@ -544,6 +569,31 @@ class Test_Client:
                             self.state = Game_State.MAINMENU
                             wait = True
                             stateShift = True
+
+                        if event.key == pygame.K_w:
+                            for tile in self.map:
+                                tile.move((0,1))
+                                wait = True
+                                stateShift = True
+
+                        if event.key == pygame.K_d:
+                            for tile in self.map:
+                                tile.move((-1,0))
+                                wait = True
+                                stateShift = True
+
+                        if event.key == pygame.K_s:
+                            for tile in self.map:
+                                tile.move((0,-1))
+                                wait = True
+                                stateShift = True
+
+                        if event.key == pygame.K_a:
+                            for tile in self.map:
+                                tile.move((1,0))
+                                wait = True
+                                stateShift = True
+                
 
             #updates the screen after a stateshift
             if stateShift == True:
@@ -705,7 +755,7 @@ class Test_Client:
             
     def gameStat_lobby(self):
         test_server = Server()
-        threading.Thread(target=test_server.main, args=(), daemon = True).start()
+        threading.Thread(target=test_server.start, args=(), daemon = True).start()
         self.is_host = True
     
     def discover_servers(self, discovery_port=5001, timeout=1):

@@ -2,8 +2,8 @@
     "level": 1,
     "map":[
         {
-            "x":1,
-            "y":11,
+            "pos_x":1,
+            "pos_y":12,
             "sector":1,
             "is_burning":false,
             "has_item":false,
@@ -14,8 +14,8 @@
             "type": "tile"
         },
         {
-            "x":2,
-            "y":11,
+            "pos_x":2,
+            "pos_y":12,
             "sector":1,
             "is_burning":false,
             "has_item":false,
@@ -26,8 +26,8 @@
             "type": "tile"
         },
         {
-            "x":3,
-            "y":11,
+            "pos_x":3,
+            "pos_y":12,
             "sector":1,
             "is_burning":false,
             "has_item":false,
@@ -38,8 +38,8 @@
             "type": "tile"
         },
         {
-            "x":4,
-            "y":11,
+            "pos_x":4,
+            "pos_y":12,
             "sector":1,
             "is_burning":false,
             "has_item":false,
@@ -50,8 +50,8 @@
             "type": "tile"
         },
         {
-            "x":5,
-            "y":11,
+            "pos_x":5,
+            "pos_y":12,
             "sector":1,
             "is_burning":false,
             "has_item":false,
@@ -62,8 +62,8 @@
             "type": "tile"
         },
         {
-            "x":6,
-            "y":11,
+            "pos_x":6,
+            "pos_y":12,
             "sector":2,
             "is_burning":false,
             "has_item":false,
@@ -75,92 +75,179 @@
             "is_open": true
         },
         {
-            "x":0,
-            "y":11,
+            "pos_x":7,
+            "pos_y":11,
+            "sector":2,
+            "is_burning":false,
+            "has_item":false,
+            "item":null,
+            "is_occupied":false,
+            "occupant":0,
+            "picture":"Pictures/Tiles/Floor_1",
+            "type": "tile"
+        },
+        {
+            "pos_x":7,
+            "pos_y":12,
+            "sector":2,
+            "is_burning":false,
+            "has_item":false,
+            "item":null,
+            "is_occupied":false,
+            "occupant":0,
+            "picture":"Pictures/Tiles/Floor_1",
+            "type": "tile"
+        },
+        {
+            "pos_x":7,
+            "pos_y":13,
+            "sector":2,
+            "is_burning":false,
+            "has_item":false,
+            "item":null,
+            "is_occupied":false,
+            "occupant":0,
+            "picture":"Pictures/Tiles/Floor_1",
+            "type": "tile"
+        },
+        {
+            "pos_x": 9,
+            "pos_y": 11,
+            "picture": "Pictures/Tiles/lurking",
+            "type": "entry",
+            "bliplist": [],
+            "face": [0,1],
+            "genstealer": 0
+        },
+        {
+            "pos_x":0,
+            "pos_y":11,
             "sector":0,
             "picture":"Pictures/Tiles/Wall",
             "type": "wall"
         },
         {
-            "x":0,
-            "y":10,
+            "pos_x":0,
+            "pos_y":12,
             "sector":0,
             "picture":"Pictures/Tiles/Wall",
             "type": "wall"
         },
         {
-            "x":0,
-            "y":12,
+            "pos_x":0,
+            "pos_y":13,
             "sector":0,
             "picture":"Pictures/Tiles/Wall",
             "type": "wall"
         },
         {
-            "x":1,
-            "y":10,
+            "pos_x":1,
+            "pos_y":11,
             "sector":0,
             "picture":"Pictures/Tiles/Wall",
             "type": "wall"
         },
         {
-            "x":1,
-            "y":12,
+            "pos_x":1,
+            "pos_y":13,
             "sector":0,
             "picture":"Pictures/Tiles/Wall",
             "type": "wall"
         },
         {
-            "x":2,
-            "y":10,
+            "pos_x":2,
+            "pos_y":11,
             "sector":0,
             "picture":"Pictures/Tiles/Wall",
             "type": "wall"
         },
         {
-            "x":2,
-            "y":12,
+            "pos_x":2,
+            "pos_y":13,
             "sector":0,
             "picture":"Pictures/Tiles/Wall",
             "type": "wall"
         },
         {
-            "x":3,
-            "y":10,
+            "pos_x":3,
+            "pos_y":11,
             "sector":0,
             "picture":"Pictures/Tiles/Wall",
             "type": "wall"
         },
         {
-            "x":3,
-            "y":12,
+            "pos_x":3,
+            "pos_y":13,
             "sector":0,
             "picture":"Pictures/Tiles/Wall",
             "type": "wall"
         },
         {
-            "x":4,
-            "y":10,
+            "pos_x":4,
+            "pos_y":11,
             "sector":0,
             "picture":"Pictures/Tiles/Wall",
             "type": "wall"
         },
         {
-            "x":4,
-            "y":12,
+            "pos_x":4,
+            "pos_y":13,
             "sector":0,
             "picture":"Pictures/Tiles/Wall",
             "type": "wall"
         },
         {
-            "x":5,
-            "y":10,
+            "pos_x":5,
+            "pos_y":11,
             "sector":0,
             "picture":"Pictures/Tiles/Wall",
             "type": "wall"
         },
         {
-            "x":5,
-            "y":12,
+            "pos_x":5,
+            "pos_y":13,
+            "sector":0,
+            "picture":"Pictures/Tiles/Wall",
+            "type": "wall"
+        },
+        {
+            "pos_x":6,
+            "pos_y":10,
+            "sector":0,
+            "picture":"Pictures/Tiles/Wall",
+            "type": "wall"
+        },
+        {
+            "pos_x":6,
+            "pos_y":11,
+            "sector":0,
+            "picture":"Pictures/Tiles/Wall",
+            "type": "wall"
+        },
+        {
+            "pos_x":6,
+            "pos_y":13,
+            "sector":0,
+            "picture":"Pictures/Tiles/Wall",
+            "type": "wall"
+        },
+        {
+            "pos_x":6,
+            "pos_y":14,
+            "sector":0,
+            "picture":"Pictures/Tiles/Wall",
+            "type": "wall"
+        },
+        {
+            "pos_x":7,
+            "pos_y":10,
+            "sector":0,
+            "picture":"Pictures/Tiles/Wall",
+            "type": "wall"
+        },
+        {
+            "pos_x":7,
+            "pos_y":14,
             "sector":0,
             "picture":"Pictures/Tiles/Wall",
             "type": "wall"

@@ -55,14 +55,16 @@ class Server:
         self.reinforceing_blips = int
         self.isBroodLordPresent = False
         self.startBlips = int
+        self.entrypoints = []
 
         #Information for the running game
         self.SMmodelList = []
         self.map = []
+        self.selectedTile = None
+        self.activeModel = None
 
     def main(self):
-        self.start()
-        while self.clients.__len__()!=0:
+        while True:     #this will perhaps be replaced by a variable to shut of the Server
             pass
 
     def start(self):
@@ -188,6 +190,9 @@ class Server:
                         logger.info(f"SERVER: Ready recived from {addr}")
                         self.isReadyToRecive.add(addr)
 
+                    elif message["purpose"] == "place":
+                        pass
+
                     if message["purpose"] == "disconnect":
                         with lock:
                             self.send(conn, {"Purpose": "disconnect"})
@@ -216,19 +221,23 @@ class Server:
     def setup_lobby(self):
         logger.info(f"SERVER: Lobby started with {self.clients}")
 
+        #loads the correct level data
         level_file = "Levels/" + "level_" + self.level + ".json"
 
         with open(level_file, 'r') as json_file:
             data = json.load(json_file)
 
+        #sets the setup variables
         self.available_blips = data["blipList"]
         self.reinforceing_blips = data["reinforcement"]
         self.isBroodLordPresent = data["broodLord"]
         self.startBlips = data["startBlip"]
+        self.entrypoints = data["entryPoints"]
 
         SMList = data["smModelList"]
         bluePrint = data["map"]
 
+        #makes shure all clients are ready to recive the setup
         isReadyToSend = False
 
         for c in self.clients:
@@ -243,6 +252,7 @@ class Server:
                     isReadyToSend  = False
                     self.send(c["conn"],{"purpose":"readyup"})
 
+        #serialises the data for the clients
         for entry in SMList:
             marine = SpaceMarine(entry["weapon"], entry["rank"])
             self.SMmodelList.append(marine)
@@ -255,6 +265,8 @@ class Server:
                     tile = Door.from_data(entry)
                 case "wall":
                     tile = Wall.from_data(entry)
+                case "entry":
+                    tile = EntryPoint.from_data(entry)
             self.map.append(tile)
 
         sendMap = []
@@ -267,6 +279,7 @@ class Server:
         print("MAP:")
         print(sendMap)
 
+        #sends data to the clients
         for c in self.clients:
             message = {"purpose":"setup","marines":sendRoster,"map":sendMap}
             self.send(c["conn"],message)
