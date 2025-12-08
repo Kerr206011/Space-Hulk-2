@@ -288,6 +288,7 @@ class Game_State(Enum):
     LOBBY = "lobby"
     CONFIG = "config"
     SETUP = "setup"
+    DEPLOY_SM = "deploy_sm"
     READY = "ready" #placeholder to check if setup is correct
 
 class Test_Client:
@@ -317,6 +318,8 @@ class Test_Client:
         self.level = None
         self.smlist = []
         self.map = []
+        self.selected_tile = None
+        
 
     def main(self):
         #general init
@@ -349,6 +352,16 @@ class Test_Client:
         lobby_startButton = Button(100, 600, config_picture, 1)
 
         #setup init
+
+        #deploy_sm init
+        deploysm_top_sprites_start = 100
+        deploysm_selected_sprite = None
+        deploysm_to_place_sprites = self.smlist.copy()
+        deploysm_marked_tiles = []
+
+        deploysm_deployButton = Button(200, 600, config_picture, 1)
+        deploysm_rotateButton = Button(300, 600, config_picture, 1)
+
 
         #gameplay init
 
@@ -546,14 +559,29 @@ class Test_Client:
                             print("setup Recived!")
                             print(self.smlist)
                             print(self.map)
-                            self.state = Game_State.READY
-                            wait = True
-                            stateShift = True
 
                         if event.data["purpose"] == "readyup":
                             message = {"purpose" : "readytorecive"}
                             self.send(message)
                             print("ready sent!")
+
+                        if event.data["purpose"] == "deploy_sm":
+                            print(event.data["purpose"], event.data["entries"])
+                            entrypoints = event.data["entries"]
+                            marking = []
+                            for point in entrypoints:
+                                for sprite in self.map:
+                                    if sprite.x == point["x"] and sprite.y == point["y"]:
+                                        marking.append(sprite)
+                            marked_tiles = self.mark('red', marking)
+                            self.state = Game_State.DEPLOY_SM
+                            wait = True
+                            stateShift = True
+
+                        if event.data["purpose"] == "continue":
+                            self.state = Game_State.READY
+                            wait = True
+                            stateShift = True
 
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_ESCAPE:
@@ -562,7 +590,57 @@ class Test_Client:
                             wait = True
                             stateShift = True
 
+                elif self.state == Game_State.DEPLOY_SM and not wait:
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            self.disconnect()
+                            self.state = Game_State.MAINMENU
+                            wait = True
+                            stateShift = True
+
+                        if event.key == pygame.K_w:
+                            for tile in self.map:
+                                tile.move((0,1))
+                                wait = True
+                                stateShift = True
+
+                        if event.key == pygame.K_d:
+                            for tile in self.map:
+                                tile.move((-1,0))
+                                wait = True
+                                stateShift = True
+
+                        if event.key == pygame.K_s:
+                            for tile in self.map:
+                                tile.move((0,-1))
+                                wait = True
+                                stateShift = True
+
+                        if event.key == pygame.K_a:
+                            for tile in self.map:
+                                tile.move((1,0))
+                                wait = True
+                                stateShift = True
+
+                    elif event.type == pygame.MOUSEBUTTONUP:
+                        if deploysm_deployButton.rect.collidepoint(pygame.mouse.get_pos()):
+                            if deploysm_selected_sprite != None:
+                                pass
+                        elif deploysm_rotateButton.rect.collidepoint(pygame.mouse.get_pos()):
+                            pass
+                        else:
+                            for tile in deploysm_marked_tiles:
+                                if tile[0].rect.collidepoint(pygame.mouse.get_pos()):
+                                    self.selected_tile = tile[0]
+                                    print("clicked")
+                                    print(self.selected_tile)
+                                    stateShift = True
+
+                    if event.type == pygame.USEREVENT:
+                        pass
+
                 elif self.state == Game_State.READY and not wait:
+
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_ESCAPE:
                             self.disconnect()
@@ -622,10 +700,30 @@ class Test_Client:
                     self.screen.fill('black')
                     self.screen.blit(config_font.render("Loading Level: 0%", True, 'green',), (300, 400))
 
+                if self.state == Game_State.DEPLOY_SM:
+                    self.screen.fill('black')
+                    for tile in self.map:
+                        tile.draw(self.screen)
+                    for tile in deploysm_marked_tiles:
+                        pygame.draw.rect(self.screen, tile[1], tile[0].rect, 3)
+                    for marine in self.smlist:
+                        if marine.pos_x != None:
+                            marine.draw(self.screen)
+                    if self.selected_tile != None:
+                        pygame.draw.rect(self.screen, 'blue', self.selected_tile.rect, 4)
+                    deploysm_deployButton.draw(self.screen)
+                    deploysm_rotateButton.draw(self.screen)
+
+
                 if self.state == Game_State.READY:
                     self.screen.fill('black')
                     for tile in self.map:
                         tile.draw(self.screen)
+                    for tile in marked_tiles:
+                        pygame.draw.rect(self.screen, tile[1], tile[0].rect, 3)
+                    for marine in self.smlist:
+                        if marine.pos_x != None:
+                            marine.draw(self.screen)
     
                 pygame.display.flip()
                 stateShift = False
@@ -777,6 +875,18 @@ class Test_Client:
             pass
 
         return servers
+    
+    def mark(self, color, sprites):
+        marked_tiles = []
+        print("marking")
+        if isinstance(sprites,list):
+            print("liste")
+            for sprite in sprites:
+                marked_tiles.append((sprite, color))
+        else:
+            print("no list")
+            marked_tiles.append((sprites, color))
+        return(marked_tiles)
 
 client = Test_Client()
 client.main()

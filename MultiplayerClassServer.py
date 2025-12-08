@@ -59,8 +59,9 @@ class Server:
 
         #Information for the running game
         self.SMmodelList = []
+        self.GSmodelList = []
+        self.BLmodelList = []
         self.map = []
-        self.selectedTile = None
         self.activeModel = None
 
     def main(self):
@@ -285,6 +286,12 @@ class Server:
             self.send(c["conn"],message)
         
         print(self.SMmodelList)
+
+        for c in self.clients:
+            if c == self.SMplayer:
+                self.send(c["conn"],{"purpose":"deploy_sm", "entries":self.entrypoints})
+            else:
+                self.send(c["conn"], {"purpose": "continue"})
 
     def broadcast_listener(self):
         udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
