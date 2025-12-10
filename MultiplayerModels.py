@@ -58,7 +58,7 @@ class SpaceMarine(Model):
     def send(self):
         match self.weapon:
             case _:
-                picture_path = "Pictures/Models/Brother.png"
+                picture_path = "Pictures/Models/SM.png"
 
         return{
             "pos_x":self.position_x,

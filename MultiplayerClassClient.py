@@ -10,6 +10,8 @@ class SpaceMarineSprite:
         self.face = Facing((face[0], face[1]))
         self.pos_x = pos_x
         self.pos_y = pos_y
+        self.graphic_x = pos_x
+        self.graphic_y = pos_y
         self.picture_path = picture_path    #perhaps unnececary but left in for possible future use
         image = pygame.image.load(picture_path).convert_alpha()
         width = int(image.get_width() * scale)
@@ -35,8 +37,19 @@ class SpaceMarineSprite:
         return SpaceMarineSprite(data["pos_x"], data["pos_y"], scale, data["picture"], data["face"])
 
     def draw(self, screen):
-        self.rect.topleft = (self.pos_x * self.image.get_width(), self.pos_y * self.image.get_height()) 
+        self.rect.topleft = (self.graphic_x * self.image.get_width(), self.graphic_y * self.image.get_height())
         screen.blit(self.image, self.rect)
+
+    def align(self, sprite):
+        self.graphic_x = sprite.graphic_x
+        self.graphic_y = sprite.graphic_y
+
+        self.pos_x = sprite.x
+        self.pos_y = sprite.y
+            
+    def move(self, direction):
+        self.graphic_x += direction[0]
+        self.graphic_y += direction[1]
 
     def rescale(self, scale):
         image = self.image
@@ -48,6 +61,13 @@ class SpaceMarineSprite:
     def turn(self, degr):
         self.image = pygame.transform.rotate(self.image, degr)
 
+    def to_dict(self):
+        return{
+            "pos_x": self.pos_x,
+            "pos_y": self.pos_y,
+            
+        }
+
     def __repr__(self):
         return (f"<SpaceMarine pos=({self.pos_x},{self.pos_y}), face:{self.face}>")
 
@@ -55,6 +75,8 @@ class BlipSprite:
     def __init__(self, pos_x, pos_y, scale, picture_path: str):
         self.pos_x = pos_x
         self.pos_y = pos_y
+        self.graphic_x = pos_x
+        self.graphic_y = pos_y
         self.picture_path = picture_path
         image = pygame.image.load(picture_path).convert_alpha()
         width = int(image.get_width() * scale)
@@ -67,8 +89,19 @@ class BlipSprite:
         return BlipSprite(data["pos_x"], data["pos_y"], scale, data["picture"])
 
     def draw(self, screen):
-        self.rect.topleft = (self.pos_x * self.image.get_width(), self.pos_y * self.image.get_height()) 
+        self.rect.topleft = (self.graphic_x * self.image.get_width(), self.graphic_y * self.image.get_height())
         screen.blit(self.image, self.rect)
+
+    def align(self, sprite):
+        self.graphic_x = sprite.graphic_x
+        self.graphic_y = sprite.graphic_y
+
+        self.pos_x = sprite.x
+        self.pos_y = sprite.y
+
+    def move(self, direction):
+        self.graphic_x += direction[0]
+        self.graphic_y += direction[1]
 
     def rescale(self, scale):
         image = self.image
@@ -86,6 +119,8 @@ class GenstealerSprite:
         self.face = Facing((face[0], face[1]))
         self.pos_x = pos_x
         self.pos_y = pos_y
+        self.graphic_x = pos_x
+        self.graphic_y = pos_y
         self.picture_path = picture_path
         image = pygame.image.load(picture_path).convert_alpha()
         width = int(image.get_width() * scale)
@@ -111,8 +146,19 @@ class GenstealerSprite:
         return GenstealerSprite(data["pos_x"], data["pos_y"], scale, data["picture"], data["face"], data["broodlord"])
 
     def draw(self, screen):
-        self.rect.topleft = (self.pos_x * self.image.get_width(), self.pos_y * self.image.get_height()) 
+        self.rect.topleft = (self.graphic_x * self.image.get_width(), self.graphic_y * self.image.get_height())
         screen.blit(self.image, self.rect)
+
+    def align(self, sprite):
+        self.graphic_x = sprite.graphic_x
+        self.graphic_y = sprite.graphic_y
+
+        self.pos_x = sprite.x
+        self.pos_y = sprite.y
+
+    def move(self, direction):
+        self.graphic_x += direction[0]
+        self.graphic_y += direction[1]
 
     def rescale(self, scale):
         image = self.image
@@ -354,9 +400,9 @@ class Test_Client:
         #setup init
 
         #deploy_sm init
-        deploysm_top_sprites_start = 100
+        deploysm_top_sprites_start = 5
         deploysm_selected_sprite = None
-        deploysm_to_place_sprites = self.smlist.copy()
+        deploysm_to_place_sprites = []
         deploysm_marked_tiles = []
 
         deploysm_deployButton = Button(200, 600, config_picture, 1)
@@ -364,7 +410,6 @@ class Test_Client:
 
 
         #gameplay init
-
 
         #start of game
         self.screen.fill('black')
@@ -573,8 +618,17 @@ class Test_Client:
                                 for sprite in self.map:
                                     if sprite.x == point["x"] and sprite.y == point["y"]:
                                         marking.append(sprite)
-                            marked_tiles = self.mark('red', marking)
+                            deploysm_marked_tiles = self.mark('red', marking)
                             self.state = Game_State.DEPLOY_SM
+                            deploysm_to_place_sprites = self.smlist.copy()
+
+                            x = 0
+                            for sprite in deploysm_to_place_sprites:
+                                print(sprite)
+                                sprite.graphic_x = deploysm_top_sprites_start + x
+                                sprite.graphic_y = 0
+                                x += 1
+
                             wait = True
                             stateShift = True
 
@@ -590,6 +644,7 @@ class Test_Client:
                             wait = True
                             stateShift = True
 
+                #start of the Game logic
                 elif self.state == Game_State.DEPLOY_SM and not wait:
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_ESCAPE:
@@ -625,9 +680,12 @@ class Test_Client:
                     elif event.type == pygame.MOUSEBUTTONUP:
                         if deploysm_deployButton.rect.collidepoint(pygame.mouse.get_pos()):
                             if deploysm_selected_sprite != None:
-                                pass
+                                if self.selected_tile != None:
+                                    message = {"purpose":"place_sm", "tile":self.selected_tile}
+
                         elif deploysm_rotateButton.rect.collidepoint(pygame.mouse.get_pos()):
                             pass
+
                         else:
                             for tile in deploysm_marked_tiles:
                                 if tile[0].rect.collidepoint(pygame.mouse.get_pos()):
@@ -635,9 +693,17 @@ class Test_Client:
                                     print("clicked")
                                     print(self.selected_tile)
                                     stateShift = True
+                        
+                        for sprite in deploysm_to_place_sprites:
+                            if sprite.rect.collidepoint(pygame.mouse.get_pos()):
+                                print("smclick")
+                                deploysm_selected_sprite = sprite
+                                print(deploysm_selected_sprite)
+                                stateShift = True
 
                     if event.type == pygame.USEREVENT:
                         pass
+
 
                 elif self.state == Game_State.READY and not wait:
 
@@ -702,24 +768,36 @@ class Test_Client:
 
                 if self.state == Game_State.DEPLOY_SM:
                     self.screen.fill('black')
+
                     for tile in self.map:
                         tile.draw(self.screen)
+
                     for tile in deploysm_marked_tiles:
                         pygame.draw.rect(self.screen, tile[1], tile[0].rect, 3)
+
                     for marine in self.smlist:
                         if marine.pos_x != None:
                             marine.draw(self.screen)
+
                     if self.selected_tile != None:
                         pygame.draw.rect(self.screen, 'blue', self.selected_tile.rect, 4)
+
                     deploysm_deployButton.draw(self.screen)
                     deploysm_rotateButton.draw(self.screen)
 
+                    for sprite in deploysm_to_place_sprites:
+                        sprite.draw(self.screen)
 
+                    if deploysm_selected_sprite != None:
+                        print(sprite)
+                        pygame.draw.rect(self.screen, 'blue', deploysm_selected_sprite.rect, 4)
+
+                #teststate that will change, depending on the progress of the games development
                 if self.state == Game_State.READY:
                     self.screen.fill('black')
                     for tile in self.map:
                         tile.draw(self.screen)
-                    for tile in marked_tiles:
+                    for tile in deploysm_marked_tiles:
                         pygame.draw.rect(self.screen, tile[1], tile[0].rect, 3)
                     for marine in self.smlist:
                         if marine.pos_x != None:
