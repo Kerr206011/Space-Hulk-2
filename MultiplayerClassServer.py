@@ -255,8 +255,9 @@ class Server:
 
         #serialises the data for the clients
         for entry in SMList:
-            marine = SpaceMarine(entry["weapon"], entry["rank"])
+            marine = SpaceMarine(entry["id"], entry["weapon"], entry["rank"])
             self.SMmodelList.append(marine)
+            logger.info(marine)
 
         for entry in bluePrint:
             match entry["type"]:

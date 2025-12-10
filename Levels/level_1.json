@@ -289,7 +289,8 @@
             "overwatch": false,
             "guard": false,
             "jam": false,
-            "item": null
+            "item": null,
+            "id": 0
         },
         {
             "activated": false,
@@ -300,7 +301,8 @@
             "overwatch": false,
             "guard": false,
             "jam": false,
-            "item": null
+            "item": null,
+            "id": 1
         },
         {
             "activated": false,
@@ -311,7 +313,8 @@
             "overwatch": false,
             "guard": false,
             "jam": false,
-            "item": null
+            "item": null,
+            "id": 2
         },
         {
             "activated": false,
@@ -322,7 +325,8 @@
             "overwatch": false,
             "guard": false,
             "jam": false,
-            "item": null
+            "item": null,
+            "id": 3
         },
         {
             "activated": false,
@@ -333,7 +337,8 @@
             "overwatch": false,
             "guard": false,
             "jam": false,
-            "item": null
+            "item": null,
+            "id": 4
         }
     ],
     "broodLord": false,

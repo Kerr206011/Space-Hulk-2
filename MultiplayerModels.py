@@ -18,18 +18,19 @@ class Weapon(Enum):
 
 class Model:
 
-    def __init__(self, face: Facing = Facing.NORTH, activated = False, position_x = None, position_y = None):
+    def __init__(self, face: Facing = Facing.NORTH, activated = False, position_x = None, position_y = None, ID = None):
         self.activated = activated
         self.face = face
         self.position_x = position_x
         self.position_y = position_y
+        self.ID = ID
 
     def __repr__(self):
         return f"<Model ap={self.ap}, pos={(self.position_x, self.position_y)}, face={self.face}>"
     
 class SpaceMarine(Model):
-    def __init__(self, weapon: str, rank: str, item = None):
-        super().__init__()
+    def __init__(self, id, weapon: str, rank: str, item = None):
+        super().__init__(ID = id)
         self.weapon = Weapon[weapon.upper()]
         self.rank = rank
         self.sustained_fire = False
@@ -39,7 +40,7 @@ class SpaceMarine(Model):
         self.item = item
 
     def __repr__(self):
-        return (f"<SpaceMarine rank={self.rank}, weapon={self.weapon.name}, "
+        return (f"<SpaceMarine id: {self.ID}, rank={self.rank}, weapon={self.weapon.name}, "
                 f"overwatch={self.overwatch}, jam={self.jam}>")
     
     def to_dict(self):
