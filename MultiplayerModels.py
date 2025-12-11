@@ -1,10 +1,22 @@
 from enum import Enum
 
 class Facing(Enum):
-    NORTH = (0,-1)
-    EAST = (1,0)
-    SOUTH = (0,1)
-    WEST = (-1,0)
+    _order_ = "NORTH EAST SOUTH WEST"
+
+    NORTH = (0, -1)
+    EAST  = (1, 0)
+    SOUTH = (0, 1)
+    WEST  = (-1, 0)
+
+    def turn_right(self):
+        return list(Facing)[(self.value_index + 1) % 4]
+
+    def turn_left(self):
+        return list(Facing)[(self.value_index - 1) % 4]
+
+    @property
+    def value_index(self):
+        return list(Facing).index(self)
 
 class Weapon(Enum):
     THUNDERHAMMER = "Thunderhammer"

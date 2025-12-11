@@ -59,8 +59,20 @@ class SpaceMarineSprite:
         self.image = pygame.transform.scale(image, (width, height))
         self.rect = self.image.get_rect()
 
-    def turn(self, degr):
-        self.image = pygame.transform.rotate(self.image, degr)
+    def turn(self, dir):
+        counter = 0
+        while (self.face.value[0] != dir[0] and self.face.value[1] != dir[1]):
+            if counter == 100:
+                print("counter error")
+                break
+            
+            counter +=1
+
+            self.face = self.face.turn_right()
+
+            print(self.face, counter, dir)
+
+            self.image = pygame.transform.rotate(self.image, -90)
 
     def to_dict(self):
         return{
@@ -411,6 +423,7 @@ class Test_Client:
 
 
         #gameplay init
+        await_server_answer = False
 
         #start of game
         self.screen.fill('black')
@@ -695,13 +708,31 @@ class Test_Client:
                             print(deploysm_selected_sprite, self.selected_tile)
                             if deploysm_selected_sprite != None:
                                 print("Works1")
-                                if self.selected_tile != None:
+                                if deploysm_selected_sprite.pos_x == None and deploysm_selected_sprite.pos_y == None:
                                     print("Works2")
-                                    message = {"purpose":"place", "tile":(self.selected_tile.x,self.selected_tile.y), "id":deploysm_selected_sprite.id}
-                                    self.send(message)
+                                    if self.selected_tile != None:
+                                        print("Works3")
+                                        print(await_server_answer)
+                                        message = {"purpose":"place", "tile":(self.selected_tile.x,self.selected_tile.y), "id":deploysm_selected_sprite.id}
+                                        # if not await_server_answer:
+                                        #     print(await_server_answer)
+                                        self.send(message)
+                                        #     await_server_answer = True
 
                         elif deploysm_rotateButton.rect.collidepoint(pygame.mouse.get_pos()):
-                            pass
+                            if deploysm_selected_sprite != None:
+                                if deploysm_selected_sprite.pos_x != None and deploysm_selected_sprite.pos_y != None:
+                                    message = {
+                                        "purpose": "rotate_model",
+                                        "id":deploysm_selected_sprite.id,
+                                        "phase": self.state.value,
+                                        "dir": "right"
+                                        }
+                                    print(message, await_server_answer)
+                                    # if not await_server_answer:
+                                    #     print(await_server_answer)
+                                    self.send(message)
+                                    #     await_server_answer = True
 
                         else:
                             for tile in deploysm_marked_tiles:
@@ -726,20 +757,28 @@ class Test_Client:
                             for model in event.data["sm"]:
                                 for marine in self.smlist:
                                     if model["id"] == marine.id:
-                                        if model["pos_x"] != marine.pos_x or model["pos_y"] != marine.pos_y or model["face"] != marine.face:
+                                        if model["pos_x"] != marine.pos_x or model["pos_y"] != marine.pos_y:
                                             print(model["pos_x"], marine.pos_x, model["pos_y"], marine.pos_y, model["face"], marine.face)
                                             for tile in self.map:
                                                 if tile.x == model["pos_x"] and tile.y == model["pos_y"]:
                                                     marine.align(tile)
+                                        if model["face"] != marine.face:
+                                            marine.turn(model["face"])
 
-                            for tile in deploysm_marked_tiles:
-                                if tile[0].x == self.selected_tile.x and tile[0].y == self.selected_tile.y:
-                                    deploysm_marked_tiles.remove(tile)
-                            self.selected_tile == None
-                            deploysm_to_place_sprites.remove(deploysm_selected_sprite)
-                            deploysm_selected_sprite = None
+                            if self.selected_tile != None:
+                                for tile in deploysm_marked_tiles:
+                                    if tile[0].x == self.selected_tile.x and tile[0].y == self.selected_tile.y:
+                                        for model in self.smlist:
+                                            if model.pos_x == tile[0].x and model.pos_y == tile[0].y:
+                                                deploysm_marked_tiles.remove(tile)
+                                                self.selected_tile = None
+                                                break
+
+                            if deploysm_selected_sprite in deploysm_to_place_sprites:
+                                deploysm_to_place_sprites.remove(deploysm_selected_sprite)
 
                             stateShift = True
+                            await_server_answer = False
                                     
 
 
@@ -755,26 +794,57 @@ class Test_Client:
                         if event.key == pygame.K_w:
                             for tile in self.map:
                                 tile.move((0,1))
+                                for model in self.smlist:
+                                    if model.pos_x == tile.x and model.pos_y == tile.y:
+                                        model.align(tile)
                                 wait = True
                                 stateShift = True
 
                         if event.key == pygame.K_d:
                             for tile in self.map:
                                 tile.move((-1,0))
+                                for model in self.smlist:
+                                    if model.pos_x == tile.x and model.pos_y == tile.y:
+                                        model.align(tile)
                                 wait = True
                                 stateShift = True
 
                         if event.key == pygame.K_s:
                             for tile in self.map:
                                 tile.move((0,-1))
+                                for model in self.smlist:
+                                    if model.pos_x == tile.x and model.pos_y == tile.y:
+                                        model.align(tile)
                                 wait = True
                                 stateShift = True
 
                         if event.key == pygame.K_a:
                             for tile in self.map:
                                 tile.move((1,0))
+                                for model in self.smlist:
+                                    if model.pos_x == tile.x and model.pos_y == tile.y:
+                                        model.align(tile)
                                 wait = True
                                 stateShift = True
+
+                    if event.type == pygame.USEREVENT:
+                        if event.data["purpose"] == "game_update":
+                            for tile in event.data["map"]:
+                                pass
+                            
+                            for model in event.data["sm"]:
+                                for marine in self.smlist:
+                                    if model["id"] == marine.id:
+                                        if model["pos_x"] != marine.pos_x or model["pos_y"] != marine.pos_y:
+                                            print(model["pos_x"], marine.pos_x, model["pos_y"], marine.pos_y, model["face"], marine.face)
+                                            for tile in self.map:
+                                                if tile.x == model["pos_x"] and tile.y == model["pos_y"]:
+                                                    marine.align(tile)
+                                        
+                                        if model["face"] != marine.face:
+                                            marine.turn(model["face"])
+
+                            stateShift = True
                 
 
             #updates the screen after a stateshift

@@ -214,6 +214,19 @@ class Server:
                                                         break
                                                     else:
                                                         break
+                    
+                    elif message["purpose"] == "rotate_model":
+                        logger.info(f"RECIVED TURN")
+                        if self.SMplayer["conn"] == conn and self.SMplayer["addr"] == addr and self.SMplayer["name"] == name:
+                            if message["phase"] == "deploy_sm":
+                                for model in self.SMmodelList:
+                                    if model.ID == message["id"]:
+                                        if message["dir"] == "right":
+                                            model.face = model.face.turn_right()
+                                        elif message["dir"] == "left":
+                                            model.face.turn_left()
+                                        self.send_game_update()
+                                        break
 
                     if message["purpose"] == "disconnect":
                         with lock:
