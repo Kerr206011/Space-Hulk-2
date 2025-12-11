@@ -6,7 +6,7 @@ from UI import *
 from MultiplayerClassServer import *
 
 class SpaceMarineSprite:
-    def __init__(self, pos_x, pos_y, scale, picture_path: str, face):
+    def __init__(self, pos_x, pos_y, scale, picture_path: str, face, ID):
         self.face = Facing((face[0], face[1]))
         self.pos_x = pos_x
         self.pos_y = pos_y
@@ -18,6 +18,7 @@ class SpaceMarineSprite:
         height = int(image.get_height() * scale)
         self.image = pygame.transform.scale(image, (width, height))
         self.rect = self.image.get_rect()
+        self.id = ID
         
         match self.face:
             case Facing.NORTH:
@@ -34,7 +35,7 @@ class SpaceMarineSprite:
  
     @classmethod
     def from_data(cls, data, scale):
-        return SpaceMarineSprite(data["pos_x"], data["pos_y"], scale, data["picture"], data["face"])
+        return SpaceMarineSprite(data["pos_x"], data["pos_y"], scale, data["picture"], data["face"], data["id"])
 
     def draw(self, screen):
         self.rect.topleft = (self.graphic_x * self.image.get_width(), self.graphic_y * self.image.get_height())
@@ -65,11 +66,11 @@ class SpaceMarineSprite:
         return{
             "pos_x": self.pos_x,
             "pos_y": self.pos_y,
-            
+            "id": self.id
         }
 
     def __repr__(self):
-        return (f"<SpaceMarine pos=({self.pos_x},{self.pos_y}), face:{self.face}>")
+        return (f"<SpaceMarine pos=({self.pos_x},{self.pos_y}), face:{self.face}, ID:{self.id}>")
 
 class BlipSprite:
     def __init__(self, pos_x, pos_y, scale, picture_path: str):
@@ -656,32 +657,48 @@ class Test_Client:
                         if event.key == pygame.K_w:
                             for tile in self.map:
                                 tile.move((0,1))
+                                for model in self.smlist:
+                                    if model.pos_x == tile.x and model.pos_y == tile.y:
+                                        model.align(tile)
                                 wait = True
                                 stateShift = True
 
                         if event.key == pygame.K_d:
                             for tile in self.map:
                                 tile.move((-1,0))
+                                for model in self.smlist:
+                                    if model.pos_x == tile.x and model.pos_y == tile.y:
+                                        model.align(tile)
                                 wait = True
                                 stateShift = True
 
                         if event.key == pygame.K_s:
                             for tile in self.map:
                                 tile.move((0,-1))
+                                for model in self.smlist:
+                                    if model.pos_x == tile.x and model.pos_y == tile.y:
+                                        model.align(tile)
                                 wait = True
                                 stateShift = True
 
                         if event.key == pygame.K_a:
                             for tile in self.map:
                                 tile.move((1,0))
+                                for model in self.smlist:
+                                    if model.pos_x == tile.x and model.pos_y == tile.y:
+                                        model.align(tile)
                                 wait = True
                                 stateShift = True
 
                     elif event.type == pygame.MOUSEBUTTONUP:
                         if deploysm_deployButton.rect.collidepoint(pygame.mouse.get_pos()):
+                            print(deploysm_selected_sprite, self.selected_tile)
                             if deploysm_selected_sprite != None:
+                                print("Works1")
                                 if self.selected_tile != None:
-                                    message = {"purpose":"place_sm", "tile":self.selected_tile}
+                                    print("Works2")
+                                    message = {"purpose":"place", "tile":(self.selected_tile.x,self.selected_tile.y), "id":deploysm_selected_sprite.id}
+                                    self.send(message)
 
                         elif deploysm_rotateButton.rect.collidepoint(pygame.mouse.get_pos()):
                             pass
@@ -702,7 +719,28 @@ class Test_Client:
                                 stateShift = True
 
                     if event.type == pygame.USEREVENT:
-                        pass
+                        if event.data["purpose"] == "game_update":
+                            for tile in event.data["map"]:
+                                pass
+                            
+                            for model in event.data["sm"]:
+                                for marine in self.smlist:
+                                    if model["id"] == marine.id:
+                                        if model["pos_x"] != marine.pos_x or model["pos_y"] != marine.pos_y or model["face"] != marine.face:
+                                            print(model["pos_x"], marine.pos_x, model["pos_y"], marine.pos_y, model["face"], marine.face)
+                                            for tile in self.map:
+                                                if tile.x == model["pos_x"] and tile.y == model["pos_y"]:
+                                                    marine.align(tile)
+
+                            for tile in deploysm_marked_tiles:
+                                if tile[0].x == self.selected_tile.x and tile[0].y == self.selected_tile.y:
+                                    deploysm_marked_tiles.remove(tile)
+                            self.selected_tile == None
+                            deploysm_to_place_sprites.remove(deploysm_selected_sprite)
+                            deploysm_selected_sprite = None
+
+                            stateShift = True
+                                    
 
 
                 elif self.state == Game_State.READY and not wait:
@@ -789,7 +827,7 @@ class Test_Client:
                         sprite.draw(self.screen)
 
                     if deploysm_selected_sprite != None:
-                        print(sprite)
+                        print(deploysm_selected_sprite)
                         pygame.draw.rect(self.screen, 'blue', deploysm_selected_sprite.rect, 4)
 
                 #teststate that will change, depending on the progress of the games development

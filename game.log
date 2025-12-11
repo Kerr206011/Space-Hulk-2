@@ -1,0 +1,244 @@
+2025-12-11 12:44:34,640 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-12-11 12:44:34,641 - INFO - SERVER: New connection: ('127.0.0.1', 51764)
+2025-12-11 12:44:35,377 - INFO - SERVER: player Player1, <socket.socket fd=1952, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51764)> has selected GS
+2025-12-11 12:44:38,562 - INFO - SERVER: New connection: ('127.0.0.1', 51766)
+2025-12-11 12:44:39,744 - INFO - SERVER: player Player1, <socket.socket fd=1984, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51766)> has selected SM
+2025-12-11 12:44:42,061 - INFO - SERVER: Lobby started with [{'conn': <socket.socket fd=1952, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51764)>, 'addr': ('127.0.0.1', 51764), 'name': 'Player1', 'role': <GameRole.GENSTEALER: 'genstealer'>}, {'conn': <socket.socket fd=1984, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51766)>, 'addr': ('127.0.0.1', 51766), 'name': 'Player1', 'role': <GameRole.SPACEMARINE: 'spacemarine'>}]
+2025-12-11 12:44:42,103 - INFO - SERVER: Ready recived from ('127.0.0.1', 51764)
+2025-12-11 12:44:42,103 - INFO - SERVER: Ready recived from ('127.0.0.1', 51764)
+2025-12-11 12:44:42,109 - INFO - SERVER: Ready recived from ('127.0.0.1', 51766)
+2025-12-11 12:44:42,120 - INFO - SERVER: Ready recived from ('127.0.0.1', 51766)
+2025-12-11 12:44:42,120 - INFO - <SpaceMarine id: 0, rank=sergant, weapon=POWERSWORD, overwatch=False, jam=False>
+2025-12-11 12:44:42,136 - INFO - SERVER: Ready recived from ('127.0.0.1', 51766)
+2025-12-11 12:44:42,147 - INFO - <SpaceMarine id: 1, rank=brother, weapon=FLAMER, overwatch=False, jam=False>
+2025-12-11 12:44:42,152 - INFO - SERVER: Ready recived from ('127.0.0.1', 51766)
+2025-12-11 12:44:42,174 - INFO - <SpaceMarine id: 2, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:44:42,190 - INFO - SERVER: Ready recived from ('127.0.0.1', 51766)
+2025-12-11 12:44:42,196 - INFO - <SpaceMarine id: 3, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:44:42,201 - INFO - SERVER: Ready recived from ('127.0.0.1', 51766)
+2025-12-11 12:44:42,227 - INFO - <SpaceMarine id: 4, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:44:42,239 - INFO - SERVER: Ready recived from ('127.0.0.1', 51766)
+2025-12-11 12:44:42,265 - INFO - SERVER: Ready recived from ('127.0.0.1', 51766)
+2025-12-11 12:44:54,361 - INFO - MARINE PLACE REQUEST
+2025-12-11 12:44:54,373 - INFO - TILE FOUND AT (5, 12)
+2025-12-11 12:44:54,379 - INFO - MODEL FOUND WITH ID:0
+2025-12-11 12:44:54,406 - INFO - SENDING UPDATE!
+2025-12-11 12:45:01,082 - INFO - MARINE PLACE REQUEST
+2025-12-11 12:45:01,092 - INFO - TILE FOUND AT (4, 12)
+2025-12-11 12:45:01,104 - INFO - MODEL FOUND WITH ID:1
+2025-12-11 12:45:01,124 - INFO - SENDING UPDATE!
+2025-12-11 12:45:03,945 - INFO - MARINE PLACE REQUEST
+2025-12-11 12:45:03,951 - INFO - TILE FOUND AT (3, 12)
+2025-12-11 12:45:03,956 - INFO - MODEL FOUND WITH ID:2
+2025-12-11 12:45:03,977 - INFO - SENDING UPDATE!
+2025-12-11 12:45:06,346 - INFO - MARINE PLACE REQUEST
+2025-12-11 12:45:06,357 - INFO - TILE FOUND AT (2, 12)
+2025-12-11 12:45:06,368 - INFO - MODEL FOUND WITH ID:3
+2025-12-11 12:45:06,394 - INFO - SENDING UPDATE!
+2025-12-11 12:45:09,734 - INFO - MARINE PLACE REQUEST
+2025-12-11 12:45:09,739 - INFO - TILE FOUND AT (1, 12)
+2025-12-11 12:45:09,744 - INFO - MODEL FOUND WITH ID:4
+2025-12-11 12:45:09,769 - INFO - SENDING UPDATE!
+2025-12-11 12:45:13,734 - ERROR - SERVER: Error with ('127.0.0.1', 51766): [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassServer.py", line 220, in handle_client
+    self.send(conn, {"Purpose": "disconnect"})
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassServer.py", line 233, in send
+    conn.sendall((json.dumps(message) + "\n").encode())
+ConnectionResetError: [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+2025-12-11 12:45:42,275 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-12-11 12:45:42,276 - INFO - SERVER: New connection: ('127.0.0.1', 51779)
+2025-12-11 12:45:43,084 - INFO - SERVER: player Player1, <socket.socket fd=1968, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51779)> has selected GS
+2025-12-11 12:45:47,972 - INFO - SERVER: New connection: ('127.0.0.1', 51781)
+2025-12-11 12:45:48,611 - INFO - SERVER: player Player1, <socket.socket fd=1988, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51781)> has selected SM
+2025-12-11 12:45:50,556 - INFO - SERVER: Lobby started with [{'conn': <socket.socket fd=1968, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51779)>, 'addr': ('127.0.0.1', 51779), 'name': 'Player1', 'role': <GameRole.GENSTEALER: 'genstealer'>}, {'conn': <socket.socket fd=1988, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51781)>, 'addr': ('127.0.0.1', 51781), 'name': 'Player1', 'role': <GameRole.SPACEMARINE: 'spacemarine'>}]
+2025-12-11 12:45:50,612 - INFO - SERVER: Ready recived from ('127.0.0.1', 51779)
+2025-12-11 12:45:50,612 - INFO - SERVER: Ready recived from ('127.0.0.1', 51781)
+2025-12-11 12:45:50,613 - INFO - SERVER: Ready recived from ('127.0.0.1', 51779)
+2025-12-11 12:45:50,613 - INFO - SERVER: Ready recived from ('127.0.0.1', 51781)
+2025-12-11 12:45:50,614 - INFO - <SpaceMarine id: 0, rank=sergant, weapon=POWERSWORD, overwatch=False, jam=False>
+2025-12-11 12:45:50,614 - INFO - SERVER: Ready recived from ('127.0.0.1', 51779)
+2025-12-11 12:45:50,630 - INFO - SERVER: Ready recived from ('127.0.0.1', 51781)
+2025-12-11 12:45:50,635 - INFO - <SpaceMarine id: 1, rank=brother, weapon=FLAMER, overwatch=False, jam=False>
+2025-12-11 12:45:50,641 - INFO - SERVER: Ready recived from ('127.0.0.1', 51779)
+2025-12-11 12:45:50,646 - INFO - SERVER: Ready recived from ('127.0.0.1', 51781)
+2025-12-11 12:45:50,651 - INFO - <SpaceMarine id: 2, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:45:50,672 - INFO - SERVER: Ready recived from ('127.0.0.1', 51781)
+2025-12-11 12:45:50,683 - INFO - <SpaceMarine id: 3, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:45:50,694 - INFO - SERVER: Ready recived from ('127.0.0.1', 51781)
+2025-12-11 12:45:50,704 - INFO - <SpaceMarine id: 4, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:45:50,716 - INFO - SERVER: Ready recived from ('127.0.0.1', 51781)
+2025-12-11 12:45:56,573 - INFO - MARINE PLACE REQUEST
+2025-12-11 12:45:56,583 - INFO - TILE FOUND AT (2, 12)
+2025-12-11 12:45:56,593 - INFO - MODEL FOUND WITH ID:4
+2025-12-11 12:45:56,621 - INFO - SENDING UPDATE!
+2025-12-11 12:45:56,632 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "C:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\multiplayerclassclient.py", line 994, in <module>
+    client.main()
+  File "C:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\multiplayerclassclient.py", line 723, in main
+    deploysm_marked_tiles.remove(self.selected_tile)
+ValueError: list.remove(x): x not in list
+2025-12-11 12:46:14,745 - ERROR - SERVER: Error with ('127.0.0.1', 51781): [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassServer.py", line 93, in handle_client
+    data = conn.recv(1024)
+           ^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+2025-12-11 12:48:07,121 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-12-11 12:48:07,123 - INFO - SERVER: New connection: ('127.0.0.1', 51820)
+2025-12-11 12:48:08,408 - INFO - SERVER: player Player1, <socket.socket fd=2076, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51820)> has selected GS
+2025-12-11 12:48:12,746 - INFO - SERVER: New connection: ('127.0.0.1', 51823)
+2025-12-11 12:48:13,383 - INFO - SERVER: player Player1, <socket.socket fd=1284, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51823)> has selected SM
+2025-12-11 12:48:15,480 - INFO - SERVER: Lobby started with [{'conn': <socket.socket fd=2076, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51820)>, 'addr': ('127.0.0.1', 51820), 'name': 'Player1', 'role': <GameRole.GENSTEALER: 'genstealer'>}, {'conn': <socket.socket fd=1284, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51823)>, 'addr': ('127.0.0.1', 51823), 'name': 'Player1', 'role': <GameRole.SPACEMARINE: 'spacemarine'>}]
+2025-12-11 12:48:15,530 - INFO - SERVER: Ready recived from ('127.0.0.1', 51820)
+2025-12-11 12:48:15,530 - INFO - SERVER: Ready recived from ('127.0.0.1', 51820)
+2025-12-11 12:48:15,531 - INFO - SERVER: Ready recived from ('127.0.0.1', 51820)
+2025-12-11 12:48:15,536 - INFO - SERVER: Ready recived from ('127.0.0.1', 51823)
+2025-12-11 12:48:15,548 - INFO - SERVER: Ready recived from ('127.0.0.1', 51823)
+2025-12-11 12:48:15,553 - INFO - SERVER: Ready recived from ('127.0.0.1', 51823)
+2025-12-11 12:48:15,559 - INFO - SERVER: Ready recived from ('127.0.0.1', 51823)
+2025-12-11 12:48:15,559 - INFO - <SpaceMarine id: 0, rank=sergant, weapon=POWERSWORD, overwatch=False, jam=False>
+2025-12-11 12:48:15,569 - INFO - SERVER: Ready recived from ('127.0.0.1', 51823)
+2025-12-11 12:48:15,579 - INFO - <SpaceMarine id: 1, rank=brother, weapon=FLAMER, overwatch=False, jam=False>
+2025-12-11 12:48:15,590 - INFO - SERVER: Ready recived from ('127.0.0.1', 51823)
+2025-12-11 12:48:15,601 - INFO - <SpaceMarine id: 2, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:48:15,617 - INFO - <SpaceMarine id: 3, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:48:15,622 - INFO - <SpaceMarine id: 4, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:48:19,932 - INFO - MARINE PLACE REQUEST
+2025-12-11 12:48:19,938 - INFO - TILE FOUND AT (3, 12)
+2025-12-11 12:48:19,944 - INFO - MODEL FOUND WITH ID:4
+2025-12-11 12:48:19,965 - INFO - SENDING UPDATE!
+2025-12-11 12:48:25,228 - INFO - MARINE PLACE REQUEST
+2025-12-11 12:48:25,233 - INFO - TILE FOUND AT (2, 12)
+2025-12-11 12:48:25,240 - INFO - MODEL FOUND WITH ID:1
+2025-12-11 12:48:25,256 - INFO - SENDING UPDATE!
+2025-12-11 12:48:28,668 - INFO - MARINE PLACE REQUEST
+2025-12-11 12:48:28,678 - INFO - TILE FOUND AT (5, 12)
+2025-12-11 12:48:28,688 - INFO - MODEL FOUND WITH ID:3
+2025-12-11 12:48:28,709 - INFO - SENDING UPDATE!
+2025-12-11 12:48:31,507 - INFO - MARINE PLACE REQUEST
+2025-12-11 12:48:31,512 - INFO - TILE FOUND AT (1, 12)
+2025-12-11 12:48:31,517 - INFO - MODEL FOUND WITH ID:0
+2025-12-11 12:48:31,528 - INFO - SENDING UPDATE!
+2025-12-11 12:48:36,116 - INFO - MARINE PLACE REQUEST
+2025-12-11 12:48:36,128 - INFO - TILE FOUND AT (4, 12)
+2025-12-11 12:48:36,138 - INFO - MODEL FOUND WITH ID:2
+2025-12-11 12:48:36,159 - INFO - SENDING UPDATE!
+2025-12-11 12:48:42,688 - ERROR - SERVER: Error with ('127.0.0.1', 51823): [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassServer.py", line 220, in handle_client
+    self.send(conn, {"Purpose": "disconnect"})
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassServer.py", line 233, in send
+    conn.sendall((json.dumps(message) + "\n").encode())
+ConnectionResetError: [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+2025-12-11 12:49:50,712 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-12-11 12:49:50,712 - INFO - SERVER: New connection: ('127.0.0.1', 51849)
+2025-12-11 12:49:51,424 - INFO - SERVER: player Player1, <socket.socket fd=1948, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51849)> has selected GS
+2025-12-11 12:49:55,457 - INFO - SERVER: New connection: ('127.0.0.1', 51851)
+2025-12-11 12:49:56,160 - INFO - SERVER: player Player1, <socket.socket fd=1900, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51851)> has selected SM
+2025-12-11 12:49:59,628 - INFO - SERVER: Lobby started with [{'conn': <socket.socket fd=1948, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51849)>, 'addr': ('127.0.0.1', 51849), 'name': 'Player1', 'role': <GameRole.GENSTEALER: 'genstealer'>}, {'conn': <socket.socket fd=1900, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51851)>, 'addr': ('127.0.0.1', 51851), 'name': 'Player1', 'role': <GameRole.SPACEMARINE: 'spacemarine'>}]
+2025-12-11 12:49:59,680 - INFO - SERVER: Ready recived from ('127.0.0.1', 51849)
+2025-12-11 12:49:59,680 - INFO - SERVER: Ready recived from ('127.0.0.1', 51849)
+2025-12-11 12:49:59,681 - INFO - SERVER: Ready recived from ('127.0.0.1', 51849)
+2025-12-11 12:49:59,692 - INFO - SERVER: Ready recived from ('127.0.0.1', 51851)
+2025-12-11 12:49:59,698 - INFO - <SpaceMarine id: 0, rank=sergant, weapon=POWERSWORD, overwatch=False, jam=False>
+2025-12-11 12:49:59,698 - INFO - SERVER: Ready recived from ('127.0.0.1', 51849)
+2025-12-11 12:49:59,708 - INFO - SERVER: Ready recived from ('127.0.0.1', 51851)
+2025-12-11 12:49:59,713 - INFO - <SpaceMarine id: 1, rank=brother, weapon=FLAMER, overwatch=False, jam=False>
+2025-12-11 12:49:59,741 - INFO - SERVER: Ready recived from ('127.0.0.1', 51851)
+2025-12-11 12:49:59,757 - INFO - <SpaceMarine id: 2, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:49:59,773 - INFO - SERVER: Ready recived from ('127.0.0.1', 51851)
+2025-12-11 12:49:59,785 - INFO - <SpaceMarine id: 3, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:49:59,796 - INFO - SERVER: Ready recived from ('127.0.0.1', 51851)
+2025-12-11 12:49:59,806 - INFO - <SpaceMarine id: 4, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:49:59,817 - INFO - SERVER: Ready recived from ('127.0.0.1', 51851)
+2025-12-11 12:49:59,840 - INFO - SERVER: Ready recived from ('127.0.0.1', 51851)
+2025-12-11 12:49:59,851 - INFO - SERVER: Ready recived from ('127.0.0.1', 51851)
+2025-12-11 12:49:59,853 - INFO - SERVER: Ready recived from ('127.0.0.1', 51851)
+2025-12-11 12:49:59,854 - INFO - SERVER: Ready recived from ('127.0.0.1', 51851)
+2025-12-11 12:49:59,854 - INFO - SERVER: Ready recived from ('127.0.0.1', 51851)
+2025-12-11 12:49:59,855 - INFO - SERVER: Ready recived from ('127.0.0.1', 51851)
+2025-12-11 12:50:07,619 - INFO - MARINE PLACE REQUEST
+2025-12-11 12:50:07,630 - INFO - TILE FOUND AT (5, 12)
+2025-12-11 12:50:07,635 - INFO - MODEL FOUND WITH ID:3
+2025-12-11 12:50:07,666 - INFO - SENDING UPDATE!
+2025-12-11 12:50:08,111 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "C:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\multiplayerclassclient.py", line 1008, in <module>
+    client.main()
+  File "C:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\multiplayerclassclient.py", line 680, in main
+    model.allign(tile)
+    ^^^^^^^^^^^^
+AttributeError: 'SpaceMarineSprite' object has no attribute 'allign'. Did you mean: 'align'?
+2025-12-11 12:50:35,034 - ERROR - SERVER: Error with ('127.0.0.1', 51851): [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassServer.py", line 93, in handle_client
+    data = conn.recv(1024)
+           ^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+2025-12-11 12:50:40,950 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-12-11 12:50:40,953 - INFO - SERVER: New connection: ('127.0.0.1', 51862)
+2025-12-11 12:50:41,562 - INFO - SERVER: player Player1, <socket.socket fd=1952, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51862)> has selected GS
+2025-12-11 12:50:46,771 - INFO - SERVER: New connection: ('127.0.0.1', 51865)
+2025-12-11 12:50:47,424 - INFO - SERVER: player Player1, <socket.socket fd=1964, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51865)> has selected SM
+2025-12-11 12:50:49,391 - INFO - SERVER: Lobby started with [{'conn': <socket.socket fd=1952, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51862)>, 'addr': ('127.0.0.1', 51862), 'name': 'Player1', 'role': <GameRole.GENSTEALER: 'genstealer'>}, {'conn': <socket.socket fd=1964, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 51865)>, 'addr': ('127.0.0.1', 51865), 'name': 'Player1', 'role': <GameRole.SPACEMARINE: 'spacemarine'>}]
+2025-12-11 12:50:49,429 - INFO - SERVER: Ready recived from ('127.0.0.1', 51862)
+2025-12-11 12:50:49,432 - INFO - SERVER: Ready recived from ('127.0.0.1', 51862)
+2025-12-11 12:50:49,433 - INFO - SERVER: Ready recived from ('127.0.0.1', 51862)
+2025-12-11 12:50:49,434 - INFO - SERVER: Ready recived from ('127.0.0.1', 51862)
+2025-12-11 12:50:49,434 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,434 - INFO - SERVER: Ready recived from ('127.0.0.1', 51862)
+2025-12-11 12:50:49,435 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,435 - INFO - <SpaceMarine id: 0, rank=sergant, weapon=POWERSWORD, overwatch=False, jam=False>
+2025-12-11 12:50:49,435 - INFO - SERVER: Ready recived from ('127.0.0.1', 51862)
+2025-12-11 12:50:49,436 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,436 - INFO - <SpaceMarine id: 1, rank=brother, weapon=FLAMER, overwatch=False, jam=False>
+2025-12-11 12:50:49,437 - INFO - SERVER: Ready recived from ('127.0.0.1', 51862)
+2025-12-11 12:50:49,448 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,464 - INFO - <SpaceMarine id: 2, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:50:49,469 - INFO - SERVER: Ready recived from ('127.0.0.1', 51862)
+2025-12-11 12:50:49,480 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,485 - INFO - <SpaceMarine id: 3, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:50:49,497 - INFO - SERVER: Ready recived from ('127.0.0.1', 51862)
+2025-12-11 12:50:49,508 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,513 - INFO - <SpaceMarine id: 4, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-11 12:50:49,523 - INFO - SERVER: Ready recived from ('127.0.0.1', 51862)
+2025-12-11 12:50:49,539 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,565 - INFO - SERVER: Ready recived from ('127.0.0.1', 51862)
+2025-12-11 12:50:49,580 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,586 - INFO - SERVER: Ready recived from ('127.0.0.1', 51862)
+2025-12-11 12:50:49,591 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,592 - INFO - SERVER: Ready recived from ('127.0.0.1', 51862)
+2025-12-11 12:50:49,593 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,593 - INFO - SERVER: Ready recived from ('127.0.0.1', 51862)
+2025-12-11 12:50:49,594 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,595 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,595 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,596 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,596 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,597 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,598 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,599 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,599 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,600 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,600 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,600 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,601 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,601 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,601 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,602 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,602 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,603 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:49,603 - INFO - SERVER: Ready recived from ('127.0.0.1', 51865)
+2025-12-11 12:50:55,489 - INFO - MARINE PLACE REQUEST
+2025-12-11 12:50:55,494 - INFO - TILE FOUND AT (5, 12)
+2025-12-11 12:50:55,504 - INFO - MODEL FOUND WITH ID:1
+2025-12-11 12:50:55,531 - INFO - SENDING UPDATE!
+2025-12-11 12:50:58,753 - ERROR - SERVER: Error with ('127.0.0.1', 51865): [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassServer.py", line 220, in handle_client
+    self.send(conn, {"Purpose": "disconnect"})
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassServer.py", line 233, in send
+    conn.sendall((json.dumps(message) + "\n").encode())
+ConnectionResetError: [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen

@@ -54,7 +54,8 @@ class SpaceMarine(Model):
                 "overwatch":self.overwatch,
                 "guard":self.guard,
                 "jam":self.jam,
-                "item":self.item}
+                "item":self.item,
+                "id": self.ID}
     
     def send(self):
         match self.weapon:
@@ -65,12 +66,13 @@ class SpaceMarine(Model):
             "pos_x":self.position_x,
             "pos_y":self.position_y,
             "face":self.face.value,
-            "picture":picture_path
+            "picture":picture_path,
+            "id": self.ID
         }
 
 class Blip(Model):
-    def __init__(self, count):
-        super().__init__()
+    def __init__(self, count, id):
+        super().__init__(ID = id)
         self.count = count
 
     def __repr__(self):
@@ -89,8 +91,8 @@ class Blip(Model):
         }
 
 class Genstealer(Model):
-    def __init__(self, broodlord):
-        super().__init__()
+    def __init__(self, broodlord, id):
+        super().__init__(ID = id)
         self.broodlord = broodlord
 
     def __repr__(self):

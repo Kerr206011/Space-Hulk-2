@@ -192,7 +192,28 @@ class Server:
                         self.isReadyToRecive.add(addr)
 
                     elif message["purpose"] == "place":
-                        pass
+                        with lock:
+                            if self.SMplayer["conn"] == conn and self.SMplayer["addr"] == addr and self.SMplayer["name"] == name:
+                                logger.info(f"MARINE PLACE REQUEST")
+                                for tile in self.map:
+                                    if tile.x == message["tile"][0] and tile.y == message["tile"][1]:
+                                        logger.info(f"TILE FOUND AT {(tile.x, tile.y)}")
+                                        if tile.is_occupied:
+                                            break
+                                        else:
+                                            for model in self.SMmodelList:
+                                                if model.ID == message["id"]:
+                                                    logger.info(f"MODEL FOUND WITH ID:{model.ID}")
+                                                    if model.position_x == None and model.position_y == None:
+                                                        model.position_x = tile.x
+                                                        model.position_y = tile.y
+                                                        tile.is_occupied = True
+                                                        tile.occupant = OccupantType.SPACEMARINE
+                                                        self.send_game_update()
+                                                        logger.info(f"SENDING UPDATE!")
+                                                        break
+                                                    else:
+                                                        break
 
                     if message["purpose"] == "disconnect":
                         with lock:
@@ -218,6 +239,24 @@ class Server:
                 "purpose": "lobby_update",
                 "players": players,
             })
+    
+    def send_game_update(self):
+        send_map = []
+        sm = []
+        for tile in self.map:
+            send_map.append(tile.send())
+
+        for model in self.SMmodelList:
+            sm.append(model.send())
+
+        message = {
+           "purpose": "game_update",
+           "map": send_map,
+           "sm": sm
+            }
+        
+        for c in self.clients:
+            self.send(c["conn"], message)
 
     def setup_lobby(self):
         logger.info(f"SERVER: Lobby started with {self.clients}")
