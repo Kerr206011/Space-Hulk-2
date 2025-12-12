@@ -1,4 +1,5 @@
 from enum import Enum
+import random
 
 class Facing(Enum):
     _order_ = "NORTH EAST SOUTH WEST"
@@ -94,12 +95,14 @@ class Blip(Model):
         return {"ap" : self.activated,
                 "pos_x":self.position_x,
                 "pos_y":self.position_y,
-                "count" : self.count}
+                "count" : self.count,
+                "id": self.ID}
     
     def send(self):
         return{
             "x":self.position_x,
             "y":self.position_y,
+            "id": self.ID
         }
 
 class Genstealer(Model):

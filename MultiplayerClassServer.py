@@ -47,6 +47,7 @@ class Server:
         self.SMplayer = None
         self.spectators  = []
         self.server_host = None
+        self.running = True
 
         #Information for the setup
         self.isReadyToRecive = set()
@@ -63,6 +64,10 @@ class Server:
         self.BLmodelList = []
         self.map = []
         self.activeModel = None
+        self.recycle = bool
+        self.to_place_blips = int
+        self.bl_id = 0
+        self.gs_id = 0
 
     def main(self):
         while True:     #this will perhaps be replaced by a variable to shut of the Server
@@ -73,14 +78,18 @@ class Server:
         starts the server by binding it to its host and port and listening on that adress. After that it calls accept_clients
         and broadcast_listener as Threads.
         """
+        if self.is_port_in_use(self.port, self.host):
+            return False
+        
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen()
         threading.Thread(target=self.accept_clients, args=()).start()
         threading.Thread(target=self.broadcast_listener, daemon=True).start()
         logger.info(f"SERVER: Server started on Port {self.port} with Host {self.host}")
+        return True
 
     def accept_clients(self):
-        while True:
+        while self.running:
             conn, addr = self.server_socket.accept()
             threading.Thread(target=self.handle_client, args=(conn, addr)).start()
 
@@ -89,7 +98,7 @@ class Server:
         buffer = ""
         logger.info(f"SERVER: New connection: {addr}")
         try:
-            while True:
+            while self.running:
                 data = conn.recv(1024)
                 if not data:
                     break
@@ -228,6 +237,24 @@ class Server:
                                         self.send_game_update()
                                         break
 
+                    elif message["purpose"] == "finished_deploy":
+                        if message["phase"] == "deploy_sm":
+                            if self.SMplayer["conn"] == conn and self.SMplayer["addr"] == addr and self.SMplayer["name"] == name:
+                                if self.startBlips != None:
+                                    message_out = {"purpose": "wait"}
+                                    self.send(self.SMplayer["conn"], message_out)
+                                    self.to_place_blips = self.startBlips
+                                    message_out["purpose"] = "place_bl"
+                                    self.send(self.GSplayer["conn"], message)
+
+                    elif message["purpose"] == "bl_request":
+                        logger.info(f"REQUEST FOR BLIPS RECIVED")
+                        if self.GSplayer["conn"] == conn and self.GSplayer["addr"] == addr and self.GSplayer["name"] == name:
+                            if self.to_place_blips != 0:
+                                bl_send = self.draw_blips()
+                                message = {"purpose": "draw_blips", "blips": bl_send}
+                                self.send(self.GSplayer["conn"], message)
+
                     if message["purpose"] == "disconnect":
                         with lock:
                             self.send(conn, {"Purpose": "disconnect"})
@@ -241,6 +268,9 @@ class Server:
                 with lock:
                     self.clients = [c for c in self.clients if c["conn"] != conn]
                     self.send_lobby_update()
+
+                    if len(self.clients) == 0:
+                        self.shutdown()
 
     def send(self, conn, message):
         conn.sendall((json.dumps(message) + "\n").encode())
@@ -351,7 +381,7 @@ class Server:
         udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         udp_socket.bind(("", self.discovery_port))
 
-        while True:
+        while self.running:
             try:
                 data, addr = udp_socket.recvfrom(1024)
                 if data.decode() == "DISCOVER_SPACEHULK":
@@ -359,6 +389,51 @@ class Server:
                     udp_socket.sendto(response.encode(), addr)
             except Exception as e:
                 print("Discovery error:", e)
+
+    def is_port_in_use(self, port, host):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            try:
+                s.bind((host, port))
+                return False   # Port ist frei
+            except OSError:
+                return True    # Port ist belegt
+            
+    def draw_blips(self, amount):
+        
+        id_list = []
+
+        for i in range(amount):
+            if self.available_blips.__len__() == 0:
+                break
+            a = random.randint(0, self.available_blips.__len__()-1)
+            blip = self.available_blips.pop(a)
+            id = self.bl_id 
+            self.bl_id +=1
+            model = Blip(blip, id)
+            self.BLmodelList.append(model)
+            id_list.append(model.send())
+
+        return(id_list)
+    
+    def shutdown(self):
+        logger.info("SERVER: No clients left - shutting down server.")
+
+        self.running = False
+
+        try:
+            self.server_socket.close()
+        except:
+            pass
+
+        # Alle offenen Client-Sockets schließen
+        for c in self.clients:
+            try:
+                c["conn"].close()
+            except:
+                pass
+
+        self.clients.clear()
+
 
 # class Test_Server:
 #     def __init__(self):

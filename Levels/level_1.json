@@ -342,6 +342,7 @@
         }
     ],
     "broodLord": false,
+    "recycle": true,
     "entryPoints": [
         {
             "x": 1,

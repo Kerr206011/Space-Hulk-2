@@ -55,12 +55,13 @@ add debug gamestate to test ingame interactions or make it a toggelable option w
 add scale to UI Objects
 scaling slider in config needs work
 give the Slider a method to put it at a certain position
-add graphicx/y to Tiles to seperate boardposition and Screenposition
 add options with the Sprite classes to adjust the parameters of the Tiles (like burning etc.)
 add a main Method to the server so it can be shutdown correctly instead of creashing whenever someone disconnects
     added disconnect method to client, last client to  disconnect still gets error
 add a variable to the saved SM models so that they can be attributed to a Spawnarea
+    implement a grouping of squads in json, so they be deployed in groups
 implement logger 
+    check all print statements
 change entrypoint class so that it can utilise saved lists to fill its blips/genstealer lists
 finish the Server main method, so that it is clearer what the server is doing an when(
     should the server ustilise only the main method, with the threads only passing the infos from their
@@ -68,39 +69,4 @@ finish the Server main method, so that it is clearer what the server is doing an
 )
 change the Pictures in the serverside Tile Objects to represents their namesake
 
-Todo: new classes for Map objects, make them server/ client compatible, clientside needs to be checked
-
-Class Brainstorm:
-
-Model:
-    Serverside:
-        coordinates
-        activated?
-        face
-        picture? -> yes, less info for the client this way
-    Clientside:
-        coordinates
-        face
-        picture
-        
-    
-
-Tile:
-    Serverside:
-        coordinates
-        occupied?
-        occupand?
-        sector
-        burning?
-        picture? as string? or exported to clientside? -> No, the picture needs to be set, to ensure that sectors are seperated properly
-        method to package it to json
-    Clientside:
-        coordinates 
-        occupied?
-        occupand? or is it easier to make the models clickable and let the tiles be? -> both for all situations, solved by giving both a rect that can be collisionchecked against the mousepos
-        sector 
-        burning
-        pictures for normal and burning
-        classmethod to create from from_data
-
-SMStartTile? -> easely implemented through a list serverside and highlights clientside
+Todo: Implement GS deploy Gamestate, preferably so that it can be utilised both during setup and gameplay
