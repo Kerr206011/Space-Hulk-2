@@ -315,3 +315,140 @@ Traceback (most recent call last):
     conn.sendall((json.dumps(message) + "\n").encode())
 ConnectionResetError: [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
 2025-12-12 17:37:11,616 - INFO - SERVER: No clients left - shutting down server.
+2025-12-12 20:44:41,300 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Paul\Documents\GitHub\Space-Hulk-2\MultiplayerClassClient.py", line 1086, in connect
+    self.client_socket.connect((self.server_host, self.server_port))
+ConnectionRefusedError: [WinError 10061] Es konnte keine Verbindung hergestellt werden, da der Zielcomputer die Verbindung verweigerte
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Users\Paul\Documents\GitHub\Space-Hulk-2\MultiplayerClassClient.py", line 1248, in <module>
+    client.main()
+  File "c:\Users\Paul\Documents\GitHub\Space-Hulk-2\MultiplayerClassClient.py", line 472, in main
+    if self.connect() == False:
+       ^^^^^^^^^^^^^^
+  File "c:\Users\Paul\Documents\GitHub\Space-Hulk-2\MultiplayerClassClient.py", line 1092, in connect
+    self.client_socket.connect((lobbys[0][0], lobbys[0][1]))
+                                ~~~~~~^^^
+IndexError: list index out of range
+2025-12-12 20:44:50,437 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-12-12 20:44:50,441 - INFO - SERVER: New connection: ('127.0.0.1', 54421)
+2025-12-12 20:45:00,014 - INFO - SERVER: New connection: ('127.0.0.1', 54463)
+2025-12-12 20:45:07,905 - INFO - SERVER: player Player_2, <socket.socket fd=1880, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 54421)> has selected GS
+2025-12-12 20:45:09,324 - INFO - SERVER: player Player_1, <socket.socket fd=1884, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 54463)> has selected SM
+2025-12-12 20:45:15,739 - INFO - SERVER: player Player_1, <socket.socket fd=1884, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 54463)> has selected Spectator
+2025-12-12 20:45:18,590 - INFO - SERVER: player Player_1, <socket.socket fd=1884, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 54463)> has selected SM
+2025-12-12 20:45:22,746 - INFO - SERVER: Lobby started with [{'conn': <socket.socket fd=1880, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 54421)>, 'addr': ('127.0.0.1', 54421), 'name': 'Player_2', 'role': <GameRole.GENSTEALER: 'genstealer'>}, {'conn': <socket.socket fd=1884, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 54463)>, 'addr': ('127.0.0.1', 54463), 'name': 'Player_1', 'role': <GameRole.SPACEMARINE: 'spacemarine'>}]
+2025-12-12 20:45:22,792 - INFO - SERVER: Ready recived from ('127.0.0.1', 54421)
+2025-12-12 20:45:22,792 - INFO - SERVER: Ready recived from ('127.0.0.1', 54421)
+2025-12-12 20:45:22,793 - INFO - SERVER: Ready recived from ('127.0.0.1', 54421)
+2025-12-12 20:45:22,793 - INFO - SERVER: Ready recived from ('127.0.0.1', 54421)
+2025-12-12 20:45:22,799 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,804 - INFO - SERVER: Ready recived from ('127.0.0.1', 54421)
+2025-12-12 20:45:22,810 - INFO - <SpaceMarine id: 0, rank=sergant, weapon=POWERSWORD, overwatch=False, jam=False>
+2025-12-12 20:45:22,810 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,828 - INFO - <SpaceMarine id: 1, rank=brother, weapon=FLAMER, overwatch=False, jam=False>
+2025-12-12 20:45:22,840 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,845 - INFO - <SpaceMarine id: 2, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-12 20:45:22,857 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,862 - INFO - <SpaceMarine id: 3, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-12 20:45:22,874 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,890 - INFO - <SpaceMarine id: 4, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2025-12-12 20:45:22,896 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,918 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,929 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,940 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,958 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,959 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,960 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,961 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,961 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,961 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,961 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,962 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,962 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,963 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,963 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,963 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,964 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,964 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:45:22,965 - INFO - SERVER: Ready recived from ('127.0.0.1', 54463)
+2025-12-12 20:46:18,384 - INFO - MARINE PLACE REQUEST
+2025-12-12 20:46:18,396 - INFO - TILE FOUND AT (5, 12)
+2025-12-12 20:46:18,406 - INFO - MODEL FOUND WITH ID:4
+2025-12-12 20:46:18,424 - INFO - SENDING UPDATE!
+2025-12-12 20:46:23,173 - INFO - RECIVED TURN
+2025-12-12 20:46:24,591 - INFO - RECIVED TURN
+2025-12-12 20:46:24,981 - INFO - RECIVED TURN
+2025-12-12 20:46:25,778 - INFO - RECIVED TURN
+2025-12-12 20:46:25,954 - INFO - RECIVED TURN
+2025-12-12 20:46:26,133 - INFO - RECIVED TURN
+2025-12-12 20:46:26,282 - INFO - RECIVED TURN
+2025-12-12 20:46:26,462 - INFO - RECIVED TURN
+2025-12-12 20:46:26,999 - INFO - RECIVED TURN
+2025-12-12 20:46:27,170 - INFO - RECIVED TURN
+2025-12-12 20:46:27,340 - INFO - RECIVED TURN
+2025-12-12 20:46:27,521 - INFO - RECIVED TURN
+2025-12-12 20:46:27,701 - INFO - RECIVED TURN
+2025-12-12 20:46:28,302 - INFO - RECIVED TURN
+2025-12-12 20:46:28,476 - INFO - RECIVED TURN
+2025-12-12 20:46:28,641 - INFO - RECIVED TURN
+2025-12-12 20:46:28,805 - INFO - RECIVED TURN
+2025-12-12 20:46:28,963 - INFO - RECIVED TURN
+2025-12-12 20:46:29,121 - INFO - RECIVED TURN
+2025-12-12 20:46:29,285 - INFO - RECIVED TURN
+2025-12-12 20:46:29,453 - INFO - RECIVED TURN
+2025-12-12 20:46:29,626 - INFO - RECIVED TURN
+2025-12-12 20:46:29,789 - INFO - RECIVED TURN
+2025-12-12 20:46:29,981 - INFO - RECIVED TURN
+2025-12-12 20:46:30,427 - INFO - RECIVED TURN
+2025-12-12 20:46:30,606 - INFO - RECIVED TURN
+2025-12-12 20:46:31,410 - INFO - RECIVED TURN
+2025-12-12 20:46:37,955 - INFO - RECIVED TURN
+2025-12-12 20:46:38,265 - INFO - RECIVED TURN
+2025-12-12 20:46:38,534 - INFO - RECIVED TURN
+2025-12-12 20:46:38,742 - INFO - RECIVED TURN
+2025-12-12 20:46:47,056 - INFO - MARINE PLACE REQUEST
+2025-12-12 20:46:47,068 - INFO - TILE FOUND AT (4, 12)
+2025-12-12 20:46:47,079 - INFO - MODEL FOUND WITH ID:3
+2025-12-12 20:46:47,099 - INFO - SENDING UPDATE!
+2025-12-12 20:46:48,521 - INFO - RECIVED TURN
+2025-12-12 20:46:51,384 - INFO - MARINE PLACE REQUEST
+2025-12-12 20:46:51,395 - INFO - TILE FOUND AT (3, 12)
+2025-12-12 20:46:51,405 - INFO - MODEL FOUND WITH ID:2
+2025-12-12 20:46:51,426 - INFO - SENDING UPDATE!
+2025-12-12 20:46:52,128 - INFO - RECIVED TURN
+2025-12-12 20:46:56,534 - INFO - MARINE PLACE REQUEST
+2025-12-12 20:46:56,544 - INFO - TILE FOUND AT (2, 12)
+2025-12-12 20:46:56,555 - INFO - MODEL FOUND WITH ID:1
+2025-12-12 20:46:56,576 - INFO - SENDING UPDATE!
+2025-12-12 20:46:57,499 - INFO - RECIVED TURN
+2025-12-12 20:46:59,861 - INFO - MARINE PLACE REQUEST
+2025-12-12 20:46:59,873 - INFO - TILE FOUND AT (1, 12)
+2025-12-12 20:46:59,884 - INFO - MODEL FOUND WITH ID:0
+2025-12-12 20:46:59,900 - INFO - SENDING UPDATE!
+2025-12-12 20:47:00,321 - INFO - RECIVED TURN
+2025-12-12 20:47:25,931 - INFO - SERVER: No clients left - shutting down server.
+2025-12-12 20:47:29,914 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-12-12 20:47:29,915 - INFO - SERVER: New connection: ('127.0.0.1', 55013)
+2025-12-12 20:47:32,803 - INFO - SERVER: No clients left - shutting down server.
+2025-12-12 20:47:37,162 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-12-12 20:47:37,163 - INFO - SERVER: New connection: ('127.0.0.1', 55016)
+2025-12-12 20:47:37,931 - INFO - SERVER: No clients left - shutting down server.
+2025-12-12 20:48:34,033 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-12-12 20:48:34,036 - INFO - SERVER: New connection: ('127.0.0.1', 55025)
+2025-12-12 20:48:47,459 - INFO - SERVER: New connection: ('127.0.0.1', 55027)
+2025-12-12 20:48:48,918 - ERROR - SERVER: Error with ('127.0.0.1', 55027): [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+Traceback (most recent call last):
+  File "c:\Users\Paul\Documents\GitHub\Space-Hulk-2\MultiplayerClassServer.py", line 260, in handle_client
+    self.send(conn, {"Purpose": "disconnect"})
+  File "c:\Users\Paul\Documents\GitHub\Space-Hulk-2\MultiplayerClassServer.py", line 276, in send
+    conn.sendall((json.dumps(message) + "\n").encode())
+ConnectionResetError: [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+2025-12-12 20:48:50,852 - INFO - SERVER: No clients left - shutting down server.
+2025-12-12 20:48:53,467 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2025-12-12 20:48:53,469 - INFO - SERVER: New connection: ('127.0.0.1', 55028)
+2025-12-12 20:48:55,300 - INFO - SERVER: New connection: ('127.0.0.1', 55029)
+2025-12-12 20:48:59,612 - INFO - SERVER: No clients left - shutting down server.
