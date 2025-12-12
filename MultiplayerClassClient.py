@@ -60,8 +60,10 @@ class SpaceMarineSprite:
         self.rect = self.image.get_rect()
 
     def turn(self, dir):
+
+        print(self.face, dir)
         counter = 0
-        while (self.face.value[0] != dir[0] and self.face.value[1] != dir[1]):
+        while (self.face.value[0] != dir[0] or self.face.value[1] != dir[1]):
             if counter == 100:
                 print("counter error")
                 break
@@ -70,7 +72,7 @@ class SpaceMarineSprite:
 
             self.face = self.face.turn_right()
 
-            print(self.face, counter, dir)
+            print(self.face.value[0], self.face.value[1], dir)
 
             self.image = pygame.transform.rotate(self.image, -90)
 
@@ -367,11 +369,14 @@ class Test_Client:
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.players_in_lobby = []
         self.is_host = False
+        self.state = None
+        self.running = False
+
+        #global graphic variables
         pygame.init()
         pygame.display.set_caption("Space Hulk")
         self.screen = pygame.display.set_mode((900,700))
-        self.state = None
-        self.running = False
+        self.button_bar = pygame.Rect(0, 600, 900, 100)
 
         #global level variables
         self.level = None
@@ -419,7 +424,9 @@ class Test_Client:
         deploysm_marked_tiles = []
 
         deploysm_deployButton = Button(200, 600, config_picture, 1)
-        deploysm_rotateButton = Button(300, 600, config_picture, 1)
+        deploysm_rotateButton_left = Button(300, 600, config_picture, 1)
+        deploysm_rotateButton_right = Button(400, 600, config_picture, 1)
+        deploysm_finishButton = Button(700, 600, config_picture, 1)
 
 
         #gameplay init
@@ -719,7 +726,7 @@ class Test_Client:
                                         self.send(message)
                                         #     await_server_answer = True
 
-                        elif deploysm_rotateButton.rect.collidepoint(pygame.mouse.get_pos()):
+                        elif deploysm_rotateButton_right.rect.collidepoint(pygame.mouse.get_pos()):
                             if deploysm_selected_sprite != None:
                                 if deploysm_selected_sprite.pos_x != None and deploysm_selected_sprite.pos_y != None:
                                     message = {
@@ -727,6 +734,21 @@ class Test_Client:
                                         "id":deploysm_selected_sprite.id,
                                         "phase": self.state.value,
                                         "dir": "right"
+                                        }
+                                    print(message, await_server_answer)
+                                    # if not await_server_answer:
+                                    #     print(await_server_answer)
+                                    self.send(message)
+                                    #     await_server_answer = True
+
+                        elif deploysm_rotateButton_left.rect.collidepoint(pygame.mouse.get_pos()):
+                            if deploysm_selected_sprite != None:
+                                if deploysm_selected_sprite.pos_x != None and deploysm_selected_sprite.pos_y != None:
+                                    message = {
+                                        "purpose": "rotate_model",
+                                        "id":deploysm_selected_sprite.id,
+                                        "phase": self.state.value,
+                                        "dir": "left"
                                         }
                                     print(message, await_server_answer)
                                     # if not await_server_answer:
@@ -890,8 +912,11 @@ class Test_Client:
                     if self.selected_tile != None:
                         pygame.draw.rect(self.screen, 'blue', self.selected_tile.rect, 4)
 
+                    pygame.draw.rect(self.screen, 'black', self.button_bar)
+
                     deploysm_deployButton.draw(self.screen)
-                    deploysm_rotateButton.draw(self.screen)
+                    deploysm_rotateButton_right.draw(self.screen)
+                    deploysm_rotateButton_left.draw(self.screen)
 
                     for sprite in deploysm_to_place_sprites:
                         sprite.draw(self.screen)

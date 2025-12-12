@@ -224,7 +224,7 @@ class Server:
                                         if message["dir"] == "right":
                                             model.face = model.face.turn_right()
                                         elif message["dir"] == "left":
-                                            model.face.turn_left()
+                                            model.face = model.face.turn_left()
                                         self.send_game_update()
                                         break
 

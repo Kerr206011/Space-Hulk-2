@@ -9,14 +9,14 @@ class Facing(Enum):
     WEST  = (-1, 0)
 
     def turn_right(self):
-        return list(Facing)[(self.value_index + 1) % 4]
+        members = list(Facing)
+        idx = members.index(self)
+        return members[(idx + 1) % 4]
 
     def turn_left(self):
-        return list(Facing)[(self.value_index - 1) % 4]
-
-    @property
-    def value_index(self):
-        return list(Facing).index(self)
+        members = list(Facing)
+        idx = members.index(self)
+        return members[(idx - 1) % 4]
 
 class Weapon(Enum):
     THUNDERHAMMER = "Thunderhammer"
