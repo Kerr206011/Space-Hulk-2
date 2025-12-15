@@ -100,8 +100,8 @@ class Blip(Model):
     
     def send(self):
         return{
-            "x":self.position_x,
-            "y":self.position_y,
+            "pos_x":self.position_x,
+            "pos_y":self.position_y,
             "id": self.ID
         }
 

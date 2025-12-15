@@ -899,6 +899,9 @@ class Test_Client:
                                     sprite.graphic_x = deploybl_top_sprites_start + x
                                     sprite.graphic_y = 0
                                     x += 1
+                            
+                            wait = True
+                            stateShift = True
 
                 elif self.state == Game_State.READY and not wait:
 
@@ -965,19 +968,19 @@ class Test_Client:
                             stateShift = True
 
                         elif event.data["purpose"] == "place_bl":
-                            if self.role == GameRole.GENSTEALER:
 
-                                print(event.data["purpose"])
+                            print(event.data["purpose"])
 
-                                for tile in self.map:
-                                    if isinstance(tile, EntryPointSprite):
-                                        marking.append(tile)
-                                        
-                                deploybl_marked_tiles = self.mark('red', marking)
-                                self.state = Game_State.DEPLOY_BL
+                            marking = []
+                            for tile in self.map:
+                                if isinstance(tile, EntryPointSprite):
+                                    marking.append(tile)
+                                    
+                            deploybl_marked_tiles = self.mark('red', marking)
+                            self.state = Game_State.DEPLOY_BL
 
-                                wait = True
-                                stateShift = True
+                            wait = True
+                            stateShift = True
                 
 
             #updates the screen after a stateshift
@@ -1046,6 +1049,9 @@ class Test_Client:
                     for tile in deploybl_marked_tiles:
                         pygame.draw.rect(self.screen, tile[1], tile[0].rect, 3)
 
+                    for marine in self.smlist:
+                        marine.draw(self.screen)
+
                     for blip in deploybl_to_place_sprites:
                         if blip.pos_x != None:
                             blip.draw(self.screen)
@@ -1059,10 +1065,7 @@ class Test_Client:
                     deploybl_rotateButton_right.draw(self.screen)
                     deploybl_rotateButton_left.draw(self.screen)
 
-                    for sprite in deploysm_to_place_sprites:
-                        sprite.draw(self.screen)
-
-                    if deploysm_selected_sprite != None:
+                    if deploybl_selected_sprite != None:
                         print(deploysm_selected_sprite)
                         pygame.draw.rect(self.screen, 'blue', deploysm_selected_sprite.rect, 4)
 
@@ -1192,6 +1195,7 @@ class Test_Client:
 
                         case "rolechange":
                             self.role = GameRole[message["role"]]
+                            print(self.role)
 
                         case "start_game":
                             print("Spiel startet!")

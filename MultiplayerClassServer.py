@@ -243,15 +243,18 @@ class Server:
                                 if self.startBlips != None:
                                     message_out = {"purpose": "wait"}
                                     self.send(self.SMplayer["conn"], message_out)
-                                    self.to_place_blips = self.startBlips
-                                    message_out["purpose"] = "place_bl"
-                                    self.send(self.GSplayer["conn"], message)
+                                    if self.available_blips.__len__() > self.startBlips:
+                                        self.to_place_blips = self.startBlips
+                                    else:
+                                        self.to_place_blips = self.available_blips.__len__()
+                                    message_out ={"purpose": "place_bl"}
+                                    self.send(self.GSplayer["conn"], message_out)
 
                     elif message["purpose"] == "bl_request":
                         logger.info(f"REQUEST FOR BLIPS RECIVED")
                         if self.GSplayer["conn"] == conn and self.GSplayer["addr"] == addr and self.GSplayer["name"] == name:
                             if self.to_place_blips != 0:
-                                bl_send = self.draw_blips()
+                                bl_send = self.draw_blips(self.to_place_blips)
                                 message = {"purpose": "draw_blips", "blips": bl_send}
                                 self.send(self.GSplayer["conn"], message)
 
@@ -404,6 +407,7 @@ class Server:
 
         for i in range(amount):
             if self.available_blips.__len__() == 0:
+                logger.log(f"NOT ENOUGH BLIPS!")
                 break
             a = random.randint(0, self.available_blips.__len__()-1)
             blip = self.available_blips.pop(a)

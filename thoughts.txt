@@ -69,4 +69,6 @@ finish the Server main method, so that it is clearer what the server is doing an
 )
 change the Pictures in the serverside Tile Objects to represents their namesake
 
+deploysm not placed models need to regroup after one has been placed
+
 Todo: Implement GS deploy Gamestate, preferably so that it can be utilised both during setup and gameplay
