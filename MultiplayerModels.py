@@ -98,10 +98,18 @@ class Blip(Model):
                 "count" : self.count,
                 "id": self.ID}
     
-    def send(self):
+    def send(self, reveal = False):
+        if reveal:
+            # match self.count:
+            #     case 1:
+            #         pass
+            picture = "Pictures/Models/Blip.png"
+        else:
+            picture = "Pictures/Models/Blip.png"
         return{
             "pos_x":self.position_x,
             "pos_y":self.position_y,
+            "picture": picture,
             "id": self.ID
         }
 

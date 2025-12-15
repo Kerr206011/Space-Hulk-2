@@ -65,7 +65,9 @@ class Server:
         self.map = []
         self.activeModel = None
         self.recycle = bool
+        self.to_recycle_blips = []
         self.to_place_blips = int
+        self.requested = False
         self.bl_id = 0
         self.gs_id = 0
 
@@ -76,7 +78,7 @@ class Server:
     def start(self):
         """
         starts the server by binding it to its host and port and listening on that adress. After that it calls accept_clients
-        and broadcast_listener as Threads.
+        and broadcast_listener as Threads. If the port is already in use, it will return False and terminate.
         """
         if self.is_port_in_use(self.port, self.host):
             return False
@@ -89,6 +91,9 @@ class Server:
         return True
 
     def accept_clients(self):
+        """
+        Constantly listens for new clients trying to connect and creates handelers for new clients.
+        """
         while self.running:
             conn, addr = self.server_socket.accept()
             threading.Thread(target=self.handle_client, args=(conn, addr)).start()
@@ -254,9 +259,12 @@ class Server:
                         logger.info(f"REQUEST FOR BLIPS RECIVED")
                         if self.GSplayer["conn"] == conn and self.GSplayer["addr"] == addr and self.GSplayer["name"] == name:
                             if self.to_place_blips != 0:
-                                bl_send = self.draw_blips(self.to_place_blips)
-                                message = {"purpose": "draw_blips", "blips": bl_send}
-                                self.send(self.GSplayer["conn"], message)
+                                if self.requested == False:
+                                    bl_send = self.draw_blips(self.to_place_blips)
+                                    message = {"purpose": "draw_blips", "blips": bl_send}
+                                    self.send(self.GSplayer["conn"], message)
+                                    self.to_place_blips = 0
+                                    self.requested = True                                    
 
                     if message["purpose"] == "disconnect":
                         with lock:

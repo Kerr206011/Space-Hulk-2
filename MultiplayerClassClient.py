@@ -439,8 +439,6 @@ class Test_Client:
         deploybl_requested = False
 
         deploybl_deployButton = Button(200, 600, config_picture, 1)
-        deploybl_rotateButton_left = Button(300, 600, config_picture, 1)
-        deploybl_rotateButton_right = Button(400, 600, config_picture, 1)
         deploybl_finishButton = Button(700, 600, config_picture, 1)
 
 
@@ -820,6 +818,7 @@ class Test_Client:
                                                 deploysm_marked_tiles.remove(tile)
                                                 self.selected_tile = None
                                                 break
+                                        break
 
                             if deploysm_selected_sprite in deploysm_to_place_sprites:
                                 deploysm_to_place_sprites.remove(deploysm_selected_sprite)
@@ -879,26 +878,71 @@ class Test_Client:
                                 wait = True
                                 stateShift = True
 
+                    elif event.type == pygame.MOUSEBUTTONUP:
+                        if deploybl_deployButton.rect.collidepoint(pygame.mouse.get_pos()):
+                            print(deploybl_selected_sprite, self.selected_tile)
+                            if deploybl_selected_sprite != None:
+                                print("Works1")
+                                if deploybl_selected_sprite.pos_x == None and deploybl_selected_sprite.pos_y == None:
+                                    print("Works2")
+                                    if self.selected_tile != None:
+                                        print("Works3")
+                                        print(await_server_answer)
+                                        message = {"purpose":"place", "tile":(self.selected_tile.x,self.selected_tile.y), "id":deploybl_selected_sprite.id}
+                                        # if not await_server_answer:
+                                        #     print(await_server_answer)
+                                        self.send(message)
+                                        #     await_server_answer = True
+
+                        elif deploybl_finishButton.rect.collidepoint(pygame.mouse.get_pos()):
+                            print("ready to move on")
+                            if deploybl_to_place_sprites.__len__() == 0:
+                                print("ready")
+                                message = {
+                                    "purpose": "finished_deploy",
+                                    "phase":  self.state.value
+                                    }
+                                self.send(message)
+
+                        else:
+                            for tile in deploybl_marked_tiles:
+                                if tile[0].rect.collidepoint(pygame.mouse.get_pos()):
+                                    self.selected_tile = tile[0]
+                                    print("clicked")
+                                    print(self.selected_tile)
+                                    stateShift = True
+                        
+                        for sprite in deploybl_to_place_sprites:
+                            if sprite.rect.collidepoint(pygame.mouse.get_pos()):
+                                print("smclick")
+                                deploybl_selected_sprite = sprite
+                                print(deploybl_selected_sprite)
+                                stateShift = True
+
                     if deploybl_requested == False:
                         message = {
                             "purpose": "bl_request",
                         }
                         self.send(message)
+                        deploybl_requested = True
 
                     if event.type == pygame.USEREVENT:
                         if event.data["purpose"] == "draw_blips":
-                            for i in event.data["blips"]:
+                            for i in event.data["blips"]:  
                                 blip = BlipSprite.from_data(i, self.scale)
                                 self.bllist.append(blip)
                                 deploybl_to_place_sprites.append(blip)
                                 
 
-                                x = 0
-                                for sprite in deploybl_to_place_sprites:
-                                    print(sprite)
-                                    sprite.graphic_x = deploybl_top_sprites_start + x
-                                    sprite.graphic_y = 0
-                                    x += 1
+                            x = 0
+                            for sprite in deploybl_to_place_sprites:
+                                print(sprite)
+                                sprite.graphic_x = deploybl_top_sprites_start + x
+                                sprite.graphic_y = 0
+                                x += 1
+                                    
+                            print(self.bllist)
+                            print(deploybl_to_place_sprites)
                             
                             wait = True
                             stateShift = True
@@ -1052,9 +1096,8 @@ class Test_Client:
                     for marine in self.smlist:
                         marine.draw(self.screen)
 
-                    for blip in deploybl_to_place_sprites:
-                        if blip.pos_x != None:
-                            blip.draw(self.screen)
+                    for blip in self.bllist:
+                        blip.draw(self.screen)
 
                     if self.selected_tile != None:
                         pygame.draw.rect(self.screen, 'blue', self.selected_tile.rect, 4)
@@ -1062,12 +1105,11 @@ class Test_Client:
                     pygame.draw.rect(self.screen, 'black', self.button_bar)
 
                     deploybl_deployButton.draw(self.screen)
-                    deploybl_rotateButton_right.draw(self.screen)
-                    deploybl_rotateButton_left.draw(self.screen)
+                    deploybl_finishButton.draw(self.screen)
 
                     if deploybl_selected_sprite != None:
-                        print(deploysm_selected_sprite)
-                        pygame.draw.rect(self.screen, 'blue', deploysm_selected_sprite.rect, 4)
+                        print(deploybl_selected_sprite)
+                        pygame.draw.rect(self.screen, 'blue', deploybl_selected_sprite.rect, 4)
 
                 #teststate that will change, depending on the progress of the games development
                 if self.state == Game_State.READY:
