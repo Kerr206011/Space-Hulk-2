@@ -100,10 +100,14 @@ class Blip(Model):
     
     def send(self, reveal = False):
         if reveal:
-            # match self.count:
-            #     case 1:
-            #         pass
-            picture = "Pictures/Models/Blip.png"
+            match self.count:
+                case 1:
+                    picture = "Pictures/Models/Blip_1.png"
+                case 2: 
+                    picture = "Pictures/Models/Blip_2.png"
+                case 3:
+                    picture = "Pictures/Models/Blip_3.png"
+    
         else:
             picture = "Pictures/Models/Blip.png"
         return{

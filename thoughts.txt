@@ -74,4 +74,8 @@ deploysm not placed models need to regroup after one has been placed
 Serverside and Clientside setup needs to be changed, so that multiple squads of SM may be deployed to different
 areas 
 
+change Blip png's so that the number is easier to reload
+
+add a method in the EntrypointSprite class so that present blips/gs can be displayed
+
 Todo: Implement GS deploy Gamestate, preferably so that it can be utilised both during setup and gameplay

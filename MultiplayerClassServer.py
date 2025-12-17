@@ -423,7 +423,7 @@ class Server:
             self.bl_id +=1
             model = Blip(blip, id)
             self.BLmodelList.append(model)
-            id_list.append(model.send())
+            id_list.append(model.send(True))
 
         return(id_list)
     
