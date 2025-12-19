@@ -315,14 +315,38 @@ class EntryPointSprite:
         self.picture_path = picture_path+".png"
         self.blips = blips
         self.face = face
+
+        self.slots = []
+        self.slot_dist
+
         image = pygame.image.load(self.picture_path).convert_alpha()
         width = int(image.get_width() * scale)
         height = int(image.get_height() * scale)
         self.image = pygame.transform.scale(image, (width, height))
         self.rect = self.image.get_rect()
 
+        self.slot_dist = width
+        self.adjust_slots()
+
     def __repr__(self):
-        return (f"<Tile pos=({self.x},{self.y})>")
+        return (f"<Tile pos=({self.x},{self.y}), blips=({self.blips})>")
+    
+    def adjust_slots(self):
+        b_x = self.graphic_x
+        b_y = self.graphic_y
+        width = self.slot_dist
+
+        match self.face.value:
+
+            case (1,0):
+                slot_1 = (b_x - width - width//50, b_y)
+                slot_2 = (b_x, b_y - width - width//50)
+                slot_3 = (b_x, b_y + width + width//50)
+
+            case (0,1):
+                slot_1 = (b_x + width + width//50, b_y)
+                slot_2 = (b_x, b_y - width - width//50)
+                slot_3 = (b_x, b_y + width + width//50)
 
     @classmethod
     def from_data(cls, data, scale):
@@ -334,6 +358,8 @@ class EntryPointSprite:
         height = int(image.get_height() * scale)
         self.image = pygame.transform.scale(image, (width, height))
         self.rect = self.image.get_rect()
+        self.slot_dist = width
+        self.adjust_slots()
     
     def draw(self, screen):
         self.rect.topleft = (self.graphic_x * self.image.get_width(), self.graphic_y * self.image.get_height())
@@ -342,6 +368,7 @@ class EntryPointSprite:
     def move(self, direction):
         self.graphic_x += direction[0]
         self.graphic_y += direction[1]
+        self.adjust_slots()
 
 
 
@@ -733,7 +760,12 @@ class Test_Client:
                                     if self.selected_tile != None:
                                         print("Works3")
                                         print(await_server_answer)
-                                        message = {"purpose":"place", "tile":(self.selected_tile.x,self.selected_tile.y), "id":deploysm_selected_sprite.id}
+                                        message = {
+                                            "purpose":"place", 
+                                            "tile":(self.selected_tile.x,self.selected_tile.y), 
+                                            "id":deploysm_selected_sprite.id,
+                                            "phase": self.state.value
+                                            }
                                         # if not await_server_answer:
                                         #     print(await_server_answer)
                                         self.send(message)
@@ -888,21 +920,26 @@ class Test_Client:
                                     if self.selected_tile != None:
                                         print("Works3")
                                         print(await_server_answer)
-                                        message = {"purpose":"place", "tile":(self.selected_tile.x,self.selected_tile.y), "id":deploybl_selected_sprite.id}
+                                        message = {
+                                            "purpose":"place", 
+                                            "tile":(self.selected_tile.x,self.selected_tile.y), 
+                                            "id":deploybl_selected_sprite.id, 
+                                            "phase": self.state.value
+                                            }
                                         # if not await_server_answer:
                                         #     print(await_server_answer)
                                         self.send(message)
                                         #     await_server_answer = True
 
-                        elif deploybl_finishButton.rect.collidepoint(pygame.mouse.get_pos()):
-                            print("ready to move on")
-                            if deploybl_to_place_sprites.__len__() == 0:
-                                print("ready")
-                                message = {
-                                    "purpose": "finished_deploy",
-                                    "phase":  self.state.value
-                                    }
-                                self.send(message)
+                        # elif deploybl_finishButton.rect.collidepoint(pygame.mouse.get_pos()):
+                        #     # print("ready to move on")
+                        #     # if deploybl_to_place_sprites.__len__() == 0:
+                        #     #     print("ready")
+                        #     #     message = {
+                        #     #         "purpose": "finished_deploy",
+                        #     #         "phase":  self.state.value
+                        #     #         }
+                        #     #     self.send(message)
 
                         else:
                             for tile in deploybl_marked_tiles:
@@ -914,7 +951,7 @@ class Test_Client:
                         
                         for sprite in deploybl_to_place_sprites:
                             if sprite.rect.collidepoint(pygame.mouse.get_pos()):
-                                print("smclick")
+                                print("blclick")
                                 deploybl_selected_sprite = sprite
                                 print(deploybl_selected_sprite)
                                 stateShift = True
@@ -945,6 +982,42 @@ class Test_Client:
                             print(deploybl_to_place_sprites)
                             
                             wait = True
+                            stateShift = True
+
+
+                        elif event.data["purpose"] == "game_update":
+
+                            for model in event.data["bl"]:
+                                for blip in self.bllist:
+                                    if model["id"] == blip.id:
+                                        if model["pos_x"] != marine.pos_x or model["pos_y"] != marine.pos_y:
+                                            print(model["pos_x"], marine.pos_x, model["pos_y"], marine.pos_y, model["face"], marine.face)
+                                            for tile in self.map:
+                                                if tile.x == model["pos_x"] and tile.y == model["pos_y"]:
+                                                    marine.align(tile)
+                                        
+                                        if model["face"] != marine.face:
+                                            marine.turn(model["face"])
+
+                            for tile in event.data["map"]:
+                                for sprite in self.map:
+                                    if isinstance(sprite, EntryPointSprite):
+                                        if sprite.x == tile["pos_x"] and sprite.y == tile["pos_y"]:
+                                            if tile["blips"] != sprite.blips:
+                                                sprite.blips = tile["blips"]
+                            
+                            # for model in event.data["sm"]:
+                            #     for marine in self.smlist:
+                            #         if model["id"] == marine.id:
+                            #             if model["pos_x"] != marine.pos_x or model["pos_y"] != marine.pos_y:
+                            #                 print(model["pos_x"], marine.pos_x, model["pos_y"], marine.pos_y, model["face"], marine.face)
+                            #                 for tile in self.map:
+                            #                     if tile.x == model["pos_x"] and tile.y == model["pos_y"]:
+                            #                         marine.align(tile)
+                                        
+                            #             if model["face"] != marine.face:
+                            #                 marine.turn(model["face"])
+
                             stateShift = True
 
                 elif self.state == Game_State.READY and not wait:

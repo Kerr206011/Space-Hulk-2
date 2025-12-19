@@ -228,6 +228,28 @@ class Server:
                                                         break
                                                     else:
                                                         break
+
+                            elif self.GSplayer["conn"] == conn and self.GSplayer["addr"] == addr and self.GSplayer["name"] == name:
+                                    logger.info(f"GS PLACE REQUEST")
+                                    match message["phase"]:
+                                        case "deploy_bl":
+                                            for tile in self.map:
+                                                if tile.x == message["tile"][0] and tile.y == message["tile"][1]:
+                                                    logger.info(f"TILE FOUND AT {(tile.x, tile.y)}")
+                                                    if tile.blips.__len__() > 2:
+                                                        logger.log(f"NO FREE SLOTS!")
+                                                    else:
+                                                        for model in self.BLmodelList:
+                                                            if model.ID == message["id"]:
+                                                                logger.info(f"MODEL FOUND WITH ID:{model.ID}")
+                                                                if model.position_x == None and model.position_y == None:
+                                                                    model.position_x = tile.x
+                                                                    model.position_y = tile.y
+                                                                    self.send_game_update()
+                                                                    logger.info(f"SENDING UPDATE!")
+                                                                    break
+                                                                else:
+                                                                    break
                     
                     elif message["purpose"] == "rotate_model":
                         logger.info(f"RECIVED TURN")
@@ -297,16 +319,21 @@ class Server:
     def send_game_update(self):
         send_map = []
         sm = []
+        gs = []
         for tile in self.map:
             send_map.append(tile.send())
 
         for model in self.SMmodelList:
             sm.append(model.send())
 
+        for model in self.BLmodelList:
+            gs.append(model.send())
+
         message = {
            "purpose": "game_update",
            "map": send_map,
-           "sm": sm
+           "sm": sm,
+           "gs": gs
             }
         
         for c in self.clients:

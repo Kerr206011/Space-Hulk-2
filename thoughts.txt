@@ -77,5 +77,7 @@ areas
 change Blip png's so that the number is easier to reload
 
 add a method in the EntrypointSprite class so that present blips/gs can be displayed
+    append that method for present gs
+        instead of doing that, the gnestealers may be represented with a list/ a shown number
 
 Todo: Implement GS deploy Gamestate, preferably so that it can be utilised both during setup and gameplay
