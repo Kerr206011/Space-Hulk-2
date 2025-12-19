@@ -990,11 +990,11 @@ class Test_Client:
                             for model in event.data["bl"]:
                                 for blip in self.bllist:
                                     if model["id"] == blip.id:
-                                        if model["pos_x"] != marine.pos_x or model["pos_y"] != marine.pos_y:
-                                            print(model["pos_x"], marine.pos_x, model["pos_y"], marine.pos_y, model["face"], marine.face)
+                                        if model["pos_x"] != blip.pos_x or model["pos_y"] != blip.pos_y:
+                                            print(model["pos_x"], blip.pos_x, model["pos_y"], blip.pos_y, model["face"], blip.face)
                                             for tile in self.map:
                                                 if tile.x == model["pos_x"] and tile.y == model["pos_y"]:
-                                                    marine.align(tile)
+                                                    blip.rect.topleft = 
                                         
                                         if model["face"] != marine.face:
                                             marine.turn(model["face"])
