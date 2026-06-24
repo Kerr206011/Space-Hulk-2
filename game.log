@@ -1,0 +1,47 @@
+2026-05-22 09:34:54,550 - INFO - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2026-05-22 09:34:54,577 - INFO - SERVER: New connection: ('127.0.0.1', 53997)
+2026-05-22 09:34:59,903 - INFO - SERVER: player Player, <socket.socket fd=1352, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 53997)> has selected SM
+2026-05-22 09:35:09,959 - INFO - SERVER: New connection: ('127.0.0.1', 54000)
+2026-05-22 09:35:14,780 - INFO - SERVER: player Player, <socket.socket fd=1964, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 54000)> has selected GS
+2026-05-22 09:35:18,151 - INFO - SERVER: Lobby started with [{'conn': <socket.socket fd=1352, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 53997)>, 'addr': ('127.0.0.1', 53997), 'name': 'Player', 'role': <GameRole.SPACEMARINE: 'spacemarine'>}, {'conn': <socket.socket fd=1964, family=2, type=1, proto=0, laddr=('127.0.0.1', 5000), raddr=('127.0.0.1', 54000)>, 'addr': ('127.0.0.1', 54000), 'name': 'Player', 'role': <GameRole.GENSTEALER: 'genstealer'>}]
+2026-05-22 09:35:18,221 - INFO - SERVER: Ready recived from ('127.0.0.1', 53997)
+2026-05-22 09:35:18,222 - INFO - SERVER: Ready recived from ('127.0.0.1', 53997)
+2026-05-22 09:35:18,234 - INFO - SERVER: Ready recived from ('127.0.0.1', 54000)
+2026-05-22 09:35:18,245 - INFO - <SpaceMarine id: 0, rank=sergant, weapon=POWERSWORD, overwatch=False, jam=False>
+2026-05-22 09:35:18,251 - INFO - SERVER: Ready recived from ('127.0.0.1', 54000)
+2026-05-22 09:35:18,256 - INFO - <SpaceMarine id: 1, rank=brother, weapon=FLAMER, overwatch=False, jam=False>
+2026-05-22 09:35:18,267 - INFO - SERVER: Ready recived from ('127.0.0.1', 54000)
+2026-05-22 09:35:18,267 - INFO - <SpaceMarine id: 2, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2026-05-22 09:35:18,282 - INFO - SERVER: Ready recived from ('127.0.0.1', 54000)
+2026-05-22 09:35:18,293 - INFO - <SpaceMarine id: 3, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2026-05-22 09:35:18,309 - INFO - SERVER: Ready recived from ('127.0.0.1', 54000)
+2026-05-22 09:35:18,319 - INFO - <SpaceMarine id: 4, rank=brother, weapon=BOLTER, overwatch=False, jam=False>
+2026-05-22 09:35:18,330 - INFO - SERVER: Ready recived from ('127.0.0.1', 54000)
+2026-05-22 09:35:18,356 - INFO - SERVER: Ready recived from ('127.0.0.1', 54000)
+2026-05-22 09:35:18,372 - INFO - SERVER: Ready recived from ('127.0.0.1', 54000)
+2026-05-22 09:35:18,396 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "C:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\multiplayerclassclient.py", line 1367, in <module>
+    client.main()
+  File "C:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\multiplayerclassclient.py", line 664, in main
+    self.map.append(EntryPointSprite.from_data(entry, self.scale))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\multiplayerclassclient.py", line 353, in from_data
+    return EntryPointSprite(data["pos_x"], data["pos_y"], scale, data["picture"], data["blips"], data["face"])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\multiplayerclassclient.py", line 320, in __init__
+    self.slot_dist
+AttributeError: 'EntryPointSprite' object has no attribute 'slot_dist'
+2026-05-22 09:35:18,397 - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassClient.py", line 1367, in <module>
+    client.main()
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassClient.py", line 664, in main
+    self.map.append(EntryPointSprite.from_data(entry, self.scale))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassClient.py", line 353, in from_data
+    return EntryPointSprite(data["pos_x"], data["pos_y"], scale, data["picture"], data["blips"], data["face"])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Kathrin\Documents\GitHub\Space-Hulk-2\MultiplayerClassClient.py", line 320, in __init__
+    self.slot_dist
+AttributeError: 'EntryPointSprite' object has no attribute 'slot_dist'
