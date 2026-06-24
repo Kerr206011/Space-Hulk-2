@@ -4,6 +4,9 @@ import random
 import time
 
 class Button():
+    """
+    A button
+    """
     def __init__(self, x, y, image, scale) -> None:
         self.scale = scale
         self.width = image.get_width()
