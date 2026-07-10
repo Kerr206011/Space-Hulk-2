@@ -5,9 +5,18 @@ import time
 
 class Button():
     """
-    A button
+    A button (-_-')
     """
     def __init__(self, x, y, image, scale) -> None:
+        """
+        Initializes the Button
+        
+        Args:
+            x (int or float): x top left position of the button
+            y (int or float): y top left position of the button
+            image (pygame image): image to be displayed on the Button
+            scale (float): scaling multiplier, numbers above 1 scale up, below down
+        """
         self.scale = scale
         self.width = image.get_width()
         self.height = image.get_height()
@@ -21,12 +30,21 @@ class Button():
         self.image = pygame.transform.scale(image, (int(self.width * self.scale), int(self.height * self.scale)))
 
     def show(self, surface, addImage = None):
+        """
+        Method to make the button rendered, but unresponsive
+        """
         surface.blit(self.image, (self.rect.x, self.rect.y))
         if addImage != None:
             image = pygame.transform.scale(addImage, (int(self.width * self.scale), int(self.height * self.scale)))
             surface.blit(image, (self.rect.x, self.rect.y))
 
     def draw(self, surface):
+        """
+        Standard active Method for the Button. 
+        Returns TRUE if the mouse cursor collides with the button rect and the left mousebutton is pressed.
+
+        Retrurns: bool
+        """
         action = False
 
         #get mouse position

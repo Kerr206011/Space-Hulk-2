@@ -314,10 +314,9 @@ class EntryPointSprite:
         self.scale = scale
         self.picture_path = picture_path+".png"
         self.blips = blips
-        self.face = face
+        self.face = face    #the direction where the next tile is 
 
         self.slots = []
-        self.slot_dist
 
         image = pygame.image.load(self.picture_path).convert_alpha()
         width = int(image.get_width() * scale)
@@ -325,7 +324,11 @@ class EntryPointSprite:
         self.image = pygame.transform.scale(image, (width, height))
         self.rect = self.image.get_rect()
 
-        self.slot_dist = width
+        self.slot_dist = width  
+        self.slot_1
+        self.slot_2
+        self.slot_3
+        self.genstealers = 0    #the amout of genstealers currently waiting outside the entrypoint
         self.adjust_slots()
 
     def __repr__(self):
@@ -339,14 +342,14 @@ class EntryPointSprite:
         match self.face.value:
 
             case (1,0):
-                slot_1 = (b_x - width - width//50, b_y)
-                slot_2 = (b_x, b_y - width - width//50)
-                slot_3 = (b_x, b_y + width + width//50)
+                self.slot_1 = (b_x - width - width//50, b_y)
+                self.slot_2 = (b_x, b_y - width - width//50)
+                self.slot_3 = (b_x, b_y + width + width//50)
 
             case (0,1):
-                slot_1 = (b_x + width + width//50, b_y)
-                slot_2 = (b_x, b_y - width - width//50)
-                slot_3 = (b_x, b_y + width + width//50)
+                self.slot_1 = (b_x + width + width//50, b_y)
+                self.slot_2 = (b_x, b_y - width - width//50)
+                self.slot_3 = (b_x, b_y + width + width//50)
 
     @classmethod
     def from_data(cls, data, scale):
@@ -994,8 +997,8 @@ class Test_Client:
                                             print(model["pos_x"], blip.pos_x, model["pos_y"], blip.pos_y, model["face"], blip.face)
                                             for tile in self.map:
                                                 if tile.x == model["pos_x"] and tile.y == model["pos_y"]:
-                                                    blip.rect.topleft = 
-                                        
+                                                    blip.rect.topleft = None
+##################################################################################################                                        
                                         if model["face"] != marine.face:
                                             marine.turn(model["face"])
 
