@@ -1,1 +1,3 @@
 entrypoints and blips
+    gameupdate needs a 'bl' key to convey placement of blips
+server confirmations for actions

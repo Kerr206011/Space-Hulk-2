@@ -325,9 +325,9 @@ class EntryPointSprite:
         self.rect = self.image.get_rect()
 
         self.slot_dist = width  
-        self.slot_1
-        self.slot_2
-        self.slot_3
+        self.slot_1 = None
+        self.slot_2 = None
+        self.slot_3 = None
         self.genstealers = 0    #the amout of genstealers currently waiting outside the entrypoint
         self.adjust_slots()
 
@@ -339,7 +339,7 @@ class EntryPointSprite:
         b_y = self.graphic_y
         width = self.slot_dist
 
-        match self.face.value:
+        match tuple(self.face):
 
             case (1,0):
                 self.slot_1 = (b_x - width - width//50, b_y)
@@ -717,6 +717,7 @@ class Test_Client:
                             wait = True
                             stateShift = True
 
+                        #moves the map
                         if event.key == pygame.K_w:
                             for tile in self.map:
                                 tile.move((0,1))

@@ -207,6 +207,7 @@ class Server:
 
                     elif message["purpose"] == "place":
                         with lock:
+                            #SM deployment at the start of the Game 
                             if self.SMplayer["conn"] == conn and self.SMplayer["addr"] == addr and self.SMplayer["name"] == name:
                                 logger.info(f"MARINE PLACE REQUEST")
                                 for tile in self.map:
@@ -228,7 +229,8 @@ class Server:
                                                         break
                                                     else:
                                                         break
-
+                            
+                            #GS Blip deployment during any reinforcement phase, now only during the start
                             elif self.GSplayer["conn"] == conn and self.GSplayer["addr"] == addr and self.GSplayer["name"] == name:
                                     logger.info(f"GS PLACE REQUEST")
                                     match message["phase"]:
@@ -353,7 +355,7 @@ class Server:
         self.reinforceing_blips = data["reinforcement"]
         self.isBroodLordPresent = data["broodLord"]
         self.startBlips = data["startBlip"]
-        self.entrypoints = data["entryPoints"]
+        self.entrypoints = data["entryPoints"]  #SM Entrypoint
 
         SMList = data["smModelList"]
         bluePrint = data["map"]
@@ -388,8 +390,12 @@ class Server:
                 case "wall":
                     tile = Wall.from_data(entry)
                 case "entry":
+                    logger.info(f"starting entrypoint creating")
                     tile = EntryPoint.from_data(entry)
+                    logger.info(f"finishing entrypoint creating")
             self.map.append(tile)
+
+        logger.info(f"finishing blueprint creating")
 
         sendMap = []
         for tile in self.map:

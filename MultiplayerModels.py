@@ -249,7 +249,7 @@ class Wall(Tile):
         }
 
 class EntryPoint:
-    def __init__(self, x, y, picture="Pictures/Tiles/lurking", tile_type="entry", face = (1,0)):
+    def __init__(self, x, y, picture="Pictures/Tiles/lurking", tile_type="entry", face = Facing.NORTH):
         self.x = x
         self.y = y
         self.picture = picture
