@@ -322,6 +322,8 @@ class Server:
         send_map = []
         sm = []
         gs = []
+        bl = []
+
         for tile in self.map:
             send_map.append(tile.send())
 
@@ -329,13 +331,17 @@ class Server:
             sm.append(model.send())
 
         for model in self.BLmodelList:
+            bl.append(model.send())
+
+        for model in self.GSmodelList:
             gs.append(model.send())
 
         message = {
            "purpose": "game_update",
            "map": send_map,
            "sm": sm,
-           "gs": gs
+           "gs": gs,
+           "bl": bl
             }
         
         for c in self.clients:
