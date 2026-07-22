@@ -3,19 +3,10 @@ import threading
 import json
 from enum import Enum
 from MultiplayerModels import *
-import logging
+from log import setup_logging, logging
 import sys
 
-logging.basicConfig(
-    level=logging.DEBUG,  # Set to INFO, WARNING, or ERROR as needed
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler("game.log"),  # Save logs to a file
-        logging.StreamHandler()          # Also log to console
-    ]
-)
-
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("server")
 
 lock = threading.Lock()
 
@@ -87,7 +78,7 @@ class Server:
         self.server_socket.listen()
         threading.Thread(target=self.accept_clients, args=()).start()
         threading.Thread(target=self.broadcast_listener, daemon=True).start()
-        logger.info(f"SERVER: Server started on Port {self.port} with Host {self.host}")
+        logger.info(f"started on Port {self.port} with Host {self.host}")
         return True
 
     def accept_clients(self):
@@ -101,7 +92,7 @@ class Server:
     def handle_client(self, conn, addr):
         name = None
         buffer = ""
-        logger.info(f"SERVER: New connection: {addr}")
+        logger.info(f"New connection: {addr}")
         try:
             while self.running:
                 data = conn.recv(1024)
@@ -119,7 +110,7 @@ class Server:
                     try:
                         message = json.loads(raw_msg)
                     except json.JSONDecodeError as e:
-                        logger.exception(f"SERVER: JSON decode error von {addr}: {e}, raw={raw_msg}")
+                        logger.exception(f"JSON decode error at {addr}: {e}, raw={raw_msg}")
                         continue
 
                     if message["purpose"] == "join_lobby":
@@ -153,7 +144,7 @@ class Server:
                                         "name": name,
                                         "role": GameRole.GENSTEALER
                                     }
-                                    logger.info(f"SERVER: player {name}, {conn} has selected GS")
+                                    logger.info(f"player {name}, {conn} has selected role GS")
                                     message = {"purpose" : "rolechange",
                                             "role" : self.GSplayer["role"].name}
                                     self.send(conn, message)
@@ -176,7 +167,7 @@ class Server:
                                     message = {"purpose" : "rolechange",
                                             "role" : self.SMplayer["role"].name}
                                     self.send(conn, message)
-                                    logger.info(f"SERVER: player {name}, {conn} has selected SM")
+                                    logger.info(f"player {name}, {conn} has selected role SM")
                                     self.send_lobby_update()
                             
                             else:
@@ -192,7 +183,7 @@ class Server:
                                 message = {"purpose" : "rolechange",
                                             "role" : GameRole.SPECTATOR.name}
                                 self.send(conn, message)
-                                logger.info(f"SERVER: player {name}, {conn} has selected Spectator")
+                                logger.info(f"player {name}, {conn} has selected role Spectator")
                                 self.send_lobby_update()
 
                     elif message["purpose"] == "start":
@@ -202,17 +193,17 @@ class Server:
                             threading.Thread(target=self.setup_lobby).start()
 
                     elif message["purpose"] == "readytorecive":
-                        logger.info(f"SERVER: Ready recived from {addr}")
+                        logger.info(f"Ready recived from {addr}")
                         self.isReadyToRecive.add(addr)
 
                     elif message["purpose"] == "place":
                         with lock:
                             #SM deployment at the start of the Game 
                             if self.SMplayer["conn"] == conn and self.SMplayer["addr"] == addr and self.SMplayer["name"] == name:
-                                logger.info(f"MARINE PLACE REQUEST")
+                                logger.info(f"MARINE PLACE REQUEST from {name}, {addr}")
                                 for tile in self.map:
                                     if tile.x == message["tile"][0] and tile.y == message["tile"][1]:
-                                        logger.info(f"TILE FOUND AT {(tile.x, tile.y)}")
+                                        logger.info(f"TILE FOUND AT: X {tile.x}, Y {tile.y}")
                                         if tile.is_occupied:
                                             break
                                         else:

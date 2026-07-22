@@ -1,0 +1,3 @@
+2026-07-22 19:52:44,067 - INFO     - server     - SERVER: Server started on Port 5000 with Host 0.0.0.0
+2026-07-22 19:52:44,075 - INFO     - server     - SERVER: New connection: ('127.0.0.1', 61088)
+2026-07-22 19:57:15,533 - INFO     - server     - SERVER: No clients left - shutting down server.

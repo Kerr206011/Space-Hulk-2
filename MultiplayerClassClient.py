@@ -5,6 +5,8 @@ import pygame
 from UI import * 
 from MultiplayerClassServer import *
 
+logger = logging.getLogger("client")
+
 class SpaceMarineSprite:
     def __init__(self, pos_x, pos_y, scale, picture_path: str, face, ID):
         self.face = Facing((face[0], face[1]))
@@ -420,6 +422,7 @@ class Test_Client:
 
     def main(self):
         #general init
+        setup_logging()
         stateShift = False
         wait  =False
 
